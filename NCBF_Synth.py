@@ -1,6 +1,7 @@
 from NCBF import *
 # import cma
 # from cmaes import CMA
+from Verifier import Verifier
 from collections import OrderedDict
 from Critic_Synth.NCritic import *
 
