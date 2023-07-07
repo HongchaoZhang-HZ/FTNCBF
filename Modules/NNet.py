@@ -1,9 +1,7 @@
 import torch
 import torch.nn as nn
 import numpy as np
-import time
-import torch.optim as optim
-from visualization import visualization
+
 
 class NNet:
     def __init__(self, arch, act_layer, DOMAIN, n_output=1, verbose=False):

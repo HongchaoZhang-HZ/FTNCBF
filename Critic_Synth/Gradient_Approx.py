@@ -1,6 +1,6 @@
 import sys
 sys.path.append('..')
-from NNCBF_Synth_V1.NCBF import *
+from Modules.NCBF import *
 
 # Brutal force approximation of numerical gradient
 def ApprroxGrad(x, neuralCBF, epsilon, DIM=2):

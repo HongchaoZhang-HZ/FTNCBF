@@ -1,5 +1,5 @@
-from NNCBF_Synth_V1.Verifier.ReLUNN_Decom import *
-from NNCBF_Synth_V1.Case import *
+from Verifier.ReLUNN_Decom import *
+from Cases.Case import *
 import time
 import warnings
 warnings.filterwarnings("ignore")

@@ -1,5 +1,5 @@
-from NNCBF_Synth_V1.Critic_Synth.Gradient_Approx import *
-from NNCBF_Synth_V1.Verifier.Verifier import *
+from Critic_Synth.Gradient_Approx import *
+from Verifier.Verifier import *
 
 import sympy as sp
 import numpy as np

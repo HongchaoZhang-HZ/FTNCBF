@@ -1,8 +1,8 @@
 import sys
 sys.path.append('..')
-from NNCBF_Synth_V1.NCBF import *
+from Modules.NCBF import *
 import torch.nn.functional as F
-from NNCBF_Synth_V1.visualization import *
+from Visualization.visualization import *
 from auto_LiRPA import BoundedModule, BoundedTensor, PerturbationLpNorm
 import matplotlib.pyplot as plt
 import itertools

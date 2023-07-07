@@ -1,4 +1,4 @@
-from NNet import *
+from Modules.NNet import *
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 from sympy.polys.orderings import monomial_key
