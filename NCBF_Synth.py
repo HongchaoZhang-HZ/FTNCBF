@@ -33,7 +33,7 @@ class NCBF_Synth(NCBF):
                              torch.max((model_output + 0.01).reshape([1, length]), torch.zeros([1, length]))
         FalseNegative_loss = torch.max(ref_output.reshape([1, length]), torch.zeros([1, length])) * \
                              torch.max((-model_output + 0.01).reshape([1, length]), torch.zeros([1, length]))
-        loss = l_co * torch.sum(FalsePositive_loss + 0.01*FalseNegative_loss)
+        loss = l_co * torch.sum(FalsePositive_loss + 0.001*FalseNegative_loss)
         return loss
 
     def train(self, num_epoch):
@@ -71,6 +71,7 @@ class NCBF_Synth(NCBF):
                 violations = -check_item * feasibility_output
                 feasibility_loss = torch.sum(torch.max(violations-1e-4*torch.ones([1,batch_length]), torch.zeros([1, batch_length])))
                 # feasibility_loss = torch.sum(torch.tanh(-feasibility_output))
+                # feasibility_loss = torch.sum(torch.max(feasibility_output, torch.zeros([1, batch_length])))
                 loss = self.def_loss(correctness_loss + feasibility_loss)
 
                 loss.backward()
@@ -81,9 +82,6 @@ class NCBF_Synth(NCBF):
                 # if epoch % 50 == 49:
                 #     print('[%d] loss: %.3f' % (epoch + 1, running_loss / 2000))
 
-            if running_loss <= 0.002:
-                return
-
             if epoch % 50 == 49:
                 print('[%d] loss: %.3f' % (epoch + 1, loss))
                 running_loss = 0.0
@@ -91,7 +89,6 @@ class NCBF_Synth(NCBF):
                 print(veri_result)
                 visualize(self.model)
                 scheduler.step()
-
 
 
 # Define Case
