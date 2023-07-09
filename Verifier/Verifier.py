@@ -56,7 +56,7 @@ class Verifier(ReLUNN_Decom):
                 if res.fun < 0:
                     problematic_set.append(act_array.copy())
 
-        print(len(problematic_set))
+        # print(len(problematic_set))
         if len(problematic_set) == 0:
             return True
         else:
@@ -206,9 +206,9 @@ class Verifier(ReLUNN_Decom):
         # Verification
         veri_res_set = self.verification(actual_set_list)
         veri_res_intersect = []
-        # for act_intersections in act_intersections_list:
-        #     veri_res_intersect_item = self.verification(act_intersections)
-        #     veri_res_intersect.append(veri_res_intersect_item)
+        for act_intersections in act_intersections_list:
+            veri_res_intersect_item = self.verification(act_intersections)
+            veri_res_intersect.append(veri_res_intersect_item)
         if self.verbose:
             print('res_set', veri_res_set)
             print('res_bd_set', veri_res_intersect)

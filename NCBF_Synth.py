@@ -37,8 +37,8 @@ class NCBF_Synth(NCBF):
         return loss
 
     def train(self, num_epoch):
-        optimizer = optim.SGD(self.model.parameters(), lr=1e-3)
-        scheduler = ExponentialLR(optimizer, gamma=0.99)
+        optimizer = optim.SGD(self.model.parameters(), lr=1e-4)
+        scheduler = ExponentialLR(optimizer, gamma=0.9)
         # Generate data
         shape = [100, 100]
         rlambda = 1
@@ -69,7 +69,8 @@ class NCBF_Synth(NCBF):
                 check_item = torch.max((-torch.abs(model_output)+0.2).reshape([1, batch_length]), torch.zeros([1, batch_length]))
                 # feasibility_loss = torch.sum(torch.tanh(check_item*feasibility_output))
                 violations = -check_item * feasibility_output
-                feasibility_loss = torch.sum(torch.max(violations-1e-4*torch.ones([1,batch_length]), torch.zeros([1, batch_length])))
+                # violations = -1 * feasibility_output + rlambda * model_output
+                feasibility_loss = torch.sum(torch.max(violations-1e-4, torch.zeros([1, batch_length])))
                 # feasibility_loss = torch.sum(torch.tanh(-feasibility_output))
                 # feasibility_loss = torch.sum(torch.max(feasibility_output, torch.zeros([1, batch_length])))
                 loss = self.def_loss(correctness_loss + feasibility_loss)
