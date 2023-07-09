@@ -8,3 +8,5 @@ numpy~=1.24.2
 matplotlib~=3.6.3
 SumOfSquares~=1.2.1
 auto-LiRPA~=0.3
+torchvision~=0.13.1
+cmaes~=0.9.1
