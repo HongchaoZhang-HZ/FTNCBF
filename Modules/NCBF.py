@@ -1,4 +1,5 @@
 from Modules.NNet import *
+from torch import optim
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 from sympy.polys.orderings import monomial_key

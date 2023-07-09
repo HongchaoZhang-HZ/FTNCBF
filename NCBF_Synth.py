@@ -11,10 +11,10 @@ from collections import OrderedDict
 from Critic_Synth.NCritic import *
 
 class NCBF_Synth(NCBF):
-    def __init__(self,arch, act_layer, DOMAIN, case):
+    def __init__(self,arch, act_layer, DOMAIN, case, verbose=False):
         super().__init__(arch, act_layer, DOMAIN)
         self.critic = NeuralCritic(case)
-        self.veri = Verifier(NCBF=self, case=case, grid_shape=[100, 100], verbose=False)
+        self.veri = Verifier(NCBF=self, case=case, grid_shape=[100, 100], verbose=verbose)
 
 
     def feasibility_loss(self, model_output, grad_condition, l_co=1):
@@ -33,14 +33,15 @@ class NCBF_Synth(NCBF):
                              torch.max((model_output + 0.01).reshape([1, length]), torch.zeros([1, length]))
         FalseNegative_loss = torch.max(ref_output.reshape([1, length]), torch.zeros([1, length])) * \
                              torch.max((-model_output + 0.01).reshape([1, length]), torch.zeros([1, length]))
-        loss = l_co * torch.sum(FalsePositive_loss + 0.0001*FalseNegative_loss)
+        loss = l_co * torch.sum(FalsePositive_loss + 0.01*FalseNegative_loss)
         return loss
 
     def train(self, num_epoch):
-        optimizer = optim.SGD(self.model.parameters(), lr=1e-2)
+        optimizer = optim.SGD(self.model.parameters(), lr=1e-3)
         scheduler = ExponentialLR(optimizer, gamma=0.99)
         # Generate data
         shape = [100, 100]
+        rlambda = 1
         vx, vy, rdm_input = self.generate_input(shape)
 
         ref_output = self.h_x(rdm_input.transpose(0, 1)).reshape([shape[0] * shape[1], 1])
@@ -61,14 +62,15 @@ class NCBF_Synth(NCBF):
                 # x[1] + 2 * x[0] * x[1], -x[0] + 2 * x[0] ** 2 - x[1] ** 2
                 dx0data = X_batch + torch.Tensor([0.001, 0])
                 dx1data = X_batch + torch.Tensor([0, 0.001])
-                dbdx0 = (self.forward(dx0data)-model_output).reshape([batch_length])
-                dbdx1 = (self.forward(dx1data) - model_output).reshape([batch_length])
+                dbdx0 = ((self.forward(dx0data) - model_output)/0.001).reshape([batch_length])
+                dbdx1 = ((self.forward(dx1data) - model_output)/0.001).reshape([batch_length])
                 feasibility_output = dbdx0 * (X_batch[:,0] + 2*X_batch[:,0]*X_batch[:,1]) \
                                      + dbdx1 * (-X_batch[:,0] + 2*X_batch[:,0]**2 - X_batch[:,1]**2)
                 check_item = torch.max((-torch.abs(model_output)+0.2).reshape([1, batch_length]), torch.zeros([1, batch_length]))
                 # feasibility_loss = torch.sum(torch.tanh(check_item*feasibility_output))
                 violations = -check_item * feasibility_output
-                feasibility_loss = torch.sum(torch.sigmoid(violations))
+                feasibility_loss = torch.sum(torch.max(violations-1e-4*torch.ones([1,batch_length]), torch.zeros([1, batch_length])))
+                # feasibility_loss = torch.sum(torch.tanh(-feasibility_output))
                 loss = self.def_loss(correctness_loss + feasibility_loss)
 
                 loss.backward()
@@ -76,68 +78,21 @@ class NCBF_Synth(NCBF):
 
 
                 running_loss += loss.item()
+                # if epoch % 50 == 49:
+                #     print('[%d] loss: %.3f' % (epoch + 1, running_loss / 2000))
+
+            if running_loss <= 0.002:
+                return
+
             if epoch % 50 == 49:
-                print('[%d] loss: %.3f' % (epoch + 1, running_loss / 2000))
+                print('[%d] loss: %.3f' % (epoch + 1, loss))
                 running_loss = 0.0
                 veri_result, num = self.veri.proceed_verification()
                 print(veri_result)
                 visualize(self.model)
                 scheduler.step()
 
-    def batch_train(self, num_restart, num_epoch):
-        # optimizer = optim.SGD(self.model.parameters(), lr=1e-1)
-        optimizer = optim.Adam(self.model.parameters())
-        for restart in range(num_restart):
-            penalty = 1
-            shape = [100, 100]
-            # Generate data
-            vx, vy, rdm_input = self.generate_input(shape)
-            ref_output = torch.tanh(self.h_x(data))
-            for epoch in range(num_epoch):
-                running_loss = 0.0
-                for batch, data in enumerate(rdm_input, 0):
 
-                    optimizer.zero_grad()
-
-                    model_output = self.forward(data)
-                    ref_output = torch.tanh(self.h_x(data))
-
-                    warm_start_loss = self.warm_start(ref_output, model_output)
-                    correctness_loss = self.safe_correctness(ref_output, model_output, 1)
-                    # x[1] + 2 * x[0] * x[1], -x[0] + 2 * x[0] ** 2 - x[1] ** 2
-                    dx0data = data + torch.Tensor([0.001, 0])
-                    dx1data = data + torch.Tensor([0, 0.001])
-                    # feasibility_output = (self.forward(dx0data)-model_output).reshape([1]) * \
-                    #                      data[0] + 2*data[0]*data[1] \
-                    #                      + self.forward(dx1data)-model_output * \
-                    #                      (-data[0] + 2*data[0]**2 - data[1]**2)
-                    feasibility_output = (self.forward(dx0data) - model_output).reshape([1]) * \
-                                         data[0] + 2 * data[0] * data[1] \
-                                         + self.forward(dx1data) - model_output * \
-                                         (-data[0] + 2 * data[0] ** 2 - data[1] ** 2)
-                    check_item = torch.max((-torch.abs(model_output)+0.2).reshape([1, 1]), torch.zeros([1, 1]))
-                    violations = -check_item*feasibility_output
-                    feasibility_loss = torch.max((-feasibility_output - model_output), torch.zeros([1, 1]))
-                    # feasibility_loss = torch.sum(torch.max(violations, torch.zeros(1)))
-                    # feasibility_output = self.critic.feasiblility_regulator(self.model, rdm_input, epsilon=0.01)
-                    # feasibility_loss = self.feasibility_loss(model_output, feasibility_output, 1)
-                    # loss = self.def_loss(warm_start_loss + correctness_loss + penalty * feasibility_loss)
-#                      (self.forward(torch.Tensor([-2,0])).item()+1)**2,
-                    loss = self.def_loss(feasibility_loss)
-
-                    loss.backward()
-                    optimizer.step()
-
-                    running_loss += loss.item()
-                if epoch % 2000 == 1999:
-                    print('[%d, %5d] loss: %.3f' % (epoch + 1, batch + 1, running_loss / 10000))
-                    running_loss = 0.0
-                    veri_result, num = self.veri.proceed_verification()
-                    print(veri_result)
-                # if correctness_loss == 0 and veri_result:
-                    # visualize(self.model)
-                    # return
-                    visualize(self.model)
 
 # Define Case
 # x0, x1 = sp.symbols('x0, x1')
@@ -149,8 +104,16 @@ hx = lambda x: (x[0] + x[1] ** 2)
 fx = lambda x: [x[1] + 2*x[0]*x[1], -x[0] + 2*x[0]**2 - x[1]**2]
 gx = [0, 0]
 Darboux = case(fx, gx, hx, [[-2,2],[-2,2]], [])
-newCBF = NCBF_Synth([10, 10], [True, True], [[-2, 2], [-2, 2]], Darboux)
-# newCBF.model.load_state_dict(torch.load('NCBF.pt'))
+newCBF = NCBF_Synth([10, 10], [True, True], [[-2, 2], [-2, 2]], Darboux, verbose=True)
+# newCBF.model.load_state_dict(torch.load('darboux_2_10.pt'))
+# new_state_dict = OrderedDict()
+# new_state_dict = newCBF.model.state_dict()
+# new_state_dict['4.weight'] = -new_state_dict['4.weight']
+# new_state_dict['4.bias'] = -new_state_dict['4.bias']
+# testCBF = NCBF_Synth([10, 10], [True, True], [[-2, 2], [-2, 2]], Darboux, verbose=True)
+# testCBF.model.load_state_dict(new_state_dict)
+# veri_result, num = testCBF.veri.proceed_verification()
+# newCBF.model.load_state_dict(testCBF.model.state_dict())
 newCBF.train(1000)
 # res = testCritic.PolyVerification(newCB
 
