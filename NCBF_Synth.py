@@ -1,3 +1,5 @@
+import torch
+
 from Modules.NCBF import *
 from torch import optim
 from torch.optim.lr_scheduler import ExponentialLR
@@ -25,7 +27,7 @@ class NCBF_Synth(NCBF):
         loss = l_co * torch.sum(violations)
         return loss
 
-    def safe_correctness(self, ref_output, model_output, l_co=1):
+    def safe_correctness(self, ref_output, model_output, l_co=1, alpha1=1, alpha2=0.001):
         norm_model_output = torch.tanh(model_output)
         length = len(-ref_output + norm_model_output)
         # norm_ref_output = torch.tanh(ref_output)
@@ -33,7 +35,13 @@ class NCBF_Synth(NCBF):
                              torch.max((model_output + 0.01).reshape([1, length]), torch.zeros([1, length]))
         FalseNegative_loss = torch.max(ref_output.reshape([1, length]), torch.zeros([1, length])) * \
                              torch.max((-model_output + 0.01).reshape([1, length]), torch.zeros([1, length]))
-        loss = l_co * torch.sum(FalsePositive_loss + 0.001*FalseNegative_loss)
+        loss = l_co * torch.sum(alpha1*FalsePositive_loss + alpha2*FalseNegative_loss)
+        return loss
+
+    def trivial_panelty(self, model_output, coeff=1):
+        non_pos_loss = coeff * torch.max(0.5 - torch.max(model_output), torch.zeros(1))
+        non_neg_loss = coeff * torch.max(0.5 - torch.max(-model_output), torch.zeros(1))
+        loss = non_pos_loss + non_neg_loss
         return loss
 
     def train(self, num_epoch):
@@ -58,7 +66,8 @@ class NCBF_Synth(NCBF):
                 model_output = self.forward(X_batch)
 
                 warm_start_loss = self.warm_start(y_batch, model_output)
-                correctness_loss = self.safe_correctness(y_batch, model_output, 1)
+                correctness_loss = self.safe_correctness(y_batch, model_output, l_co=1, alpha1=1, alpha2=0)
+                trivial_loss = self.trivial_panelty(model_output, 1)
                 # x[1] + 2 * x[0] * x[1], -x[0] + 2 * x[0] ** 2 - x[1] ** 2
                 dx0data = X_batch + torch.Tensor([0.001, 0])
                 dx1data = X_batch + torch.Tensor([0, 0.001])
@@ -68,28 +77,29 @@ class NCBF_Synth(NCBF):
                                      + dbdx1 * (-X_batch[:,0] + 2*X_batch[:,0]**2 - X_batch[:,1]**2)
                 check_item = torch.max((-torch.abs(model_output)+0.2).reshape([1, batch_length]), torch.zeros([1, batch_length]))
                 # feasibility_loss = torch.sum(torch.tanh(check_item*feasibility_output))
-                violations = -check_item * feasibility_output
-                # violations = -1 * feasibility_output + rlambda * model_output
+                # violations = -check_item * feasibility_output
+                violations = -1 * feasibility_output - rlambda * model_output.transpose(0, 1)
                 feasibility_loss = torch.sum(torch.max(violations-1e-4, torch.zeros([1, batch_length])))
                 # feasibility_loss = torch.sum(torch.tanh(-feasibility_output))
                 # feasibility_loss = torch.sum(torch.max(feasibility_output, torch.zeros([1, batch_length])))
-                loss = self.def_loss(correctness_loss + feasibility_loss)
+                loss = self.def_loss(correctness_loss + 1*feasibility_loss + trivial_loss)
 
                 loss.backward()
                 optimizer.step()
 
-
                 running_loss += loss.item()
                 # if epoch % 50 == 49:
                 #     print('[%d] loss: %.3f' % (epoch + 1, running_loss / 2000))
-
-            if epoch % 50 == 49:
-                print('[%d] loss: %.3f' % (epoch + 1, loss))
+            if epoch % 25 == 24:
+                print('[%d] loss: %.3f' % (epoch + 1, running_loss))
                 running_loss = 0.0
-                veri_result, num = self.veri.proceed_verification()
-                print(veri_result)
+            if epoch % 100 == 99:
                 visualize(self.model)
                 scheduler.step()
+            if epoch % 200 == 199:
+                veri_result, num = self.veri.proceed_verification()
+                print(veri_result)
+
 
 
 # Define Case
@@ -102,7 +112,7 @@ hx = lambda x: (x[0] + x[1] ** 2)
 fx = lambda x: [x[1] + 2*x[0]*x[1], -x[0] + 2*x[0]**2 - x[1]**2]
 gx = [0, 0]
 Darboux = case(fx, gx, hx, [[-2,2],[-2,2]], [])
-newCBF = NCBF_Synth([10, 10], [True, True], [[-2, 2], [-2, 2]], Darboux, verbose=True)
+newCBF = NCBF_Synth([10, 10], [True, True], [[-2, 2], [-2, 2]], Darboux, verbose=False)
 # newCBF.model.load_state_dict(torch.load('darboux_2_10.pt'))
 # new_state_dict = OrderedDict()
 # new_state_dict = newCBF.model.state_dict()
@@ -112,7 +122,8 @@ newCBF = NCBF_Synth([10, 10], [True, True], [[-2, 2], [-2, 2]], Darboux, verbose
 # testCBF.model.load_state_dict(new_state_dict)
 # veri_result, num = testCBF.veri.proceed_verification()
 # newCBF.model.load_state_dict(testCBF.model.state_dict())
-newCBF.train(1000)
+for restart in range(3):
+    newCBF.train(1000)
 # res = testCritic.PolyVerification(newCB
 
 visualize(newCBF)
