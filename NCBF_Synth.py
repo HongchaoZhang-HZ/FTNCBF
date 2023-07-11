@@ -134,15 +134,16 @@ fx = lambda x: [x[1] + 2*x[0]*x[1], -x[0] + 2*x[0]**2 - x[1]**2]
 gx = [0, 0]
 Darboux = case(fx, gx, hx, [[-2,2],[-2,2]], [])
 newCBF = NCBF_Synth([10, 10], [True, True], [[-2, 2], [-2, 2]], Darboux, verbose=False)
-newCBF.model.load_state_dict(torch.load('darboux_2_10.pt'))
-new_state_dict = OrderedDict()
-new_state_dict = newCBF.model.state_dict()
-new_state_dict['4.weight'] = -new_state_dict['4.weight']
-new_state_dict['4.bias'] = -new_state_dict['4.bias']
-testCBF = NCBF_Synth([10, 10], [True, True], [[-2, 2], [-2, 2]], Darboux, verbose=True)
-testCBF.model.load_state_dict(new_state_dict)
-veri_result, num = testCBF.veri.proceed_verification()
-newCBF.model.load_state_dict(testCBF.model.state_dict())
+# newCBF.model.load_state_dict(torch.load('darboux_2_10.pt'))
+# new_state_dict = OrderedDict()
+# new_state_dict = newCBF.model.state_dict()
+# new_state_dict['4.weight'] = -new_state_dict['4.weight']
+# new_state_dict['4.bias'] = -new_state_dict['4.bias']
+# testCBF = NCBF_Synth([10, 10], [True, True], [[-2, 2], [-2, 2]], Darboux, verbose=True)
+# testCBF.model.load_state_dict(new_state_dict)
+veri_result, num = newCBF.veri.proceed_verification()
+print(veri_result)
+# newCBF.model.load_state_dict(testCBF.model.state_dict())
 for restart in range(3):
     newCBF.train(1000)
 

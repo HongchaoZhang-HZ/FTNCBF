@@ -10,7 +10,9 @@ class Verifier(ReLUNN_Decom):
         self.case = case
         self.dyn = case.dyn
         self.dbdxg = 0
+        self.x0 = np.zeros([self.DIM, 1])
         self.num_neuron = self.NN.arch[0]
+
 
     def dbdxf(self, x, W_overl):
         # Todo: incorporate Case
@@ -47,11 +49,10 @@ class Verifier(ReLUNN_Decom):
             W_Bound = np.array(-B_act[0] + B_inact[0])
             r_Bound = np.array(-B_act[1] - B_inact[1])
 
-            x0 = np.zeros([self.DIM, 1])
             if self.dbdxg == 0:
                 lcon = LinearConstraint(W_Bound, -np.inf * np.ones(len(W_Bound)), -r_Bound.reshape(len(r_Bound)))
                 eqcon = LinearConstraint(W_overl[0], -r_overl[0], -r_overl[0])
-                res = minimize(self.dbdxf, x0, args=W_overl[0], constraints=[lcon, eqcon], tol=1e-6)
+                res = minimize(self.dbdxf, self.x0, args=W_overl[0], constraints=[lcon, eqcon], tol=1e-6)
                 # print(res.fun)
                 if res.fun < 0:
                     problematic_set.append(act_array.copy())
@@ -84,13 +85,11 @@ class Verifier(ReLUNN_Decom):
                 W_Bound_inter = np.vstack([W_Bound_inter, W_Bound])
                 r_Bound_inter = np.vstack([r_Bound_inter, r_Bound])
 
-            x0 = np.array([[0], [0]])
-
             # con = lambda x: W_overl[0]*(x[1] + 2 * x[0] * x[1]) + W_overl[1]*(-x[0] + 2 * x[0] ** 2 - x[1] ** 2)
             # nlc = NonlinearConstraint(con, -np.inf*np.ones(len(W_Bound)), -r_Bound)
             lcon = LinearConstraint(W_Bound, -np.inf * np.ones(len(W_Bound)), -r_Bound.reshape(len(r_Bound)))
             eqcon = LinearConstraint(W_overl[0], -r_overl[0], -r_overl[0])
-            res = minimize(self.dbdxf, x0, args=W_overl[0], constraints=[lcon, eqcon], tol=1e-6)
+            res = minimize(self.dbdxf, self.x0, args=W_overl[0], constraints=[lcon, eqcon], tol=1e-6)
 
             if res.fun < 0:
                 problematic_set.append(act_array.copy())
@@ -119,19 +118,18 @@ class Verifier(ReLUNN_Decom):
             W_Bound = W_Bound_inter[i * size_W_Bound:(i + 1) * size_W_Bound]
             r_Bound = r_Bound_inter[i * size_r_Bound:(i + 1) * size_r_Bound]
 
-            x0 = np.array([[0], [0]])
             lcon = LinearConstraint(W_Bound, -np.inf * np.ones(len(W_Bound)), -r_Bound.reshape(len(r_Bound)))
             eqcon = LinearConstraint(W_overl[0], -r_overl[0], -r_overl[0])
-            res = minimize(self.dbdxf, x0, args=W_overl[0], constraints=[lcon, eqcon], tol=1e-6)
+            res = minimize(self.dbdxf, self.x0, args=W_overl[0], constraints=[lcon, eqcon], tol=1e-6)
             results.append(res.fun)
 
         results_array = np.asarray(results)
-        initial_x0 = x0
+        initial_x0 = self.x0
         for num in range(sum_range - 1):
-            initial_x0 = np.vstack([initial_x0, x0])
+            initial_x0 = np.vstack([initial_x0, self.x0])
         y0 = np.zeros(2 * sum_range)
         initial_state = np.vstack([initial_x0, y0.reshape([y0.shape[0], 1])])
-        xy0 = np.vstack([x0, y0.reshape([y0.shape[0], 1])])
+        xy0 = np.vstack([self.x0, y0.reshape([y0.shape[0], 1])])
         # np.vstack([W_Bound_inter, np.zeros([2 * sum_range, W_Bound_inter.shape[1]])])
         # np.vstack([np.zeros([W_Bound_inter.shape[0], 2 * sum_range]), np.eye(2 * sum_range)])
         lcon = LinearConstraint(
@@ -163,7 +161,7 @@ class Verifier(ReLUNN_Decom):
             r_Bound = torch.Tensor(-B_act[1] - B_inact[1])
             res_zero = linprog(c=[1, 1],
                                A_ub=W_Bound, b_ub=-r_Bound,
-                               A_eq=W_overl, b_eq=-r_overl, bounds=([-2, 2], [-2, 2]),
+                               A_eq=W_overl, b_eq=-r_overl, bounds=tuple(self.DOMAIN),
                                method='highs')
             # if self.verbose:
             #     print(res_zero.success)
