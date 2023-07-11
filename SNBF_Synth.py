@@ -18,6 +18,16 @@ class NCBF_Synth(NCBF):
         self.critic = NeuralCritic(case)
         self.veri = Verifier(NCBF=self, case=case, grid_shape=[100, 100], verbose=verbose)
 
+    def numerical_gradient(self, X_batch, model_output, batch_length, epsilon=0.001):
+        grad = []
+        for i in range(self.DIM):
+            gradStep = torch.zeros(self.DIM)
+            gradStep[i] += epsilon
+            gradData = X_batch + gradStep
+            dbdxi = ((self.forward(gradData) - model_output) / epsilon).reshape([batch_length])
+            grad.append(dbdxi)
+
+        return grad
 
     def feasibility_loss(self, model_output, grad_condition, l_co=1):
         # when model_output is close to the boundary grad condition comes in
@@ -85,19 +95,22 @@ class NCBF_Synth(NCBF):
                 correctness_loss = self.safe_correctness(y_batch, model_output, l_co=1, alpha1=1, alpha2=0)
                 trivial_loss = self.trivial_panelty(ref_output, self.model.forward(rdm_input), 1)
                 # x[1] + 2 * x[0] * x[1], -x[0] + 2 * x[0] ** 2 - x[1] ** 2
-                dx0data = X_batch + torch.Tensor([0.001, 0])
-                dx1data = X_batch + torch.Tensor([0, 0.001])
-                dbdx0 = ((self.forward(dx0data) - model_output)/0.001).reshape([batch_length])
-                dbdx1 = ((self.forward(dx1data) - model_output)/0.001).reshape([batch_length])
-                feasibility_output = dbdx0 * (X_batch[:,0] + 2*X_batch[:,0]*X_batch[:,1]) \
-                                     + dbdx1 * (-X_batch[:,0] + 2*X_batch[:,0]**2 - X_batch[:,1]**2)
+                # dx0data = X_batch + torch.Tensor([0.001, 0])
+                # dx1data = X_batch + torch.Tensor([0, 0.001])
+                # dbdx0 = ((self.forward(dx0data) - model_output)/0.001).reshape([batch_length])
+                # dbdx1 = ((self.forward(dx1data) - model_output)/0.001).reshape([batch_length])
+                grad = self.numerical_gradient(X_batch, model_output, batch_length, epsilon=0.001)
+                feasibility_output = grad[0] * (X_batch[:,0] + 2*X_batch[:,0]*X_batch[:,1]) \
+                                     + grad[1] * (-X_batch[:,0] + 2*X_batch[:,0]**2 - X_batch[:,1]**2)
                 check_item = torch.max((-torch.abs(model_output)+0.1).reshape([1, batch_length]), torch.zeros([1, batch_length]))
                 # feasibility_loss = torch.sum(torch.tanh(check_item*feasibility_output))
-                violations = -check_item * feasibility_output
-                # violations = -1 * feasibility_output - torch.max(rlambda * model_output.transpose(0, 1), torch.zeros([1, batch_length]))
-                feasibility_loss = 100*torch.sum(torch.max(violations-1e-4, torch.zeros([1, batch_length])))
-                # feasibility_loss = torch.sum(torch.tanh(-feasibility_output))
-                # feasibility_loss = torch.sum(torch.max(feasibility_output, torch.zeros([1, batch_length])))
+
+                # Our loss function
+                # violations = -check_item * feasibility_output
+                # Chuchu Fan loss function
+                violations = -1 * feasibility_output - torch.max(rlambda * torch.abs(model_output.transpose(0, 1)),
+                                                                 torch.zeros([1, batch_length]))
+                feasibility_loss = 100 * torch.sum(torch.max(violations - 1e-4, torch.zeros([1, batch_length])))
                 loss = self.def_loss(1*correctness_loss + 1*feasibility_loss + 1*trivial_loss)
 
                 loss.backward()

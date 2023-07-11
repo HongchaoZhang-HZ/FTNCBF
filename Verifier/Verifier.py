@@ -8,7 +8,6 @@ class Verifier(ReLUNN_Decom):
     def __init__(self, NCBF, case, grid_shape, verbose=True):
         super().__init__(NCBF, grid_shape, verbose)
         self.case = case
-        self.dyn = case.dyn
         self.dbdxg = 0
         self.x0 = np.zeros([self.DIM, 1])
         self.num_neuron = self.NN.arch[0]
