@@ -28,7 +28,7 @@ class Verifier(ReLUNN_Decom):
         W_overl = W_overl_inter[0]
         xarray = self.dbdxf(x, W_overl)
         for i in range(sum_range):
-            W_overl = W_overl_inter[i * 1:(i + 1) * 1]
+            W_overl = W_overl_inter[i * 1:(i + 1) * 1][0]
             if i == 0:
                 xarray = self.dbdxf(x, W_overl)
             else:
@@ -67,7 +67,7 @@ class Verifier(ReLUNN_Decom):
 
         for idx in range(len(actual_set)):
             act_array = actual_set[idx]
-            W_overl, r_overl, B_act, B_inact = self.activated_weight_bias_ml(self.model, torch.Tensor(act_array), 48)
+            W_overl, r_overl, B_act, B_inact = self.activated_weight_bias_ml(torch.Tensor(act_array), self.num_neuron)
             # compute boundary condition of polyhedron
             W_overl = W_overl.numpy()
             r_overl = r_overl.numpy()
@@ -90,7 +90,7 @@ class Verifier(ReLUNN_Decom):
             # nlc = NonlinearConstraint(con, -np.inf*np.ones(len(W_Bound)), -r_Bound)
             lcon = LinearConstraint(W_Bound, -np.inf * np.ones(len(W_Bound)), -r_Bound.reshape(len(r_Bound)))
             eqcon = LinearConstraint(W_overl[0], -r_overl[0], -r_overl[0])
-            res = minimize(self.dbdxf, x0, args=-W_overl[0], constraints=[lcon, eqcon], tol=1e-6)
+            res = minimize(self.dbdxf, x0, args=W_overl[0], constraints=[lcon, eqcon], tol=1e-6)
 
             if res.fun < 0:
                 problematic_set.append(act_array.copy())
@@ -119,7 +119,7 @@ class Verifier(ReLUNN_Decom):
             W_Bound = W_Bound_inter[i * size_W_Bound:(i + 1) * size_W_Bound]
             r_Bound = r_Bound_inter[i * size_r_Bound:(i + 1) * size_r_Bound]
 
-            x0 = np.array([[0], [0], [0]])
+            x0 = np.array([[0], [0]])
             lcon = LinearConstraint(W_Bound, -np.inf * np.ones(len(W_Bound)), -r_Bound.reshape(len(r_Bound)))
             eqcon = LinearConstraint(W_overl[0], -r_overl[0], -r_overl[0])
             res = minimize(self.dbdxf, x0, args=W_overl[0], constraints=[lcon, eqcon], tol=1e-6)
@@ -207,7 +207,7 @@ class Verifier(ReLUNN_Decom):
         veri_res_set = self.verification(actual_set_list)
         veri_res_intersect = []
         for act_intersections in act_intersections_list:
-            veri_res_intersect_item = self.verification(act_intersections)
+            veri_res_intersect_item = self.inter_verification(act_intersections)
             veri_res_intersect.append(veri_res_intersect_item)
         if self.verbose:
             print('res_set', veri_res_set)
