@@ -26,7 +26,29 @@ class NCBF(NNet):
         vy = vyo + noise
         data = np.dstack([vx.reshape([shape[0], shape[1], 1]), vy.reshape([shape[0], shape[1], 1])])
         data = torch.Tensor(data.reshape(shape[0] * shape[1], 2))
-        return vx, vy, data
+        return data
+
+    def generate_data(self, size=100):
+        state_space = self.DOMAIN
+        shape = []
+        for _ in range(self.DIM):
+            shape.append(size)
+        noise = 1e-2 * torch.rand(shape)
+        cell_length = (state_space[0][1] - state_space[0][0]) / size
+        raw_data = []
+        for i in range(self.DIM):
+            data_element = torch.linspace(state_space[i][0] + cell_length/2, state_space[i][1] - cell_length/2, shape[0])
+            raw_data.append(data_element)
+        raw_data_grid = torch.meshgrid(raw_data)
+        noisy_data = []
+        for i in range(self.DIM):
+            noisy_data_item = raw_data_grid[i] + noise
+            # noisy_data_item = np.expand_dims(noisy_data_item, axis=self.DIM)
+            noisy_data_item = noisy_data_item.reshape([torch.prod(torch.Tensor(shape),dtype=int), 1])
+            noisy_data.append(noisy_data_item)
+        data = torch.hstack([torch.Tensor(item) for item in noisy_data])
+
+        return data
 
     def h_x(self, x):
         hx = (x[0] + x[1] ** 2)

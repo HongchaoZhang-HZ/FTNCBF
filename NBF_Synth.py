@@ -60,11 +60,13 @@ class NCBF_Synth(NCBF):
         optimizer = optim.SGD(self.model.parameters(), lr=1e-4)
         scheduler = ExponentialLR(optimizer, gamma=0.9)
         # Generate data
+        size = 100
         shape = [100, 100]
         rlambda = 1
-        vx, vy, rdm_input = self.generate_input(shape)
+        rdm_input = self.generate_input(shape)
+        # rdm_input = self.generate_data(size)
 
-        ref_output = self.h_x(rdm_input.transpose(0, 1)).reshape([shape[0] * shape[1], 1])
+        ref_output = self.h_x(rdm_input.transpose(0, 1)).unsqueeze(1)
         batch_length = 16
         transform = transforms.Compose(
             [transforms.ToTensor(),
@@ -81,7 +83,7 @@ class NCBF_Synth(NCBF):
                 model_output = self.forward(X_batch)
 
                 warm_start_loss = self.warm_start(y_batch, model_output)
-                correctness_loss = self.safe_correctness(y_batch, model_output, l_co=1, alpha1=1, alpha2=0)
+                correctness_loss = self.safe_correctness(y_batch, model_output, l_co=1, alpha1=10, alpha2=0)
                 trivial_loss = self.trivial_panelty(ref_output, self.model.forward(rdm_input), 1)
                 # x[1] + 2 * x[0] * x[1], -x[0] + 2 * x[0] ** 2 - x[1] ** 2
                 dx0data = X_batch + torch.Tensor([0.001, 0])
@@ -90,10 +92,13 @@ class NCBF_Synth(NCBF):
                 dbdx1 = ((self.forward(dx1data) - model_output)/0.001).reshape([batch_length])
                 feasibility_output = dbdx0 * (X_batch[:,0] + 2*X_batch[:,0]*X_batch[:,1]) \
                                      + dbdx1 * (-X_batch[:,0] + 2*X_batch[:,0]**2 - X_batch[:,1]**2)
-                check_item = torch.max((-torch.abs(model_output)+0.1).reshape([1, batch_length]), torch.zeros([1, batch_length]))
+                check_item = torch.max((-torch.abs(model_output)+0.2).reshape([1, batch_length]), torch.zeros([1, batch_length]))
                 # feasibility_loss = torch.sum(torch.tanh(check_item*feasibility_output))
-                violations = -check_item * feasibility_output
-                # violations = -1 * feasibility_output - torch.max(rlambda * model_output.transpose(0, 1), torch.zeros([1, batch_length]))
+
+                # Our loss function
+                # violations = -check_item * feasibility_output
+                # Chuchu Fan loss function
+                violations = -1 * feasibility_output - torch.max(rlambda * torch.abs(model_output.transpose(0, 1)), torch.zeros([1, batch_length]))
                 feasibility_loss = 100*torch.sum(torch.max(violations-1e-4, torch.zeros([1, batch_length])))
                 # feasibility_loss = torch.sum(torch.tanh(-feasibility_output))
                 # feasibility_loss = torch.sum(torch.max(feasibility_output, torch.zeros([1, batch_length])))
@@ -141,8 +146,8 @@ newCBF = NCBF_Synth([10, 10], [True, True], [[-2, 2], [-2, 2]], Darboux, verbose
 # new_state_dict['4.bias'] = -new_state_dict['4.bias']
 # testCBF = NCBF_Synth([10, 10], [True, True], [[-2, 2], [-2, 2]], Darboux, verbose=True)
 # testCBF.model.load_state_dict(new_state_dict)
-veri_result, num = newCBF.veri.proceed_verification()
-print(veri_result)
+# veri_result, num = newCBF.veri.proceed_verification()
+# print(veri_result)
 # newCBF.model.load_state_dict(testCBF.model.state_dict())
 for restart in range(3):
     newCBF.train(1000)

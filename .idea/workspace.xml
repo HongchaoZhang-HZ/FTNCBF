@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="converge to valid NBF">
+    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="flexible dim incorporated">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NCBF_Synth.py" beforeDir="false" afterPath="$PROJECT_DIR$/NCBF_Synth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/NCBF.py" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/NCBF.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ObsNCBF_Synth.py" beforeDir="false" afterPath="$PROJECT_DIR$/ObsNCBF_Synth.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Verifier/Verifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/Verifier/Verifier.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,7 +48,7 @@
       <recent name="$PROJECT_DIR$/Cases" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.NCBF_Synth">
+  <component name="RunManager" selected="Python.ObsNCBF_Synth">
     <configuration name="NCBF_Synth" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="FTNCBF" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -64,6 +63,28 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/NCBF_Synth.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="ObsNCBF_Synth" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="FTNCBF" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ObsNCBF_Synth.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -96,6 +117,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.ObsNCBF_Synth" />
         <item itemvalue="Python.NCBF_Synth" />
         <item itemvalue="Python.Verifier" />
       </list>
@@ -110,7 +132,7 @@
       <option name="presentableId" value="Default" />
       <updated>1688703650742</updated>
       <workItem from="1688703653264" duration="53000" />
-      <workItem from="1688703761133" duration="65470000" />
+      <workItem from="1688703761133" duration="71769000" />
     </task>
     <task id="LOCAL-00001" summary="CMAES omitted">
       <created>1688703920122</created>
@@ -175,7 +197,14 @@
       <option name="project" value="LOCAL" />
       <updated>1689037268314</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="flexible dim incorporated">
+      <created>1689039474432</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1689039474432</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -200,7 +229,8 @@
     <MESSAGE value="full verificaiton incorporated" />
     <MESSAGE value="trivial penalty included" />
     <MESSAGE value="converge to valid NBF" />
-    <option name="LAST_COMMIT_MESSAGE" value="converge to valid NBF" />
+    <MESSAGE value="flexible dim incorporated" />
+    <option name="LAST_COMMIT_MESSAGE" value="flexible dim incorporated" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -211,15 +241,16 @@
           <option name="timeStamp" value="11" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Verifier/Verifier.py</url>
-          <line>13</line>
-          <option name="timeStamp" value="19" />
+          <url>file://$PROJECT_DIR$/ObsNCBF_Synth.py</url>
+          <line>84</line>
+          <option name="timeStamp" value="24" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/FTNCBF$NCBF_Synth.coverage" NAME="NCBF_Synth Coverage Results" MODIFIED="1689039423293" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FTNCBF$ObsNCBF_Synth.coverage" NAME="ObsNCBF_Synth Coverage Results" MODIFIED="1689045310384" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$Verifier.coverage" NAME="Verifier Coverage Results" MODIFIED="1689039047527" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Verifier" />
   </component>
 </project>

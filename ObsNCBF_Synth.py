@@ -60,15 +60,16 @@ class NCBF_Synth(NCBF):
         optimizer = optim.SGD(self.model.parameters(), lr=1e-4)
         scheduler = ExponentialLR(optimizer, gamma=0.9)
         # Generate data
-        shape = [100, 100]
+        size = 100
+        shape = []
+        for _ in range(self.DIM):
+            shape.append(size)
         rlambda = 1
-        vx, vy, rdm_input = self.generate_input(shape)
-
-        ref_output = self.h_x(rdm_input.transpose(0, 1)).reshape([shape[0] * shape[1], 1])
+        rdm_input = self.generate_data(size)
+        # rdm_input = self.generate_input(shape)
+        # ref_output = torch.unsqueeze(self.h_x(rdm_input.transpose(0, self.DIM)), self.DIM)
+        ref_output = self.h_x(rdm_input.transpose(0, 1)).unsqueeze(1)
         batch_length = 16
-        transform = transforms.Compose(
-            [transforms.ToTensor(),
-             transforms.Normalize((1,), (1,))])
         training_loader = DataLoader(list(zip(rdm_input, ref_output)), batch_size=batch_length, shuffle=True)
         for epoch in range(num_epoch):
             running_loss = 0.0
