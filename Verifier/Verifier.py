@@ -12,14 +12,9 @@ class Verifier(ReLUNN_Decom):
         self.x0 = np.zeros([self.DIM, 1])
         self.num_neuron = self.NN.arch[0]
 
-
     def dbdxf(self, x, W_overl):
-        # Todo: incorporate Case
-        x1 = x[0]
-        x2 = x[1]
-        x1_dot = x2 + 2 * x1 * x2
-        x2_dot = -x1 + 2 * x1 ** 2 - x2 ** 2
-        dbdxf = W_overl[0] * x1_dot + W_overl[1] * x2_dot
+        fx = self.case.f_x(torch.Tensor(x).reshape([1, self.DIM])).numpy()
+        dbdxf = W_overl @ fx
         return dbdxf
 
     def y_dbdxf(self, xy, W_overl_inter):

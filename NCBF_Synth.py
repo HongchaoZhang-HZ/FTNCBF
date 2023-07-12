@@ -148,6 +148,7 @@ class NCBF_Synth(NCBF):
 
 Darboux = Darboux()
 newCBF = NCBF_Synth([10, 10], [True, True], Darboux, verbose=False)
+newCBF.veri.proceed_verification()
 for restart in range(3):
     newCBF.train(1000)
 
