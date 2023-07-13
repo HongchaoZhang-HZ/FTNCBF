@@ -22,16 +22,29 @@ class ReLUNN_Decom():
         self.num_act_layer = len(self.act_layer)
         self.verbose = verbose
 
+    # def gridify(self):
+    #     nx = torch.linspace(self.DOMAIN[0][0] + self.cell_length / 2,
+    #                         self.DOMAIN[0][1] - self.cell_length / 2, self.shape[0])
+    #     ny = torch.linspace(self.DOMAIN[1][0] + self.cell_length / 2,
+    #                         self.DOMAIN[1][1] - self.cell_length / 2, self.shape[1])
+    #     vx, vy = torch.meshgrid(nx, ny)
+    #     data = np.dstack([vx.reshape([self.shape[0], self.shape[1], 1]),
+    #                       vy.reshape([self.shape[0], self.shape[1], 1])])
+    #     data = torch.Tensor(data.reshape(self.shape[0] * self.shape[1], 2))
+    #     return data
+
     def gridify(self):
-        nx = torch.linspace(self.DOMAIN[0][0] + self.cell_length / 2,
-                            self.DOMAIN[0][1] - self.cell_length / 2, self.shape[0])
-        ny = torch.linspace(self.DOMAIN[1][0] + self.cell_length / 2,
-                            self.DOMAIN[1][1] - self.cell_length / 2, self.shape[1])
-        vx, vy = torch.meshgrid(nx, ny)
-        data = np.dstack([vx.reshape([self.shape[0], self.shape[1], 1]),
-                          vy.reshape([self.shape[0], self.shape[1], 1])])
-        data = torch.Tensor(data.reshape(self.shape[0] * self.shape[1], 2))
-        return data
+        data = tuple()
+        for i in range(self.DIM):
+            ndata = torch.linspace(self.DOMAIN[i][0] + self.cell_length / 2,
+                                   self.DOMAIN[i][1] - self.cell_length / 2, self.shape[0])
+            data = data + tuple([ndata])
+        grid_data = torch.meshgrid(data)
+        grid = []
+        for grid_axis in grid_data:
+            grid.append(grid_axis.reshape([int(torch.Tensor(self.shape).prod())]))
+        grid = torch.Tensor(np.stack(grid, axis=-1))
+        return grid
 
     def sect_search(self, data):
         sec_model = BoundedModule(self.model, data)
@@ -226,9 +239,9 @@ class ReLUNN_Decom():
         U_actset_list = []
         possible_intersections = []
         for item in range(len(sections)):
-            [out_w, out_a, activated] = self.output_forward_activation(sections[item].reshape([2]), l1z, l1a)
+            [out_w, out_a, activated] = self.output_forward_activation(sections[item].reshape([self.DIM]), l1z, l1a)
             act_array = activated.int().numpy()
-            [out_w, out_a, activated] = self.output_forward_activation(sections[item].reshape([2]), l2z, l2a)
+            [out_w, out_a, activated] = self.output_forward_activation(sections[item].reshape([self.DIM]), l2z, l2a)
             act_array = np.vstack([act_array, activated])
             act_str = np.array2string(act_array.reshape([len(act_array)]))
             U_actset_list.append(act_str)

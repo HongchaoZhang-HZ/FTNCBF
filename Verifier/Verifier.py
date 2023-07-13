@@ -153,7 +153,7 @@ class Verifier(ReLUNN_Decom):
             # compute boundary condition of polyhedron
             W_Bound = torch.Tensor(-B_act[0] + B_inact[0])
             r_Bound = torch.Tensor(-B_act[1] - B_inact[1])
-            res_zero = linprog(c=[1, 1],
+            res_zero = linprog(c=np.ones(self.DIM),
                                A_ub=W_Bound, b_ub=-r_Bound,
                                A_eq=W_overl, b_eq=-r_overl, bounds=tuple(self.DOMAIN),
                                method='highs')
@@ -173,7 +173,7 @@ class Verifier(ReLUNN_Decom):
         if self.verbose:
             print('-------------- Verification Start --------------')
         t_start = time.time()
-        act_sets_list, activated_sets,  possible_intersections = self.preceed_decompose()
+        act_sets_list, activated_sets, possible_intersections = self.preceed_decompose()
         self.act_sets_list = act_sets_list
         self.activated_sets = activated_sets
         self.possible_intersections = possible_intersections
