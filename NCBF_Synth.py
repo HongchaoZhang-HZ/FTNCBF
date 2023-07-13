@@ -6,7 +6,7 @@ from torch.optim.lr_scheduler import ExponentialLR
 from torch.utils.tensorboard import SummaryWriter
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
-from Cases.Darboux import Darboux
+from Cases.ObsAvoid import ObsAvoid
 # import cma
 from cmaes import CMA
 from Verifier import Verifier
@@ -19,7 +19,7 @@ class NCBF_Synth(NCBF):
         DOMAIN = self.case.DOMAIN
         super().__init__(arch, act_layer, DOMAIN)
         self.critic = NeuralCritic(case)
-        self.veri = Verifier(NCBF=self, case=case, grid_shape=[100, 100], verbose=verbose)
+        self.veri = Verifier(NCBF=self, case=case, grid_shape=[100, 100, 100], verbose=verbose)
 
     def numerical_gradient(self, X_batch, model_output, batch_length, epsilon=0.001):
         grad = []
@@ -97,17 +97,11 @@ class NCBF_Synth(NCBF):
                 warm_start_loss = self.warm_start(y_batch, model_output)
                 correctness_loss = self.safe_correctness(y_batch, model_output, l_co=1, alpha1=1, alpha2=0)
                 trivial_loss = self.trivial_panelty(ref_output, self.model.forward(rdm_input), 1)
-                # x[1] + 2 * x[0] * x[1], -x[0] + 2 * x[0] ** 2 - x[1] ** 2
-                # dx0data = X_batch + torch.Tensor([0.001, 0])
-                # dx1data = X_batch + torch.Tensor([0, 0.001])
-                # dbdx0 = ((self.forward(dx0data) - model_output)/0.001).reshape([batch_length])
-                # dbdx1 = ((self.forward(dx1data) - model_output)/0.001).reshape([batch_length])
+
                 grad = self.numerical_gradient(X_batch, model_output, batch_length, epsilon=0.001)
                 grad_vector = torch.vstack(grad)
                 feasibility_output = (grad_vector.transpose(0, 1).unsqueeze(1) \
                                      @ self.case.f_x(X_batch).transpose(0, 1).unsqueeze(2)).squeeze()
-                # feasibility_output = grad[0] * (X_batch[:,0] + 2*X_batch[:,0]*X_batch[:,1]) \
-                #                      + grad[1] * (-X_batch[:,0] + 2*X_batch[:,0]**2 - X_batch[:,1]**2)
                 check_item = torch.max((-torch.abs(model_output)+0.1).reshape([1, batch_length]), torch.zeros([1, batch_length]))
                 # feasibility_loss = torch.sum(torch.tanh(check_item*feasibility_output))
 
@@ -146,8 +140,8 @@ class NCBF_Synth(NCBF):
 # Define Case
 # x0, x1 = sp.symbols('x0, x1')
 
-Darboux = Darboux()
-newCBF = NCBF_Synth([10, 10], [True, True], Darboux, verbose=False)
+ObsAvoid = ObsAvoid()
+newCBF = NCBF_Synth([10, 10], [True, True], ObsAvoid, verbose=False)
 newCBF.veri.proceed_verification()
 for restart in range(3):
     newCBF.train(1000)
