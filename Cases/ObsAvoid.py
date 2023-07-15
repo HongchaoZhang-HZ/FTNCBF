@@ -23,9 +23,9 @@ class ObsAvoid(case):
 
     def g_x(self, x):
         # gx = [0, 0, 1]'
-        g_x0 = torch.Tensor([0])
-        g_x1 = torch.Tensor([0])
-        g_phi = torch.Tensor([1])
+        g_x0 = torch.zeros(len(x))
+        g_x1 = torch.zeros(len(x))
+        g_phi = torch.ones(len(x))
         gx = torch.vstack([g_x0, g_x1, g_phi])
         return gx
 

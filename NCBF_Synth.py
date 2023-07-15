@@ -32,13 +32,37 @@ class NCBF_Synth(NCBF):
 
         return grad
 
-    def feasibility_loss(self, model_output, grad_condition, l_co=1):
-        # when model_output is close to the boundary grad condition comes in
-        violations = grad_condition.reshape(torch.sigmoid(model_output).shape) * torch.sigmoid(model_output)
-        # loss = torch.sum(torch.sigmoid(-violations).reshape([1, 10000]))
-        violations = torch.max((-violations).reshape([1, 10000]), torch.zeros([1, 10000]))
-        loss = l_co * torch.sum(violations)
-        return loss
+    def feasible_con(self, u, dbdxfx, dbdxgx):
+        return np.min(dbdxfx + dbdxgx * u)
+
+    def feasible_u(self, dbdxfx, dbdxgx, min_flag=False):
+        if min_flag:
+            df = dbdxfx.detach().numpy()
+            dg = dbdxgx.detach().numpy()
+            res_list = []
+            for i in range(len(df)):
+                res = minimize(self.feasible_con, x0=np.zeros(1), args=(df[i], dg[i]))
+                # pos_res = np.max([res.fun, np.zeros(len([res.fun]))])
+                res_list.append(res.x)
+            return torch.Tensor(res_list).squeeze()
+        else:
+            [u_lb, u_ub] = torch.Tensor(self.case.CTRLDOM)
+            res_list = []
+            for i in range(len(dbdxfx)):
+                res_ulb = dbdxfx[i] + dbdxgx[i] * u_lb
+                res_uub = dbdxfx[i] + dbdxgx[i] * u_ub
+                res = torch.max(res_ulb, res_uub)
+                res_list.append(res)
+            return torch.Tensor(res_list).squeeze()
+
+    def feasibility_loss(self, grad_vector, X_batch):
+        dbdxfx = (grad_vector.transpose(0, 1).unsqueeze(1)
+                  @ self.case.f_x(X_batch).transpose(0, 1).unsqueeze(2)).squeeze()
+        dbdxgx = (grad_vector.transpose(0, 1).unsqueeze(1)
+                  @ self.case.g_x(X_batch).transpose(0, 1).unsqueeze(2)).squeeze()
+        u = self.feasible_u(dbdxfx, dbdxgx)
+        feasibility_output = dbdxfx + dbdxgx * u
+        return feasibility_output
 
     def safe_correctness(self, ref_output, model_output, l_co=1, alpha1=1, alpha2=0.001):
         norm_model_output = torch.tanh(model_output)
@@ -82,7 +106,7 @@ class NCBF_Synth(NCBF):
         # rdm_input = self.generate_input(shape)
         # ref_output = torch.unsqueeze(self.h_x(rdm_input.transpose(0, self.DIM)), self.DIM)
         ref_output = self.h_x(rdm_input.transpose(0, 1)).unsqueeze(1)
-        batch_length = 4**self.DIM
+        batch_length = 2**self.DIM
         training_loader = DataLoader(list(zip(rdm_input, ref_output)), batch_size=batch_length, shuffle=True)
 
         for epoch in range(num_epoch):
@@ -101,11 +125,11 @@ class NCBF_Synth(NCBF):
 
                 grad = self.numerical_gradient(X_batch, model_output, batch_length, epsilon=0.001)
                 grad_vector = torch.vstack(grad)
-                dbdxfx = (grad_vector.transpose(0, 1).unsqueeze(1)
-                          @ self.case.f_x(X_batch).transpose(0, 1).unsqueeze(2)).squeeze()
-                dbdxgx = (grad_vector.transpose(0, 1).unsqueeze(1)
-                          @ self.case.f_x(X_batch).transpose(0, 1).unsqueeze(2)).squeeze()
-                feasibility_output = dbdxfx + dbdxgx
+                # dbdxfx = (grad_vector.transpose(0, 1).unsqueeze(1)
+                #           @ self.case.f_x(X_batch).transpose(0, 1).unsqueeze(2)).squeeze()
+                # dbdxgx = (grad_vector.transpose(0, 1).unsqueeze(1)
+                #           @ self.case.g_x(X_batch).transpose(0, 1).unsqueeze(2)).squeeze()
+                feasibility_output = self.feasibility_loss(grad_vector, X_batch)
                 check_item = torch.max((-torch.abs(model_output)+0.1).reshape([1, batch_length]), torch.zeros([1, batch_length]))
                 # feasibility_loss = torch.sum(torch.tanh(check_item*feasibility_output))
 
