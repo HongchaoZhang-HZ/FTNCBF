@@ -19,7 +19,7 @@ class NCBF_Synth(NCBF):
         DOMAIN = self.case.DOMAIN
         super().__init__(arch, act_layer, DOMAIN)
         self.critic = NeuralCritic(case)
-        self.veri = Verifier(NCBF=self, case=case, grid_shape=[100, 100, 100], verbose=verbose)
+        self.veri = Verifier(NCBF=self, case=case, grid_shape=[20, 20, 20], verbose=verbose)
 
     def numerical_gradient(self, X_batch, model_output, batch_length, epsilon=0.001):
         grad = []
@@ -70,7 +70,7 @@ class NCBF_Synth(NCBF):
         return loss
 
     def train(self, num_epoch):
-        optimizer = optim.SGD(self.model.parameters(), lr=1e-4)
+        optimizer = optim.SGD(self.model.parameters(), lr=1e-3)
         scheduler = ExponentialLR(optimizer, gamma=0.9)
         # Generate data
         size = 100
@@ -82,8 +82,9 @@ class NCBF_Synth(NCBF):
         # rdm_input = self.generate_input(shape)
         # ref_output = torch.unsqueeze(self.h_x(rdm_input.transpose(0, self.DIM)), self.DIM)
         ref_output = self.h_x(rdm_input.transpose(0, 1)).unsqueeze(1)
-        batch_length = 16
+        batch_length = 4**self.DIM
         training_loader = DataLoader(list(zip(rdm_input, ref_output)), batch_size=batch_length, shuffle=True)
+
         for epoch in range(num_epoch):
             running_loss = 0.0
             feasibility_running_loss = 0.0
@@ -100,8 +101,11 @@ class NCBF_Synth(NCBF):
 
                 grad = self.numerical_gradient(X_batch, model_output, batch_length, epsilon=0.001)
                 grad_vector = torch.vstack(grad)
-                feasibility_output = (grad_vector.transpose(0, 1).unsqueeze(1) \
-                                     @ self.case.f_x(X_batch).transpose(0, 1).unsqueeze(2)).squeeze()
+                dbdxfx = (grad_vector.transpose(0, 1).unsqueeze(1)
+                          @ self.case.f_x(X_batch).transpose(0, 1).unsqueeze(2)).squeeze()
+                dbdxgx = (grad_vector.transpose(0, 1).unsqueeze(1)
+                          @ self.case.f_x(X_batch).transpose(0, 1).unsqueeze(2)).squeeze()
+                feasibility_output = dbdxfx + dbdxgx
                 check_item = torch.max((-torch.abs(model_output)+0.1).reshape([1, batch_length]), torch.zeros([1, batch_length]))
                 # feasibility_loss = torch.sum(torch.tanh(check_item*feasibility_output))
 
@@ -122,12 +126,12 @@ class NCBF_Synth(NCBF):
                 trivial_running_loss += trivial_loss.item()
                 # if epoch % 50 == 49:
                 #     print('[%d] loss: %.3f' % (epoch + 1, running_loss / 2000))
-            if epoch % 25 == 24:
+            # if epoch % 25 == 24:
                 print('[%d] loss: %.3f' % (epoch + 1, running_loss))
                 print('[%d] Floss: %.3f' % (epoch + 1, feasibility_running_loss))
                 print('[%d] Closs: %.3f' % (epoch + 1, correctness_running_loss))
                 print('[%d] Tloss: %.3f' % (epoch + 1, trivial_running_loss))
-                running_loss = 0.0
+
             if epoch % 100 == 99:
                 visualize(self.model)
                 scheduler.step()
@@ -141,8 +145,8 @@ class NCBF_Synth(NCBF):
 # x0, x1 = sp.symbols('x0, x1')
 
 ObsAvoid = ObsAvoid()
-newCBF = NCBF_Synth([10, 10], [True, True], ObsAvoid, verbose=False)
-newCBF.veri.proceed_verification()
+newCBF = NCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=False)
+# newCBF.veri.proceed_verification()
 for restart in range(3):
     newCBF.train(1000)
 

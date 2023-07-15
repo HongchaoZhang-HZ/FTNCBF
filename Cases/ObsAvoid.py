@@ -23,12 +23,12 @@ class ObsAvoid(case):
 
     def g_x(self, x):
         # gx = [0, 0, 1]'
-        g_x0 = 0
-        g_x1 = 0
-        g_phi = 1
+        g_x0 = torch.Tensor([0])
+        g_x1 = torch.Tensor([0])
+        g_phi = torch.Tensor([1])
         gx = torch.vstack([g_x0, g_x1, g_phi])
         return gx
 
     def h_x(self, x):
-        hx = (x[:, 0] + x[:, 1] ** 2)
+        hx = -(x[:, 0]**2 + x[:, 1] ** 2) + 0.04
         return hx
