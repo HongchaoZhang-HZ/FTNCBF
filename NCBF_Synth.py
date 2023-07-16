@@ -163,6 +163,6 @@ ObsAvoid = ObsAvoid()
 newCBF = NCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=False)
 # newCBF.veri.proceed_verification()
 for restart in range(3):
-    newCBF.train(1000)
+    newCBF.train(5)
 
 visualize(newCBF)
