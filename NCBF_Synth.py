@@ -1,5 +1,6 @@
 import torch
-
+from tqdm import tqdm
+# from progress.bar import Bar
 from Modules.NCBF import *
 from torch import optim
 from torch.optim.lr_scheduler import ExponentialLR
@@ -108,14 +109,16 @@ class NCBF_Synth(NCBF):
         ref_output = self.h_x(rdm_input.transpose(0, 1)).unsqueeze(1)
         batch_length = 2**self.DIM
         training_loader = DataLoader(list(zip(rdm_input, ref_output)), batch_size=batch_length, shuffle=True)
-
+        pbar = tqdm(total=len(training_loader))
+        veri_result = False
         for epoch in range(num_epoch):
+            # Initialize loss
             running_loss = 0.0
             feasibility_running_loss = 0.0
             correctness_running_loss = 0.0
             trivial_running_loss = 0.0
+            # Batch Training
             for X_batch, y_batch in training_loader:
-
                 optimizer.zero_grad()
                 model_output = self.forward(X_batch)
 
@@ -125,10 +128,6 @@ class NCBF_Synth(NCBF):
 
                 grad = self.numerical_gradient(X_batch, model_output, batch_length, epsilon=0.001)
                 grad_vector = torch.vstack(grad)
-                # dbdxfx = (grad_vector.transpose(0, 1).unsqueeze(1)
-                #           @ self.case.f_x(X_batch).transpose(0, 1).unsqueeze(2)).squeeze()
-                # dbdxgx = (grad_vector.transpose(0, 1).unsqueeze(1)
-                #           @ self.case.g_x(X_batch).transpose(0, 1).unsqueeze(2)).squeeze()
                 feasibility_output = self.feasibility_loss(grad_vector, X_batch)
                 check_item = torch.max((-torch.abs(model_output)+0.1).reshape([1, batch_length]), torch.zeros([1, batch_length]))
                 # feasibility_loss = torch.sum(torch.tanh(check_item*feasibility_output))
@@ -140,33 +139,25 @@ class NCBF_Synth(NCBF):
                                                                  torch.zeros([1, batch_length]))
                 feasibility_loss = 100 * torch.sum(torch.max(violations - 1e-4, torch.zeros([1, batch_length])))
                 loss = self.def_loss(1*correctness_loss + 1*feasibility_loss + 1*trivial_loss)
-
                 loss.backward()
                 optimizer.step()
 
+                # Print Detailed Loss
                 running_loss += loss.item()
                 feasibility_running_loss += feasibility_loss.item()
                 correctness_running_loss += correctness_loss.item()
                 trivial_running_loss += trivial_loss.item()
-                # if epoch % 50 == 49:
-                #     print('[%d] loss: %.3f' % (epoch + 1, running_loss / 2000))
-            # if epoch % 25 == 24:
-                print('[%d] loss: %.3f' % (epoch + 1, running_loss))
-                print('[%d] Floss: %.3f' % (epoch + 1, feasibility_running_loss))
-                print('[%d] Closs: %.3f' % (epoch + 1, correctness_running_loss))
-                print('[%d] Tloss: %.3f' % (epoch + 1, trivial_running_loss))
+                # Process Bar Print Losses
+                pbar.set_postfix({'Loss': running_loss,
+                                  'Floss': feasibility_running_loss,
+                                  'Closs': correctness_running_loss,
+                                  'Tloss': trivial_running_loss,
+                                  'PVeri': str(veri_result)})
+                pbar.update(1)
 
-            # if epoch % 25 == 24:
-                # visualize(self.model)
             scheduler.step()
-            # if epoch % 50 == 49:
             veri_result, num = self.veri.proceed_verification()
-            print(veri_result)
-
-
-
-# Define Case
-# x0, x1 = sp.symbols('x0, x1')
+            pbar.reset()
 
 ObsAvoid = ObsAvoid()
 newCBF = NCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=False)
