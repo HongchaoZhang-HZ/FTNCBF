@@ -1,5 +1,5 @@
 import torch
-
+from tqdm import tqdm
 from Modules.NCBF import *
 from torch import optim
 from torch.optim.lr_scheduler import ExponentialLR
@@ -84,11 +84,14 @@ class NCBF_Synth(NCBF):
         ref_output = self.h_x(rdm_input.transpose(0, 1)).unsqueeze(1)
         batch_length = 16
         training_loader = DataLoader(list(zip(rdm_input, ref_output)), batch_size=batch_length, shuffle=True)
+        pbar = tqdm(total=num_epoch)
+        veri_result = False
         for epoch in range(num_epoch):
             running_loss = 0.0
             feasibility_running_loss = 0.0
             correctness_running_loss = 0.0
             trivial_running_loss = 0.0
+
             for X_batch, y_batch in training_loader:
 
                 optimizer.zero_grad()
@@ -128,18 +131,25 @@ class NCBF_Synth(NCBF):
                 trivial_running_loss += trivial_loss.item()
                 # if epoch % 50 == 49:
                 #     print('[%d] loss: %.3f' % (epoch + 1, running_loss / 2000))
-            if epoch % 25 == 24:
-                print('[%d] loss: %.3f' % (epoch + 1, running_loss))
-                print('[%d] Floss: %.3f' % (epoch + 1, feasibility_running_loss))
-                print('[%d] Closs: %.3f' % (epoch + 1, correctness_running_loss))
-                print('[%d] Tloss: %.3f' % (epoch + 1, trivial_running_loss))
-                running_loss = 0.0
-            if epoch % 100 == 99:
-                visualize(self.model)
+                # Print Detailed Loss
+            running_loss += loss.item()
+            feasibility_running_loss += feasibility_loss.item()
+            correctness_running_loss += correctness_loss.item()
+            trivial_running_loss += trivial_loss.item()
+            # Process Bar Print Losses
+            pbar.set_postfix({'Loss': running_loss,
+                              'Floss': feasibility_running_loss,
+                              'Closs': correctness_running_loss,
+                              'Tloss': trivial_running_loss,
+                              'PVeri': str(veri_result)})
+            pbar.update(1)
+
+            if epoch % 50 == 49:
                 scheduler.step()
-            if epoch % 200 == 199:
+            if epoch % 100 == 99:
                 veri_result, num = self.veri.proceed_verification()
-                print(veri_result)
+                visualize(self.model)
+                # print(veri_result)
 
 
 
