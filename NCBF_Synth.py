@@ -107,7 +107,7 @@ class NCBF_Synth(NCBF):
         # rdm_input = self.generate_input(shape)
         # ref_output = torch.unsqueeze(self.h_x(rdm_input.transpose(0, self.DIM)), self.DIM)
         ref_output = self.h_x(rdm_input.transpose(0, 1)).unsqueeze(1)
-        batch_length = 2**self.DIM
+        batch_length = 4**self.DIM
         training_loader = DataLoader(list(zip(rdm_input, ref_output)), batch_size=batch_length, shuffle=True)
         pbar = tqdm(total=len(training_loader))
         veri_result = False
