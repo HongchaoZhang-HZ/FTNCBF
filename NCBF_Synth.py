@@ -19,7 +19,7 @@ class NCBF_Synth(NCBF):
         DOMAIN = self.case.DOMAIN
         super().__init__(arch, act_layer, DOMAIN)
         self.critic = NeuralCritic(case)
-        self.veri = Verifier(NCBF=self, case=case, grid_shape=[20, 20, 20], verbose=verbose)
+        self.veri = Verifier(NCBF=self, case=case, grid_shape=[100, 100, 100], verbose=verbose)
 
     def numerical_gradient(self, X_batch, model_output, batch_length, epsilon=0.001):
         grad = []
@@ -97,7 +97,7 @@ class NCBF_Synth(NCBF):
         optimizer = optim.SGD(self.model.parameters(), lr=1e-3)
         scheduler = ExponentialLR(optimizer, gamma=0.9)
         # Generate data
-        size = 100
+        size = 40
         shape = []
         for _ in range(self.DIM):
             shape.append(size)
@@ -156,12 +156,12 @@ class NCBF_Synth(NCBF):
                 print('[%d] Closs: %.3f' % (epoch + 1, correctness_running_loss))
                 print('[%d] Tloss: %.3f' % (epoch + 1, trivial_running_loss))
 
-            if epoch % 100 == 99:
-                visualize(self.model)
-                scheduler.step()
-            if epoch % 200 == 199:
-                veri_result, num = self.veri.proceed_verification()
-                print(veri_result)
+            # if epoch % 25 == 24:
+                # visualize(self.model)
+            scheduler.step()
+            # if epoch % 50 == 49:
+            veri_result, num = self.veri.proceed_verification()
+            print(veri_result)
 
 
 
