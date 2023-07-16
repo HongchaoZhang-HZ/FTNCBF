@@ -29,16 +29,37 @@ class NCBF_Synth(NCBF):
             gradData = X_batch + gradStep
             dbdxi = ((self.forward(gradData) - model_output) / epsilon).reshape([batch_length])
             grad.append(dbdxi)
-
         return grad
 
-    def feasibility_loss(self, model_output, grad_condition, l_co=1):
-        # when model_output is close to the boundary grad condition comes in
-        violations = grad_condition.reshape(torch.sigmoid(model_output).shape) * torch.sigmoid(model_output)
-        # loss = torch.sum(torch.sigmoid(-violations).reshape([1, 10000]))
-        violations = torch.max((-violations).reshape([1, 10000]), torch.zeros([1, 10000]))
-        loss = l_co * torch.sum(violations)
-        return loss
+    def numerical_b_gamma(self, grad, gamma):
+        # todo: debug
+        return np.max(np.abs(grad)) * gamma
+
+    def EKF(self):
+        # todo: extended kalman filter gain for different sensor failure
+        K = torch.ones([self.DIM, self.DIM])
+        return K
+
+    def feasibility_loss(self, grad_vector, X_batch, model_output, batch_length, gamma=0.1):
+        # todo: debug
+        # todo: tuning
+        rlambda = 1
+        c = 1
+        feasibility_output = (grad_vector.transpose(0, 1).unsqueeze(1) \
+                              @ self.case.f_x(X_batch).transpose(0, 1).unsqueeze(2)).squeeze()
+        check_item = torch.max((-torch.abs(model_output) + 0.1).reshape([1, batch_length]),
+                               torch.zeros([1, batch_length]))
+        stochastic_term = -gamma * torch.linalg.norm(grad_vector @ self.EKF() * c)
+
+        # Our loss function
+        # violations = -check_item * feasibility_output
+        # Chuchu Fan loss function
+        delta_gamma = self.numerical_b_gamma(grad_vector, gamma)
+        violations = -1 * feasibility_output - stochastic_term\
+                     - torch.max(rlambda * torch.abs((model_output-delta_gamma).transpose(0, 1)),
+                                 torch.zeros([1, batch_length]))
+        feasibility_loss = 100 * torch.sum(torch.max(violations - 1e-4, torch.zeros([1, batch_length])))
+        return feasibility_loss
 
     def safe_correctness(self, ref_output, model_output, l_co=1, alpha1=1, alpha2=0.001):
         norm_model_output = torch.tanh(model_output)
@@ -77,7 +98,7 @@ class NCBF_Synth(NCBF):
         shape = []
         for _ in range(self.DIM):
             shape.append(size)
-        rlambda = 1
+
         rdm_input = self.generate_data(size)
         # rdm_input = self.generate_input(shape)
         # ref_output = torch.unsqueeze(self.h_x(rdm_input.transpose(0, self.DIM)), self.DIM)
@@ -100,26 +121,9 @@ class NCBF_Synth(NCBF):
                 warm_start_loss = self.warm_start(y_batch, model_output)
                 correctness_loss = self.safe_correctness(y_batch, model_output, l_co=1, alpha1=1, alpha2=0)
                 trivial_loss = self.trivial_panelty(ref_output, self.model.forward(rdm_input), 1)
-                # x[1] + 2 * x[0] * x[1], -x[0] + 2 * x[0] ** 2 - x[1] ** 2
-                # dx0data = X_batch + torch.Tensor([0.001, 0])
-                # dx1data = X_batch + torch.Tensor([0, 0.001])
-                # dbdx0 = ((self.forward(dx0data) - model_output)/0.001).reshape([batch_length])
-                # dbdx1 = ((self.forward(dx1data) - model_output)/0.001).reshape([batch_length])
                 grad = self.numerical_gradient(X_batch, model_output, batch_length, epsilon=0.001)
                 grad_vector = torch.vstack(grad)
-                feasibility_output = (grad_vector.transpose(0, 1).unsqueeze(1) \
-                                     @ self.case.f_x(X_batch).transpose(0, 1).unsqueeze(2)).squeeze()
-                # feasibility_output = grad[0] * (X_batch[:,0] + 2*X_batch[:,0]*X_batch[:,1]) \
-                #                      + grad[1] * (-X_batch[:,0] + 2*X_batch[:,0]**2 - X_batch[:,1]**2)
-                check_item = torch.max((-torch.abs(model_output)+0.1).reshape([1, batch_length]), torch.zeros([1, batch_length]))
-                # feasibility_loss = torch.sum(torch.tanh(check_item*feasibility_output))
-
-                # Our loss function
-                # violations = -check_item * feasibility_output
-                # Chuchu Fan loss function
-                violations = -1 * feasibility_output - torch.max(rlambda * torch.abs(model_output.transpose(0, 1)),
-                                                                 torch.zeros([1, batch_length]))
-                feasibility_loss = 100 * torch.sum(torch.max(violations - 1e-4, torch.zeros([1, batch_length])))
+                feasibility_loss = self.feasibility_loss(grad_vector, X_batch, model_output, batch_length)
                 loss = self.def_loss(1*correctness_loss + 1*feasibility_loss + 1*trivial_loss)
 
                 loss.backward()
