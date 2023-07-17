@@ -102,5 +102,3 @@ newCBF = FT_NN_SCBF([32, 32], [True, True], ObsAvoid, verbose=False)
 # newCBF.veri.proceed_verification()
 for restart in range(3):
     newCBF.SCBF_train(5)
-
-visualize(newCBF)

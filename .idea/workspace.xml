@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="stochastic term incorporated">
-      <change afterPath="$PROJECT_DIR$/FT_NN_SCBF.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NCBF_Synth.py" beforeDir="false" afterPath="$PROJECT_DIR$/NCBF_Synth.py" afterDir="false" />
+    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="FT_NN_SCBF initial upload">
+      <change beforePath="$PROJECT_DIR$/FT_NN_SCBF.py" beforeDir="false" afterPath="$PROJECT_DIR$/FT_NN_SCBF.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -186,7 +184,7 @@
       <option name="presentableId" value="Default" />
       <updated>1688703650742</updated>
       <workItem from="1688703653264" duration="53000" />
-      <workItem from="1688703761133" duration="140836000" />
+      <workItem from="1688703761133" duration="141468000" />
     </task>
     <task id="LOCAL-00001" summary="CMAES omitted">
       <created>1688703920122</created>
@@ -356,7 +354,14 @@
       <option name="project" value="LOCAL" />
       <updated>1689540283316</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="FT_NN_SCBF initial upload">
+      <created>1689559123141</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1689559123141</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -393,7 +398,8 @@
     <MESSAGE value="Restart/Epoch Number changed" />
     <MESSAGE value="porocess bar incorporated" />
     <MESSAGE value="stochastic term incorporated" />
-    <option name="LAST_COMMIT_MESSAGE" value="stochastic term incorporated" />
+    <MESSAGE value="FT_NN_SCBF initial upload" />
+    <option name="LAST_COMMIT_MESSAGE" value="FT_NN_SCBF initial upload" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
