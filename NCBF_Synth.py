@@ -65,6 +65,11 @@ class NCBF_Synth(NCBF):
         feasibility_output = dbdxfx + dbdxgx * u
         return feasibility_output
 
+    def feasible_violations(self, model_output, feasibility_output, batch_length, rlambda):
+        violations = -1 * feasibility_output - \
+                     torch.max(rlambda * torch.abs(model_output.transpose(0, 1)), torch.zeros([1, batch_length]))
+        return violations
+
     def safe_correctness(self, ref_output, model_output, l_co=1, alpha1=1, alpha2=0.001):
         norm_model_output = torch.tanh(model_output)
         length = len(-ref_output + norm_model_output)
@@ -135,8 +140,9 @@ class NCBF_Synth(NCBF):
                 # Our loss function
                 # violations = -check_item * feasibility_output
                 # Chuchu Fan loss function
-                violations = -1 * feasibility_output - torch.max(rlambda * torch.abs(model_output.transpose(0, 1)),
-                                                                 torch.zeros([1, batch_length]))
+                violations = self.feasible_violations(model_output, feasibility_output, batch_length, rlambda)
+                # violations = -1 * feasibility_output - torch.max(rlambda * torch.abs(model_output.transpose(0, 1)),
+                #                                                  torch.zeros([1, batch_length]))
                 feasibility_loss = 100 * torch.sum(torch.max(violations - 1e-4, torch.zeros([1, batch_length])))
                 loss = self.def_loss(1*correctness_loss + 1*feasibility_loss + 1*trivial_loss)
                 loss.backward()
