@@ -162,8 +162,11 @@ class NCBF_Synth(NCBF):
                 pbar.update(1)
 
             scheduler.step()
-            veri_result, num = self.veri.proceed_verification()
+            if feasibility_running_loss <= 0.001:
+                veri_result, num = self.veri.proceed_verification()
             pbar.reset()
+            if veri_result:
+                torch.save(self.model.state_dict(), 'Trained_model/NCBF_Obs.pt')
 
 ObsAvoid = ObsAvoid()
 newCBF = NCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=False)

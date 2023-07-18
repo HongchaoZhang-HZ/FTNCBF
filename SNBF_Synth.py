@@ -2,6 +2,7 @@ import torch
 from tqdm import tqdm
 from Modules.NCBF import *
 from torch import optim
+from filterpy.kalman import ExtendedKalmanFilter
 from torch.optim.lr_scheduler import ExponentialLR
 from torch.utils.tensorboard import SummaryWriter
 import torchvision.transforms as transforms
@@ -45,7 +46,7 @@ class NCBF_Synth(NCBF):
         # todo: tuning
         rlambda = 1
         c = 1
-        feasibility_output = (grad_vector.transpose(0, 1).unsqueeze(1) \
+        feasibility_output = (grad_vector.transpose(0, 1).unsqueeze(1)
                               @ self.case.f_x(X_batch).transpose(0, 1).unsqueeze(2)).squeeze()
         check_item = torch.max((-torch.abs(model_output) + 0.1).reshape([1, batch_length]),
                                torch.zeros([1, batch_length]))

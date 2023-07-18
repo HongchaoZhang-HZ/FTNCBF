@@ -46,6 +46,7 @@ class FT_NN_SCBF(NCBF_Synth):
         for epoch in range(num_epoch):
             # Initialize loss
             running_loss = 0.0
+            c = 1
             feasibility_running_loss = 0.0
             correctness_running_loss = 0.0
             trivial_running_loss = 0.0
