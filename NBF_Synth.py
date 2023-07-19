@@ -151,5 +151,5 @@ newCBF = NCBF_Synth([10, 10], [True, True], Darboux, verbose=False)
 newCBF.veri.proceed_verification()
 for restart in range(3):
     newCBF.train(1000)
-
+# newCBF.model.load_state_dict(torch.load('darboux_2_10.pt'))
 visualize(newCBF)

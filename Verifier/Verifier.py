@@ -197,6 +197,8 @@ class Verifier(ReLUNN_Decom):
 
         # Verification
         veri_res_set = self.verification(actual_set_list)
+        if self.verbose:
+            print('veri_res_set', veri_res_set)
         veri_res_intersect = []
         for act_intersections in act_intersections_list:
             veri_res_intersect_item = self.inter_verification(act_intersections)
