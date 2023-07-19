@@ -22,6 +22,7 @@ class NCBF_Synth(NCBF):
         super().__init__(arch, act_layer, DOMAIN)
         self.critic = NeuralCritic(case)
         self.veri = Verifier(NCBF=self, case=case, grid_shape=[100, 100, 100], verbose=verbose)
+        self.writer = SummaryWriter('./runs/')
 
     def numerical_gradient(self, X_batch, model_output, batch_length, epsilon=0.001):
         grad = []
@@ -67,8 +68,7 @@ class NCBF_Synth(NCBF):
         return feasibility_output
 
     def feasible_violations(self, model_output, feasibility_output, batch_length, rlambda):
-        violations = -1 * feasibility_output - \
-                     torch.max(rlambda * torch.abs(model_output.transpose(0, 1)), torch.zeros([1, batch_length]))
+        violations = -1 * feasibility_output - rlambda * torch.abs(model_output.transpose(0, 1))
         return violations
 
     def safe_correctness(self, ref_output, model_output, l_co=1, alpha1=1, alpha2=0.001):
@@ -170,6 +170,11 @@ class NCBF_Synth(NCBF):
                 #     alpha2 = 0.01
                 # else:
                 #     alpha2 = 0
+                self.writer.add_scalar('Loss/Loss', running_loss, epoch)
+                self.writer.add_scalar('Loss/FLoss', feasibility_running_loss.item(), epoch)
+                self.writer.add_scalar('Loss/CLoss', correctness_running_loss.item(), epoch)
+                self.writer.add_scalar('Loss/TLoss', trivial_running_loss.item(), epoch)
+
             # Process Bar Print Losses
             pbar.set_postfix({'Loss': running_loss,
                               'Floss': feasibility_running_loss.item(),
@@ -183,7 +188,8 @@ class NCBF_Synth(NCBF):
 
             if veri_result:
                 torch.save(self.model.state_dict(), f'Trained_model/NCBF_Obs{epoch}.pt'.format(epoch))
-        pbar.reset()
+
+        pbar.clear()
         torch.save(self.model.state_dict(), f'Trained_model/NCBF_Obs.pt')
 
 ObsAvoid = ObsAvoid()
