@@ -85,7 +85,7 @@ class NCBF_Synth(NCBF):
         loss = l_co * torch.sum(alpha1*FalsePositive_loss + alpha2*FalseNegative_loss)
         return loss
 
-    def trivial_panelty(self, ref_output, model_output, coeff=1, epsilon=0.1):
+    def trivial_panelty(self, ref_output, model_output, coeff=1, epsilon=0.001):
         min_ref = torch.max(ref_output)
         max_ref = torch.min(ref_output)
         # if max_ref >= 1e-4 and min_ref <= -1e-4:
