@@ -8,7 +8,7 @@ from torch.utils.tensorboard import SummaryWriter
 import torchvision
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
-from Cases.ObsAvoid import ObsAvoid
+from Cases.Darboux import Darboux
 # import cma
 from cmaes import CMA
 from Verifier import Verifier
@@ -22,9 +22,9 @@ class NCBF_Synth(NCBF):
         DOMAIN = self.case.DOMAIN
         super().__init__(arch, act_layer, DOMAIN)
         self.critic = NeuralCritic(case)
-        self.veri = Verifier(NCBF=self, case=case, grid_shape=[100, 100, 100], verbose=verbose)
+        self.veri = Verifier(NCBF=self, case=case, grid_shape=[100, 100], verbose=verbose)
         lctime = time.ctime(time.time())
-        self.writer = SummaryWriter(f'./runs/NCBF/{lctime}'.format(lctime))
+        self.writer = SummaryWriter(f'./runs/NBF/{lctime}'.format(lctime))
         self.run = 0
 
     def numerical_gradient(self, X_batch, model_output, batch_length, epsilon=0.001):
@@ -85,7 +85,7 @@ class NCBF_Synth(NCBF):
         loss = l_co * torch.sum(alpha1*FalsePositive_loss + alpha2*FalseNegative_loss)
         return loss
 
-    def trivial_panelty(self, ref_output, model_output, coeff=1, epsilon=0.1):
+    def trivial_panelty(self, ref_output, model_output, coeff=1, epsilon=0.001):
         min_ref = torch.max(ref_output)
         max_ref = torch.min(ref_output)
         # if max_ref >= 1e-4 and min_ref <= -1e-4:
@@ -111,10 +111,10 @@ class NCBF_Synth(NCBF):
 
 
     def train(self, num_epoch, warm_start=False):
-        optimizer = optim.Adam(self.model.parameters(), lr=1e-2)
+        optimizer = optim.Adam(self.model.parameters(), lr=1e-4)
         scheduler = ExponentialLR(optimizer, gamma=0.9)
         # Generate data
-        size = 40
+        size = 16
         shape = []
         for _ in range(self.DIM):
             shape.append(size)
@@ -139,7 +139,7 @@ class NCBF_Synth(NCBF):
                 model_output = self.forward(X_batch)
 
                 warm_start_loss = self.warm_start(y_batch, model_output)
-                correctness_loss = self.safe_correctness(y_batch, model_output, l_co=1, alpha1=100, alpha2=0.1)
+                correctness_loss = self.safe_correctness(y_batch, model_output, l_co=1, alpha1=100, alpha2=0.0)
                 # trivial_loss = self.trivial_panelty(ref_output, self.model.forward(rdm_input), 1)
                 trivial_loss = self.trivial_panelty(y_batch, model_output, 1)
 
@@ -200,21 +200,24 @@ class NCBF_Synth(NCBF):
                               'Vol': volume.item()})
             pbar.update(1)
             scheduler.step()
-            # if feasibility_running_loss <= 0.0001 and not warm_start:
-            #     veri_result, num = self.veri.proceed_verification()
+            if feasibility_running_loss <= 0.0001 and volume >= 0.15:
+                veri_result, num = self.veri.proceed_verification()
 
             if veri_result:
-                torch.save(self.model.state_dict(), f'Trained_model/NCBF/NCBF_Obs{epoch}.pt'.format(epoch))
+                torch.save(self.model.state_dict(), f'Trained_model/NBF/NBF_Darboux{epoch}.pt'.format(epoch))
 
         pbar.clear()
-        torch.save(self.model.state_dict(), 'Trained_model/NCBF/NCBF_Obs.pt')
+        torch.save(self.model.state_dict(), f'Trained_model/NBF/NBF_Darboux.pt')
 
-ObsAvoid = ObsAvoid()
-newCBF = NCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)
-newCBF.train(50, warm_start=True)
-newCBF.run += 1
+Darboux = Darboux()
+newCBF = NCBF_Synth([32, 32], [True, True], Darboux, verbose=True)
+# newCBF.train(50, warm_start=True)
+# newCBF.run += 1
 for restart in range(16):
-    newCBF.train(100, warm_start=False)
+    newCBF.train(1000, warm_start=False)
     newCBF.run += 1
-# newCBF.model.load_state_dict(torch.load('Trained_model/obs_2_32.pt'))
-# veri_result, num = newCBF.veri.proceed_verification()
+    visualize(newCBF)
+# newCBF.model.load_state_dict(torch.load('Trained_model/NBF/NBF_Darboux_lessCon6.pt'))
+
+veri_result, num = newCBF.veri.proceed_verification()
+visualize(newCBF)

@@ -5,7 +5,7 @@ from Cases.Case import *
 class Darboux(case):
     def __init__(self):
         DOMAIN = [[-2, 2], [-2, 2]]
-        CTRLDOM = []
+        CTRLDOM = [-2, 2]
         discrete = False
         super().__init__(DOMAIN, CTRLDOM, discrete=discrete)
 
@@ -16,7 +16,7 @@ class Darboux(case):
         return x_dot
 
     def g_x(self, x):
-        gx = x @ torch.zeros([self.DIM])
+        gx = torch.zeros([self.DIM, 1])
         return gx
 
     def h_x(self, x):
