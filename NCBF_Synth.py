@@ -14,6 +14,7 @@ from cmaes import CMA
 from Verifier import Verifier
 from collections import OrderedDict
 from Critic_Synth.NCritic import *
+import time
 
 class NCBF_Synth(NCBF):
     def __init__(self,arch, act_layer, case, verbose=False):
@@ -22,7 +23,9 @@ class NCBF_Synth(NCBF):
         super().__init__(arch, act_layer, DOMAIN)
         self.critic = NeuralCritic(case)
         self.veri = Verifier(NCBF=self, case=case, grid_shape=[100, 100, 100], verbose=verbose)
-        self.writer = SummaryWriter('./runs/')
+        lctime = time.ctime(time.time())
+        self.writer = SummaryWriter(f'./runs/{lctime}'.format(lctime))
+        self.run = 0
 
     def numerical_gradient(self, X_batch, model_output, batch_length, epsilon=0.001):
         grad = []
@@ -100,15 +103,22 @@ class NCBF_Synth(NCBF):
         loss = non_pos_loss + non_neg_loss
         return loss
 
-    def train(self, num_epoch):
-        optimizer = optim.SGD(self.model.parameters(), lr=1e-3)
-        scheduler = ExponentialLR(optimizer, gamma=0.9)
+    def compute_volume(self, rdm_input):
+        # compute the positive volume contained by the NCBF
+        model_output = self.forward(rdm_input).squeeze()
+        pos_output = torch.max(model_output, torch.zeros(len(rdm_input)))
+        return torch.sum(pos_output > 0)/len(rdm_input)
+
+
+    def train(self, num_epoch, warm_start=False):
+        optimizer = optim.SGD(self.model.parameters(), lr=1e-4)
+        scheduler = ExponentialLR(optimizer, gamma=0.99)
         # Generate data
         size = 40
         shape = []
         for _ in range(self.DIM):
             shape.append(size)
-        rlambda = 1
+        rlambda = 0
         rdm_input = self.generate_data(size)
         # rdm_input = self.generate_input(shape)
         # ref_output = torch.unsqueeze(self.h_x(rdm_input.transpose(0, self.DIM)), self.DIM)
@@ -117,7 +127,7 @@ class NCBF_Synth(NCBF):
         training_loader = DataLoader(list(zip(rdm_input, ref_output)), batch_size=batch_length, shuffle=True)
         pbar = tqdm(total=num_epoch)
         veri_result = False
-        alpha2 = 0.001
+        alpha2 = 0.0
         for epoch in range(num_epoch):
             # Initialize loss
             running_loss = 0.0
@@ -143,7 +153,7 @@ class NCBF_Synth(NCBF):
                 # Our loss function
                 # violations = -check_item * self.feasible_violations(model_output, feasibility_output, batch_length, rlambda)
                 # Chuchu Fan loss function
-                violations = self.feasible_violations(model_output, feasibility_output, batch_length, rlambda)
+                violations = check_item * self.feasible_violations(model_output, feasibility_output, batch_length, rlambda)
                 # violations = -1 * feasibility_output - torch.max(rlambda * torch.abs(model_output.transpose(0, 1)),
                 #                                                  torch.zeros([1, batch_length]))
                 feasibility_loss = torch.sum(torch.max(violations - 1e-4, torch.zeros([1, batch_length])))
@@ -151,12 +161,15 @@ class NCBF_Synth(NCBF):
                 # loss = self.def_loss(1 * correctness_loss + 1 * feasibility_loss + 1 * trivial_loss)
                 floss = mseloss(torch.max(violations - 1e-4, torch.zeros([1, batch_length])), torch.zeros(batch_length))
                 tloss = mseloss(trivial_loss, torch.Tensor([0.0]))
-                loss = self.def_loss(1 * correctness_loss + floss + tloss)
+                if warm_start:
+                    loss = self.warm_start(y_batch, model_output)
+                else:
+                    loss = correctness_loss + 100 * feasibility_loss + tloss
 
 
                 loss.backward()
                 with torch.no_grad():
-                    loss = torch.max(loss/1000)
+                    loss = torch.max(loss)
                 optimizer.step()
                 optimizer.zero_grad()
 
@@ -170,21 +183,26 @@ class NCBF_Synth(NCBF):
                 #     alpha2 = 0.01
                 # else:
                 #     alpha2 = 0
-                self.writer.add_scalar('Loss/Loss', running_loss, epoch)
-                self.writer.add_scalar('Loss/FLoss', feasibility_running_loss.item(), epoch)
-                self.writer.add_scalar('Loss/CLoss', correctness_running_loss.item(), epoch)
-                self.writer.add_scalar('Loss/TLoss', trivial_running_loss.item(), epoch)
-
+            # Log details of losses
+            if not warm_start:
+                self.writer.add_scalar('Loss/Loss', running_loss, self.run*num_epoch+epoch)
+                self.writer.add_scalar('Loss/FLoss', feasibility_running_loss.item(), self.run*num_epoch+epoch)
+                self.writer.add_scalar('Loss/CLoss', correctness_running_loss.item(), self.run*num_epoch+epoch)
+                self.writer.add_scalar('Loss/TLoss', trivial_running_loss.item(), self.run*num_epoch+epoch)
+            # Log volume of safe region
+            volume = self.compute_volume(rdm_input)
+            self.writer.add_scalar('Volume', volume, self.run*num_epoch+epoch)
             # Process Bar Print Losses
             pbar.set_postfix({'Loss': running_loss,
                               'Floss': feasibility_running_loss.item(),
                               'Closs': correctness_running_loss.item(),
                               'Tloss': trivial_running_loss.item(),
-                              'PVeri': str(veri_result)})
+                              'PVeri': str(veri_result),
+                              'Vol': volume.item()})
             pbar.update(1)
             scheduler.step()
-            if feasibility_running_loss <= 0.0001:
-                veri_result, num = self.veri.proceed_verification()
+            # if feasibility_running_loss <= 0.0001 and not warm_start:
+            #     veri_result, num = self.veri.proceed_verification()
 
             if veri_result:
                 torch.save(self.model.state_dict(), f'Trained_model/NCBF_Obs{epoch}.pt'.format(epoch))
@@ -194,7 +212,10 @@ class NCBF_Synth(NCBF):
 
 ObsAvoid = ObsAvoid()
 newCBF = NCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)
+newCBF.train(100, warm_start=True)
+newCBF.run += 1
 for restart in range(16):
-    newCBF.train(100)
+    newCBF.train(100, warm_start=False)
+    newCBF.run += 1
 # newCBF.model.load_state_dict(torch.load('Trained_model/NCBF_Obs4.pt'))
 veri_result, num = newCBF.veri.proceed_verification()
