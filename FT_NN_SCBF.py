@@ -26,7 +26,7 @@ class FT_NN_SCBF(NCBF_Synth):
         return violations
 
     def SCBF_train(self, num_epoch):
-        optimizer = optim.SGD(self.model.parameters(), lr=1e-3)
+        optimizer = optim.Adam(self.model.parameters(), lr=1e-3)
         scheduler = ExponentialLR(optimizer, gamma=0.9)
         # Generate data
         size = 40

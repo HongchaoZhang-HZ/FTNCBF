@@ -74,7 +74,7 @@ class NCBF_Synth(NCBF):
         violations = -1 * feasibility_output - rlambda * torch.abs(model_output.transpose(0, 1))
         return violations
 
-    def safe_correctness(self, ref_output, model_output, l_co=1, alpha1=1, alpha2=0.001):
+    def safe_correctness(self, ref_output, model_output, l_co=1, alpha1=1, alpha2=0.000001):
         norm_model_output = torch.tanh(model_output)
         length = len(-ref_output + norm_model_output)
         # norm_ref_output = torch.tanh(ref_output)
@@ -110,9 +110,9 @@ class NCBF_Synth(NCBF):
         return torch.sum(pos_output > 0)/len(rdm_input)
 
 
-    def train(self, num_epoch, warm_start=False):
+    def train(self, num_epoch, num_restart=10, warm_start=False):
         optimizer = optim.Adam(self.model.parameters(), lr=1e-2)
-        scheduler = ExponentialLR(optimizer, gamma=0.9)
+        scheduler = ExponentialLR(optimizer, gamma=0.999)
         # Generate data
         size = 40
         shape = []
@@ -125,96 +125,101 @@ class NCBF_Synth(NCBF):
         ref_output = self.h_x(rdm_input.transpose(0, 1)).unsqueeze(1)
         batch_length = 4**self.DIM
         training_loader = DataLoader(list(zip(rdm_input, ref_output)), batch_size=batch_length, shuffle=True)
-        pbar = tqdm(total=num_epoch)
-        veri_result = False
-        for epoch in range(num_epoch):
-            # Initialize loss
-            running_loss = 0.0
-            feasibility_running_loss = torch.Tensor([0.0])
-            correctness_running_loss = torch.Tensor([0.0])
-            trivial_running_loss = torch.Tensor([0.0])
 
-            # Batch Training
-            for X_batch, y_batch in training_loader:
-                model_output = self.forward(X_batch)
+        for self.run in range(num_restart):
+            pbar = tqdm(total=num_epoch)
+            veri_result = False
+            for epoch in range(num_epoch):
+                # Initialize loss
+                running_loss = 0.0
+                feasibility_running_loss = torch.Tensor([0.0])
+                correctness_running_loss = torch.Tensor([0.0])
+                trivial_running_loss = torch.Tensor([0.0])
 
-                warm_start_loss = self.warm_start(y_batch, model_output)
-                correctness_loss = self.safe_correctness(y_batch, model_output, l_co=1, alpha1=100, alpha2=0.1)
-                # trivial_loss = self.trivial_panelty(ref_output, self.model.forward(rdm_input), 1)
-                trivial_loss = self.trivial_panelty(y_batch, model_output, 1)
+                # Batch Training
+                for X_batch, y_batch in training_loader:
+                    model_output = self.forward(X_batch)
 
-                grad = self.numerical_gradient(X_batch, model_output, batch_length, epsilon=0.001)
-                grad_vector = torch.vstack(grad)
-                feasibility_output = self.feasibility_loss(grad_vector, X_batch)
-                check_item = torch.max((-torch.abs(model_output)+0.1).reshape([1, batch_length]), torch.zeros([1, batch_length]))
-                # feasibility_loss = torch.sum(torch.tanh(check_item*feasibility_output))
+                    warm_start_loss = self.warm_start(y_batch, model_output)
+                    correctness_loss = self.safe_correctness(y_batch, model_output, l_co=1, alpha1=1, alpha2=0.0)
+                    # trivial_loss = self.trivial_panelty(ref_output, self.model.forward(rdm_input), 1)
+                    trivial_loss = self.trivial_panelty(y_batch, model_output, 1)
 
-                # Our loss function
-                # violations = -check_item * self.feasible_violations(model_output, feasibility_output, batch_length, rlambda)
-                # Chuchu Fan loss function
-                violations = check_item * self.feasible_violations(model_output, feasibility_output, batch_length, rlambda)
-                # violations = -1 * feasibility_output - torch.max(rlambda * torch.abs(model_output.transpose(0, 1)),
-                #                                                  torch.zeros([1, batch_length]))
-                feasibility_loss = 10 * torch.sum(torch.max(violations - 1e-4, torch.zeros([1, batch_length])))
-                mseloss = torch.nn.MSELoss()
-                # loss = self.def_loss(1 * correctness_loss + 1 * feasibility_loss + 1 * trivial_loss)
-                floss = mseloss(torch.max(violations - 1e-4, torch.zeros([1, batch_length])), torch.zeros(batch_length))
-                tloss = mseloss(trivial_loss, torch.Tensor([0.0]))
-                if warm_start:
-                    loss = self.warm_start(y_batch, model_output)
-                else:
-                    loss = correctness_loss + feasibility_loss + tloss
+                    grad = self.numerical_gradient(X_batch, model_output, batch_length, epsilon=0.001)
+                    grad_vector = torch.vstack(grad)
+                    feasibility_output = self.feasibility_loss(grad_vector, X_batch)
+                    check_item = torch.max((-torch.abs(model_output)+0.1).reshape([1, batch_length]), torch.zeros([1, batch_length]))
+                    # feasibility_loss = torch.sum(torch.tanh(check_item*feasibility_output))
+
+                    # Our loss function
+                    # violations = -check_item * self.feasible_violations(model_output, feasibility_output, batch_length, rlambda)
+                    # Chuchu Fan loss function
+                    violations = 1 * self.feasible_violations(model_output, feasibility_output, batch_length, rlambda)
+                    # violations = -1 * feasibility_output - torch.max(rlambda * torch.abs(model_output.transpose(0, 1)),
+                    #                                                  torch.zeros([1, batch_length]))
+                    feasibility_loss = 2 * torch.sum(torch.max(violations - 1e-4, torch.zeros([1, batch_length])))
+                    mseloss = torch.nn.MSELoss()
+                    # loss = self.def_loss(1 * correctness_loss + 1 * feasibility_loss + 1 * trivial_loss)
+                    floss = mseloss(torch.max(violations - 1e-4, torch.zeros([1, batch_length])), torch.zeros(batch_length))
+                    tloss = mseloss(trivial_loss, torch.Tensor([0.0]))
+                    if warm_start:
+                        loss = self.warm_start(y_batch, model_output)
+                    else:
+                        loss = correctness_loss + feasibility_loss + tloss
 
 
-                loss.backward()
-                with torch.no_grad():
-                    loss = torch.max(loss)
-                optimizer.step()
-                optimizer.zero_grad()
+                    loss.backward()
+                    # with torch.no_grad():
+                    #     loss = torch.max(loss)
+                    optimizer.step()
+                    optimizer.zero_grad()
 
-                # Print Detailed Loss
-                running_loss += loss.item()
-                feasibility_running_loss += feasibility_loss.item()
-                correctness_running_loss += correctness_loss.item()
-                trivial_running_loss += trivial_loss.item()
+                    # Print Detailed Loss
+                    running_loss += loss.item()
+                    feasibility_running_loss += feasibility_loss.item()
+                    correctness_running_loss += correctness_loss.item()
+                    trivial_running_loss += trivial_loss.item()
 
-                # if feasibility_running_loss <= 0.001 and correctness_loss <= 0.01:
-                #     alpha2 = 0.01
-                # else:
-                #     alpha2 = 0
-            # Log details of losses
-            if not warm_start:
-                self.writer.add_scalar('Loss/Loss', running_loss, self.run*num_epoch+epoch)
-                self.writer.add_scalar('Loss/FLoss', feasibility_running_loss.item(), self.run*num_epoch+epoch)
-                self.writer.add_scalar('Loss/CLoss', correctness_running_loss.item(), self.run*num_epoch+epoch)
-                self.writer.add_scalar('Loss/TLoss', trivial_running_loss.item(), self.run*num_epoch+epoch)
-            # Log volume of safe region
-            volume = self.compute_volume(rdm_input)
-            self.writer.add_scalar('Volume', volume, self.run*num_epoch+epoch)
-            # Process Bar Print Losses
-            pbar.set_postfix({'Loss': running_loss,
-                              'Floss': feasibility_running_loss.item(),
-                              'Closs': correctness_running_loss.item(),
-                              'Tloss': trivial_running_loss.item(),
-                              'PVeri': str(veri_result),
-                              'Vol': volume.item()})
-            pbar.update(1)
-            scheduler.step()
-            # if feasibility_running_loss <= 0.0001 and not warm_start:
-            #     veri_result, num = self.veri.proceed_verification()
+                    # if feasibility_running_loss <= 0.001 and correctness_loss <= 0.01:
+                    #     alpha2 = 0.01
+                    # else:
+                    #     alpha2 = 0
+                # Log details of losses
+                if not warm_start:
+                    self.writer.add_scalar('Loss/Loss', running_loss, self.run*num_epoch+epoch)
+                    self.writer.add_scalar('Loss/FLoss', feasibility_running_loss.item(), self.run*num_epoch+epoch)
+                    self.writer.add_scalar('Loss/CLoss', correctness_running_loss.item(), self.run*num_epoch+epoch)
+                    self.writer.add_scalar('Loss/TLoss', trivial_running_loss.item(), self.run*num_epoch+epoch)
+                # Log volume of safe region
+                volume = self.compute_volume(rdm_input)
+                self.writer.add_scalar('Volume', volume, self.run*num_epoch+epoch)
+                # self.writer.add_scalar('Verifiable', veri_result, self.run * num_epoch + epoch)
+                # Process Bar Print Losses
+                pbar.set_postfix({'Loss': running_loss,
+                                  'Floss': feasibility_running_loss.item(),
+                                  'Closs': correctness_running_loss.item(),
+                                  'Tloss': trivial_running_loss.item(),
+                                  'PVeri': str(veri_result),
+                                  'Vol': volume.item()})
+                pbar.update(1)
+                scheduler.step()
 
-            if veri_result:
-                torch.save(self.model.state_dict(), f'Trained_model/NCBF/NCBF_Obs{epoch}.pt'.format(epoch))
 
-        pbar.clear()
-        torch.save(self.model.state_dict(), 'Trained_model/NCBF/NCBF_Obs.pt')
+            pbar.close()
+            if feasibility_running_loss <= 0.0001 and not warm_start:
+                try:
+                    veri_result, num = self.veri.proceed_verification()
+                except:
+                    pass
+            # if veri_result:
+            #     torch.save(self.model.state_dict(), f'Trained_model/NCBF/NCBF_Obs{epoch}.pt'.format(epoch))
+            torch.save(self.model.state_dict(), f'Trained_model/NCBF/NCBF_Obs{self.run}.pt'.format(self.run))
 
 ObsAvoid = ObsAvoid()
 newCBF = NCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)
-newCBF.train(50, warm_start=True)
-newCBF.run += 1
-for restart in range(16):
-    newCBF.train(100, warm_start=False)
-    newCBF.run += 1
-# newCBF.model.load_state_dict(torch.load('Trained_model/obs_2_32.pt'))
-# veri_result, num = newCBF.veri.proceed_verification()
+# newCBF.train(50, warm_start=True)
+# newCBF.run += 1
+# newCBF.train(num_epoch=100, num_restart=16, warm_start=False)
+newCBF.model.load_state_dict(torch.load('Trained_model/NCBF/NCBFVeriTuning/NCBF_Obs.pt'))
+# There is a bug in verifier that may cause memory error
+veri_result, num = newCBF.veri.proceed_verification()
