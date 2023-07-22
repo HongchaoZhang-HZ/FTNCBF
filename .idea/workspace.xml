@@ -4,11 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="Verifier bug found">
+    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="Comments added">
       <change afterPath="$PROJECT_DIR$/Trained_model/NCBF/NCBFGood/NCBF_Obs0.pt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cases/Case.py" beforeDir="false" afterPath="$PROJECT_DIR$/Cases/Case.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cases/Darboux.py" beforeDir="false" afterPath="$PROJECT_DIR$/Cases/Darboux.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/NCBF_Synth.py" beforeDir="false" afterPath="$PROJECT_DIR$/NCBF_Synth.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Verifier/Verifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/Verifier/Verifier.py" afterDir="false" />
     </list>
@@ -194,7 +191,7 @@
       <updated>1688703650742</updated>
       <workItem from="1688703653264" duration="53000" />
       <workItem from="1688703761133" duration="142511000" />
-      <workItem from="1689603463610" duration="78643000" />
+      <workItem from="1689603463610" duration="79278000" />
     </task>
     <task id="LOCAL-00001" summary="CMAES omitted">
       <created>1688703920122</created>
@@ -427,7 +424,14 @@
       <option name="project" value="LOCAL" />
       <updated>1689911473921</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Comments added">
+      <created>1690046088613</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1690046088613</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -445,7 +449,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Batch training incorporated" />
     <MESSAGE value="Succeed in feasibility" />
     <MESSAGE value="full verificaiton incorporated" />
     <MESSAGE value="trivial penalty included" />
@@ -470,7 +473,8 @@
     <MESSAGE value="General Synth works for NBF" />
     <MESSAGE value="NCBF tuning" />
     <MESSAGE value="Verifier bug found" />
-    <option name="LAST_COMMIT_MESSAGE" value="Verifier bug found" />
+    <MESSAGE value="Comments added" />
+    <option name="LAST_COMMIT_MESSAGE" value="Comments added" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
