@@ -72,9 +72,10 @@ class NCBF_Synth(NCBF):
 
     def feasible_violations(self, model_output, feasibility_output, batch_length, rlambda):
         violations = -1 * feasibility_output - rlambda * torch.abs(model_output.transpose(0, 1))
+        # return torch.max(violations, torch.zeros([1,batch_length]))
         return violations
 
-    def safe_correctness(self, ref_output, model_output, l_co=1, alpha1=1, alpha2=0.000001):
+    def safe_correctness(self, ref_output, model_output, l_co=1, alpha1=1, alpha2=0.001):
         norm_model_output = torch.tanh(model_output)
         length = len(-ref_output + norm_model_output)
         # norm_ref_output = torch.tanh(ref_output)
@@ -114,7 +115,7 @@ class NCBF_Synth(NCBF):
         optimizer = optim.Adam(self.model.parameters(), lr=1e-2)
         scheduler = ExponentialLR(optimizer, gamma=0.999)
         # Generate data
-        size = 40
+        size = 80
         shape = []
         for _ in range(self.DIM):
             shape.append(size)
@@ -123,7 +124,7 @@ class NCBF_Synth(NCBF):
         # rdm_input = self.generate_input(shape)
         # ref_output = torch.unsqueeze(self.h_x(rdm_input.transpose(0, self.DIM)), self.DIM)
         ref_output = self.h_x(rdm_input.transpose(0, 1)).unsqueeze(1)
-        batch_length = 4**self.DIM
+        batch_length = 8**self.DIM
         training_loader = DataLoader(list(zip(rdm_input, ref_output)), batch_size=batch_length, shuffle=True)
 
         for self.run in range(num_restart):
@@ -141,20 +142,20 @@ class NCBF_Synth(NCBF):
                     model_output = self.forward(X_batch)
 
                     warm_start_loss = self.warm_start(y_batch, model_output)
-                    correctness_loss = self.safe_correctness(y_batch, model_output, l_co=1, alpha1=1, alpha2=0.0)
+                    correctness_loss = self.safe_correctness(y_batch, model_output, l_co=1, alpha1=1, alpha2=0)
                     # trivial_loss = self.trivial_panelty(ref_output, self.model.forward(rdm_input), 1)
                     trivial_loss = self.trivial_panelty(y_batch, model_output, 1)
 
                     grad = self.numerical_gradient(X_batch, model_output, batch_length, epsilon=0.001)
                     grad_vector = torch.vstack(grad)
                     feasibility_output = self.feasibility_loss(grad_vector, X_batch)
-                    check_item = torch.max((-torch.abs(model_output)+0.1).reshape([1, batch_length]), torch.zeros([1, batch_length]))
+                    check_item = torch.max((-torch.abs(model_output)+0.2).reshape([1, batch_length]), torch.zeros([1, batch_length]))
                     # feasibility_loss = torch.sum(torch.tanh(check_item*feasibility_output))
 
                     # Our loss function
                     # violations = -check_item * self.feasible_violations(model_output, feasibility_output, batch_length, rlambda)
                     # Chuchu Fan loss function
-                    violations = 1 * self.feasible_violations(model_output, feasibility_output, batch_length, rlambda)
+                    violations = check_item * self.feasible_violations(model_output, feasibility_output, batch_length, rlambda)
                     # violations = -1 * feasibility_output - torch.max(rlambda * torch.abs(model_output.transpose(0, 1)),
                     #                                                  torch.zeros([1, batch_length]))
                     feasibility_loss = 2 * torch.sum(torch.max(violations - 1e-4, torch.zeros([1, batch_length])))
@@ -219,7 +220,8 @@ ObsAvoid = ObsAvoid()
 newCBF = NCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)
 # newCBF.train(50, warm_start=True)
 # newCBF.run += 1
-# newCBF.train(num_epoch=100, num_restart=16, warm_start=False)
-newCBF.model.load_state_dict(torch.load('Trained_model/NCBF/NCBFVeriTuning/NCBF_Obs.pt'))
-# There is a bug in verifier that may cause memory error
+newCBF.train(num_epoch=10, num_restart=8, warm_start=False)
+# newCBF.model.load_state_dict(torch.load('Trained_model/NCBF/NCBF_Obs0.pt'))
+
+# There is a bug in verifier that causes memory error due to too many intersections to verify
 veri_result, num = newCBF.veri.proceed_verification()

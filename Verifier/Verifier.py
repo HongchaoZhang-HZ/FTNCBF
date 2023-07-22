@@ -100,6 +100,7 @@ class Verifier(ReLUNN_Decom):
                 return False
 
     def suf_nec_inter_verification(self, W_overl_inter, r_overl_inter, W_Bound_inter, r_Bound_inter, size):
+        # Todo: This function need to be redo to simplify the computation and moroy use
         results = []
         size_W_overl = size[0]
         size_r_overl = size[1]
@@ -204,13 +205,20 @@ class Verifier(ReLUNN_Decom):
                 print('Failed Verification')
             return False, len(actual_set_list)
         veri_res_intersect = []
-        for act_intersections in act_intersections_list:
-            veri_res_intersect_item = self.inter_verification(act_intersections)
+        for i in range(len(act_intersections_list)):
+            veri_res_intersect_item = self.inter_verification(act_intersections_list[i])
             # veri_res_intersect.append(veri_res_intersect_item)
-            # print(veri_res_intersect_item)
+            print(i, veri_res_intersect_item, len(act_intersections_list[i]))
             if not veri_res_intersect_item:
-                print('Failed Verification')
+                if self.verbose:
+                    print('Failed Verification')
                 return False, len(actual_set_list)
+            # else:
+            #     # Todo: This branch need to be deleted when the memory issue is fixed
+            #     if self.verbose:
+            #         print('Successfully Verified')
+            #     return True, len(actual_set_list)
+
         if self.verbose:
             print('res_set', veri_res_set)
             print('res_bd_set', veri_res_intersect)
