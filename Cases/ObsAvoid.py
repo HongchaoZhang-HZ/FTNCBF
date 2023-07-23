@@ -52,5 +52,5 @@ class ObsAvoid(case):
         :param x: [np.array/torch.Tensor] input state x in R^n
         :return: [np.array/torch.Tensor] scalar output in R
         '''
-        hx = -(x[:, 0]**2 + x[:, 1] ** 2) + 0.04
+        hx = (x[:, 0]**2 + x[:, 1] ** 2) - 0.04
         return hx

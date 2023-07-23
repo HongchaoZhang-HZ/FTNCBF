@@ -9,25 +9,38 @@ import torchvision
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 from Cases.ObsAvoid import ObsAvoid
-# import cma
-from cmaes import CMA
 from Verifier import Verifier
-from collections import OrderedDict
 from Critic_Synth.NCritic import *
 import time
+# from collections import OrderedDict
 
 class NCBF_Synth(NCBF):
+    '''
+    Synthesize an NCBF for a given safe region h(x)
+    for given a system with polynomial f(x) and g(x)
+    '''
     def __init__(self,arch, act_layer, case, verbose=False):
+        '''
+        Input architecture and ReLU layers, input case, verbose for display
+        :param arch: [list of int] architecture of the NN
+        :param act_layer: [list of bool] if the corresponding layer with ReLU, then True
+        :param case: Pre-defined case class, with f(x), g(x) and h(x)
+        :param verbose: Flag for display or not
+        '''
         self.case = case
         DOMAIN = self.case.DOMAIN
         super().__init__(arch, act_layer, DOMAIN)
+        # Under construction: Critic is designed to tuning loss fcn automatically
         self.critic = NeuralCritic(case)
+        # Verifier proposed to verify feasibility
         self.veri = Verifier(NCBF=self, case=case, grid_shape=[100, 100, 100], verbose=verbose)
         lctime = time.ctime(time.time())
+        # Tensorboard
         self.writer = SummaryWriter(f'./runs/NCBF/{lctime}'.format(lctime))
         self.run = 0
 
     def numerical_gradient(self, X_batch, model_output, batch_length, epsilon=0.001):
+        # compute numerical gradient for each dimension by (x+dx)/dx
         grad = []
         for i in range(self.DIM):
             gradStep = torch.zeros(self.DIM)
@@ -39,9 +52,11 @@ class NCBF_Synth(NCBF):
         return grad
 
     def feasible_con(self, u, dbdxfx, dbdxgx):
+        # function to minimize: (db/dx)*fx + (db/dx)*gx*u
         return np.min(dbdxfx + dbdxgx * u)
 
     def feasible_u(self, dbdxfx, dbdxgx, min_flag=False):
+        # find u that minimize (db/dx)*fx + (db/dx)*gx*u
         if min_flag:
             df = dbdxfx.detach().numpy()
             dg = dbdxgx.detach().numpy()
@@ -52,6 +67,7 @@ class NCBF_Synth(NCBF):
                 res_list.append(res.x)
             return torch.Tensor(res_list).squeeze()
         else:
+            # Quick check for scalar u only
             [u_lb, u_ub] = torch.Tensor(self.case.CTRLDOM)
             res_list = []
             for i in range(len(dbdxfx)):
@@ -62,6 +78,7 @@ class NCBF_Synth(NCBF):
             return torch.Tensor(res_list).squeeze()
 
     def feasibility_loss(self, grad_vector, X_batch):
+        # compute loss based on (db/dx)*fx + (db/dx)*gx*u
         dbdxfx = (grad_vector.transpose(0, 1).unsqueeze(1)
                   @ self.case.f_x(X_batch).transpose(0, 1).unsqueeze(2)).squeeze()
         dbdxgx = (grad_vector.transpose(0, 1).unsqueeze(1)
@@ -75,7 +92,22 @@ class NCBF_Synth(NCBF):
         # return torch.max(violations, torch.zeros([1,batch_length]))
         return violations
 
-    def safe_correctness(self, ref_output, model_output, l_co=1, alpha1=1, alpha2=0.001):
+    def safe_correctness(self, ref_output, model_output,
+                         l_co: float = 1, alpha1: float = 1,
+                         alpha2: float = 0.001) -> torch.Tensor:
+        '''
+        Penalize the incorrectness based on the h(x).
+            If h(x) < 0 meaning the state x is unsafe, b(x) has to be negative.
+                Therefore, alpha1, the gain of the penalty, can be large.
+            If h(x) > 0 meaning the state is temporarily safe, b(x) can be +/-.
+                To maximize coverage of b(x), a small penalty alpha2 is applied.
+        :param ref_output: output of h(x)
+        :param model_output: output of NN(x)
+        :param l_co: gain of the loss
+        :param alpha1: penalty for unsafe incorrectness
+        :param alpha2: penalty for coverage
+        :return: safety oriented correctness loss
+        '''
         norm_model_output = torch.tanh(model_output)
         length = len(-ref_output + norm_model_output)
         # norm_ref_output = torch.tanh(ref_output)
@@ -105,6 +137,11 @@ class NCBF_Synth(NCBF):
         return loss
 
     def compute_volume(self, rdm_input):
+        '''
+        Compute volume covered by b(x)
+        :param rdm_input: random uniform samples
+        :return: numbers of samples (volume)
+        '''
         # compute the positive volume contained by the NCBF
         model_output = self.forward(rdm_input).squeeze()
         pos_output = torch.max(model_output, torch.zeros(len(rdm_input)))
@@ -112,20 +149,23 @@ class NCBF_Synth(NCBF):
 
 
     def train(self, num_epoch, num_restart=10, warm_start=False):
-        optimizer = optim.Adam(self.model.parameters(), lr=1e-2)
-        scheduler = ExponentialLR(optimizer, gamma=0.999)
+        optimizer = optim.Adam(self.model.parameters(), lr=1e-3)
+        scheduler = ExponentialLR(optimizer, gamma=0.99)
+        # define hyper-parameters
+        alpha1, alpha2 = 1, 0
+        # 1, 1e-8
+        # Set alpha2=0 for feasibility test with Floss quickly converge to 0
+        rlambda = 1
+
         # Generate data
-        size = 80
-        shape = []
-        for _ in range(self.DIM):
-            shape.append(size)
-        rlambda = 0
+        size = 128
         rdm_input = self.generate_data(size)
         # rdm_input = self.generate_input(shape)
         # ref_output = torch.unsqueeze(self.h_x(rdm_input.transpose(0, self.DIM)), self.DIM)
-        ref_output = self.h_x(rdm_input.transpose(0, 1)).unsqueeze(1)
+        ref_output = self.case.h_x(rdm_input).unsqueeze(1)
+        normalized_ref_output = torch.tanh(10*ref_output)
         batch_length = 8**self.DIM
-        training_loader = DataLoader(list(zip(rdm_input, ref_output)), batch_size=batch_length, shuffle=True)
+        training_loader = DataLoader(list(zip(rdm_input, normalized_ref_output)), batch_size=batch_length, shuffle=True)
 
         for self.run in range(num_restart):
             pbar = tqdm(total=num_epoch)
@@ -142,7 +182,7 @@ class NCBF_Synth(NCBF):
                     model_output = self.forward(X_batch)
 
                     warm_start_loss = self.warm_start(y_batch, model_output)
-                    correctness_loss = self.safe_correctness(y_batch, model_output, l_co=1, alpha1=1, alpha2=0)
+                    correctness_loss = self.safe_correctness(y_batch, model_output, l_co=1, alpha1=alpha1, alpha2=alpha2)
                     # trivial_loss = self.trivial_panelty(ref_output, self.model.forward(rdm_input), 1)
                     trivial_loss = self.trivial_panelty(y_batch, model_output, 1)
 
@@ -221,7 +261,7 @@ newCBF = NCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)
 # newCBF.train(50, warm_start=True)
 # newCBF.run += 1
 newCBF.train(num_epoch=10, num_restart=8, warm_start=False)
-# newCBF.model.load_state_dict(torch.load('Trained_model/NCBF/NCBF_Obs0.pt'))
+# newCBF.model.load_state_dict(torch.load('Trained_model/NCBF/NCBF_Obs4.pt'))
 
 # There is a bug in verifier that causes memory error due to too many intersections to verify
 veri_result, num = newCBF.veri.proceed_verification()

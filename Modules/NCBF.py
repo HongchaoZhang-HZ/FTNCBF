@@ -28,7 +28,12 @@ class NCBF(NNet):
         data = torch.Tensor(data.reshape(shape[0] * shape[1], 2))
         return data
 
-    def generate_data(self, size=100):
+    def generate_data(self, size: int = 100) -> torch.Tensor:
+        '''
+        Generate data for training or plotting
+        :param size: the number of samples on each dimension
+        :return: a mesh grid torch data
+        '''
         state_space = self.DOMAIN
         shape = []
         for _ in range(self.DIM):
@@ -49,10 +54,6 @@ class NCBF(NNet):
         data = torch.hstack([torch.Tensor(item) for item in noisy_data])
 
         return data
-
-    def h_x(self, x):
-        hx = (x[0] + x[1] ** 2)
-        return hx
 
     def correctness(self, ref_output, model_output, l_co=1):
         '''
@@ -92,7 +93,12 @@ class NCBF(NNet):
             total_loss += l
         return total_loss
 
-    def topolyCBF(self, deg=5):
+    def topolyCBF(self, deg: int = 5):
+        '''
+        Polynomial approximation of a NN CBF
+        :param deg: degree of polynomials to fit
+        :return: names: polynomial terms, coeff: coefficients
+        '''
         shape = [100, 100]
         vx, vy, rdm_input = self.generate_input(shape)
         NN_output = self.forward(rdm_input)
@@ -109,7 +115,14 @@ class NCBF(NNet):
         coeff = lin_reg.coef_
         return names, coeff
 
-    def SymPoly(self, coeff, x, degree=4):
+    def SymPoly(self, coeff: list, x, degree: int = 4):
+        '''
+        Symbolic polynomial expression of approximated function
+        :param coeff: coefficients from polynomial approximation
+        :param x: symbolic variable
+        :param degree: int
+        :return: symbolic polynomial
+        '''
         x0 = x[0]
         x1 = x[1]
         exp = 0
@@ -122,6 +135,7 @@ class NCBF(NNet):
 
 
     def train(self, num_epoch):
+        # Default training
         optimizer = optim.SGD(self.model.parameters(), lr=0.001)
 
         for epoch in range(num_epoch):
