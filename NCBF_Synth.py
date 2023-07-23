@@ -31,7 +31,7 @@ class NCBF_Synth(NCBF):
         DOMAIN = self.case.DOMAIN
         super().__init__(arch, act_layer, DOMAIN)
         # Under construction: Critic is designed to tuning loss fcn automatically
-        self.critic = NeuralCritic(case)
+        # self.critic = NeuralCritic(case)
         # Verifier proposed to verify feasibility
         self.veri = Verifier(NCBF=self, case=case, grid_shape=[100, 100, 100], verbose=verbose)
         lctime = time.ctime(time.time())
@@ -155,6 +155,8 @@ class NCBF_Synth(NCBF):
         alpha1, alpha2 = 1, 0
         # 1, 1e-8
         # Set alpha2=0 for feasibility test with Floss quickly converge to 0
+        # If set alpha2 converges but does not pass the verification, then increase the sampling number.
+        # This problem is caused by lack of counter examples and can be solved by introducing CE from Verifier
         rlambda = 1
 
         # Generate data

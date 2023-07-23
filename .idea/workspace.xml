@@ -4,11 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="description">
-      <change afterPath="$PROJECT_DIR$/Trained_model/NCBF/NCBFGood/NCBF_Obs0.pt" afterDir="false" />
+    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="Bug fixed">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cases/ObsAvoid.py" beforeDir="false" afterPath="$PROJECT_DIR$/Cases/ObsAvoid.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Modules/NCBF.py" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/NCBF.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/NCBF_Synth.py" beforeDir="false" afterPath="$PROJECT_DIR$/NCBF_Synth.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -193,7 +190,7 @@
       <updated>1688703650742</updated>
       <workItem from="1688703653264" duration="53000" />
       <workItem from="1688703761133" duration="142511000" />
-      <workItem from="1689603463610" duration="81887000" />
+      <workItem from="1689603463610" duration="82664000" />
     </task>
     <task id="LOCAL-00001" summary="CMAES omitted">
       <created>1688703920122</created>
@@ -447,7 +444,14 @@
       <option name="project" value="LOCAL" />
       <updated>1690054964515</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="Bug fixed">
+      <created>1690072402255</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1690072402255</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -465,7 +469,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="trivial penalty included" />
     <MESSAGE value="converge to valid NBF" />
     <MESSAGE value="flexible dim incorporated" />
     <MESSAGE value="generate data is now compatible to diff dims" />
@@ -490,14 +493,15 @@
     <MESSAGE value="Comments added" />
     <MESSAGE value="Debug" />
     <MESSAGE value="description" />
-    <option name="LAST_COMMIT_MESSAGE" value="description" />
+    <MESSAGE value="Bug fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Bug fixed" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/NCBF_Synth.py</url>
-          <line>109</line>
+          <line>146</line>
           <option name="timeStamp" value="46" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -512,12 +516,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/NCBF_Synth.py</url>
-          <line>74</line>
+          <line>91</line>
           <option name="timeStamp" value="56" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/NCBF_Synth.py</url>
-          <line>35</line>
+          <line>48</line>
           <option name="timeStamp" value="57" />
         </line-breakpoint>
       </breakpoints>
