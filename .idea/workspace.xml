@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="Bug fixed">
+      <change afterPath="$PROJECT_DIR$/SNCBF_Synth.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NCBF_Synth.py" beforeDir="false" afterPath="$PROJECT_DIR$/NCBF_Synth.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,7 +33,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/ericzhang/Documents/GitHub/FTNCBF/Trained_model/NCBF/NCBFGood",
+    "last_opened_file_path": "/Users/ericzhang/Documents/GitHub/FTNCBF",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -45,9 +45,9 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/Trained_model/NCBF/NCBFGood" />
       <recent name="$PROJECT_DIR$/Trained_model/NBF" />
-      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/Trained_model" />
       <recent name="$PROJECT_DIR$/Cases" />
     </key>
@@ -190,7 +190,7 @@
       <updated>1688703650742</updated>
       <workItem from="1688703653264" duration="53000" />
       <workItem from="1688703761133" duration="142511000" />
-      <workItem from="1689603463610" duration="82664000" />
+      <workItem from="1689603463610" duration="88750000" />
     </task>
     <task id="LOCAL-00001" summary="CMAES omitted">
       <created>1688703920122</created>
@@ -451,7 +451,14 @@
       <option name="project" value="LOCAL" />
       <updated>1690072402255</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="Bug fixed">
+      <created>1690074924657</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1690074924658</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
