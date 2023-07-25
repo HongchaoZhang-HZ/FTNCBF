@@ -13,6 +13,7 @@ from Cases.ObsAvoid import ObsAvoid
 from Verifier import Verifier
 from Critic_Synth.NCritic import *
 import time
+from EKF import *
 # from collections import OrderedDict
 
 class SNCBF_Synth(NCBF_Synth):
@@ -36,10 +37,12 @@ class SNCBF_Synth(NCBF_Synth):
         lctime = time.ctime(time.time())
         # Tensorboard
         self.writer = SummaryWriter(f'./runs/SNCBF/{lctime}'.format(lctime))
-        # todo: in FT-SNCBF these variables need to be chosen based on fault type
         self.gamma = 0.1
-        self.c = torch.ones(self.DIM)
-
+        self.c = torch.diag(torch.ones(self.DIM))
+        self.ekf_gain = torch.Tensor(self.EKF())
+        # [[0.06415174 -0.01436932 -0.04649317]
+        #  [-0.06717124 0.02750288  0.14107035]
+        #  [-0.0201735  0.00625575 -0.0836058]]
         self.run = 0
 
     def numerical_delta_gamma(self, grad, gamma):
@@ -55,9 +58,13 @@ class SNCBF_Synth(NCBF_Synth):
         return delta_gamma
 
     def EKF(self):
-        # todo: extended kalman filter gain for different sensor failure
-        K = torch.ones([self.DIM, self.DIM])
-        return K
+        landmarks = np.array([[5, 10, 0.5], [10, 5, 0.5], [15, 15, 0.5]])
+
+        ekf = run_localization(
+            landmarks, std_vel=0.1, std_steer=np.radians(1),
+            std_range=0.3, std_bearing=0.1)
+        print('Final P:', ekf.P.diagonal())
+        return ekf.K
 
     def feasibility_loss(self, grad_vector, X_batch):
         # compute loss based on (db/dx)*fx + (db/dx)*gx*u
@@ -68,8 +75,8 @@ class SNCBF_Synth(NCBF_Synth):
         u = self.feasible_u(dbdxfx, dbdxgx)
         # update delta_gamma
         self.delta_gamma = self.numerical_delta_gamma(grad_vector, self.gamma)
-        EKF_term = grad_vector.transpose(0,1) @ self.EKF() @ self.c
-        stochastic_term = -self.gamma * EKF_term.unsqueeze(0).norm(dim=0)
+        EKF_term = grad_vector.transpose(0,1) @ self.ekf_gain @ self.c
+        stochastic_term = -self.gamma * EKF_term.norm(dim=1)
         feasibility_output = dbdxfx + dbdxgx * u + stochastic_term
         return feasibility_output
 
