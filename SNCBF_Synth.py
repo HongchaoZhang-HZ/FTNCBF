@@ -187,7 +187,7 @@ class SNCBF_Synth(NCBF_Synth):
                     pass
             # if veri_result:
             #     torch.save(self.model.state_dict(), f'Trained_model/NCBF/NCBF_Obs{epoch}.pt'.format(epoch))
-            torch.save(self.model.state_dict(), f'Trained_model/NCBF/NCBF_Obs{self.run}.pt'.format(self.run))
+            torch.save(self.model.state_dict(), f'Trained_model/NCBF/SNCBF_Obs{self.run}.pt'.format(self.run))
 
 ObsAvoid = ObsAvoid()
 newCBF = SNCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)
