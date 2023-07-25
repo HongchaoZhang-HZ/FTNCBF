@@ -153,7 +153,7 @@ def run_localization(landmarks, std_vel, std_steer,
     for i in range(200):
         sim_pos = ekf.move(sim_pos, u, dt / 10.)  # simulate robot
         track.append(sim_pos)
-        print(ekf.K)
+        # print(ekf.K)
 
         if i % step == 0:
             ekf.predict(u=u)

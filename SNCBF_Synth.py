@@ -10,7 +10,7 @@ import torchvision
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 from Cases.ObsAvoid import ObsAvoid
-from Verifier import Verifier
+from Verifier.Verifier import Verifier
 from Critic_Synth.NCritic import *
 import time
 from EKF import *
@@ -37,7 +37,10 @@ class SNCBF_Synth(NCBF_Synth):
         lctime = time.ctime(time.time())
         # Tensorboard
         self.writer = SummaryWriter(f'./runs/SNCBF/{lctime}'.format(lctime))
+
+        # Initialize stochastic term related data
         self.gamma = 0.1
+        self.delta_gamma = torch.zeros(1)
         self.c = torch.diag(torch.ones(self.DIM))
         self.ekf_gain = torch.Tensor(self.EKF())
         # [[0.06415174 -0.01436932 -0.04649317]
@@ -55,6 +58,7 @@ class SNCBF_Synth(NCBF_Synth):
         '''
         vec_gamma = torch.amax(torch.abs(grad), 1)
         delta_gamma = torch.norm(vec_gamma) * gamma
+        # return torch.max(delta_gamma, self.delta_gamma)
         return delta_gamma
 
     def EKF(self):
