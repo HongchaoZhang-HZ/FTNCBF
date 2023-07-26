@@ -136,14 +136,15 @@ class NCBF_Synth(NCBF):
         loss = non_pos_loss + non_neg_loss
         return loss
 
-    def compute_volume(self, rdm_input):
+    def compute_volume(self, rdm_input, model_output):
         '''
         Compute volume covered by b(x)
         :param rdm_input: random uniform samples
         :return: numbers of samples (volume)
         '''
         # compute the positive volume contained by the NCBF
-        model_output = self.forward(rdm_input).squeeze()
+        if model_output is None:
+            model_output = self.forward(rdm_input).squeeze()
         pos_output = torch.max(model_output, torch.zeros(len(rdm_input)))
         return torch.sum(pos_output > 0)/len(rdm_input)
 
