@@ -21,7 +21,7 @@ class SNCBF_Synth(NCBF_Synth):
     Synthesize an NCBF for a given safe region h(x)
     for given a system with polynomial f(x) and g(x)
     '''
-    def __init__(self,arch, act_layer, case, verbose=False):
+    def __init__(self, arch, act_layer, case, verbose=False):
         '''
         Input architecture and ReLU layers, input case, verbose for display
         :param arch: [list of int] architecture of the NN
@@ -88,7 +88,8 @@ class SNCBF_Synth(NCBF_Synth):
         return feasibility_output
 
     def feasible_violations(self, model_output, feasibility_output, batch_length, rlambda):
-        b_gamma = (model_output - self.delta_gamma)
+        # b_gamma = (model_output - self.delta_gamma)
+        b_gamma = model_output
         violations = -1 * feasibility_output - rlambda * torch.abs(b_gamma.transpose(0, 1))
         # return violations
         return torch.max(violations, torch.zeros([1, batch_length]))
@@ -105,13 +106,13 @@ class SNCBF_Synth(NCBF_Synth):
         rlambda = 1
 
         # Generate data
-        size = 160
+        size = 80
         rdm_input = self.generate_data(size)
         # rdm_input = self.generate_input(shape)
         # ref_output = torch.unsqueeze(self.h_x(rdm_input.transpose(0, self.DIM)), self.DIM)
         ref_output = self.case.h_x(rdm_input).unsqueeze(1)
         normalized_ref_output = torch.tanh(10*ref_output)
-        batch_length = 8**self.DIM
+        batch_length = 16**self.DIM
         training_loader = DataLoader(list(zip(rdm_input, normalized_ref_output)), batch_size=batch_length, shuffle=True)
 
         for self.run in range(num_restart):
@@ -172,6 +173,7 @@ class SNCBF_Synth(NCBF_Synth):
                     #     alpha2 = 0.01
                     # else:
                     #     alpha2 = 0
+
                 # Log details of losses
                 if not warm_start:
                     self.writer.add_scalar('Loss/Loss', running_loss, self.run*num_epoch+epoch)
@@ -191,6 +193,11 @@ class SNCBF_Synth(NCBF_Synth):
                                   'Vol': volume.item()})
                 pbar.update(1)
                 scheduler.step()
+                if feasibility_running_loss <= 0.0001 and not warm_start:
+                    try:
+                        veri_result, num = self.veri.proceed_verification()
+                    except:
+                        pass
 
 
             pbar.close()
@@ -207,8 +214,8 @@ ObsAvoid = ObsAvoid()
 newCBF = SNCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)
 # newCBF.train(50, warm_start=True)
 # newCBF.run += 1
-# newCBF.train(num_epoch=10, num_restart=8, warm_start=False)
-newCBF.model.load_state_dict(torch.load('Trained_model/SNCBF/SNCBFGood/SNCBF_Obs0.pt'))
+newCBF.train(num_epoch=10, num_restart=8, warm_start=False)
+# newCBF.model.load_state_dict(torch.load('Trained_model/SNCBF/SNCBFGood/SNCBF_Obs0.pt'))
 
 # There is a bug in verifier that causes memory error due to too many intersections to verify
 veri_result, num = newCBF.veri.proceed_verification()
