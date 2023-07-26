@@ -10,8 +10,8 @@ import torchvision
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 from Cases.ObsAvoid import ObsAvoid
-from Verifier.Verifier import Verifier
-from Critic_Synth.NCritic import *
+from Verifier.SVerifier import Stochastic_Verifier
+# from Critic_Synth.NCritic import *
 import time
 from EKF import *
 # from collections import OrderedDict
@@ -32,8 +32,6 @@ class SNCBF_Synth(NCBF_Synth):
         super().__init__(arch, act_layer, case, verbose=False)
         # Under construction: Critic is designed to tuning loss fcn automatically
         # self.critic = NeuralCritic(case)
-        # Verifier proposed to verify feasibility
-        self.veri = Verifier(NCBF=self, case=case, grid_shape=[100, 100, 100], verbose=verbose)
         lctime = time.ctime(time.time())
         # Tensorboard
         self.writer = SummaryWriter(f'./runs/SNCBF/{lctime}'.format(lctime))
@@ -47,6 +45,11 @@ class SNCBF_Synth(NCBF_Synth):
         #  [-0.06717124 0.02750288  0.14107035]
         #  [-0.0201735  0.00625575 -0.0836058]]
         self.run = 0
+        # Verifier proposed to verify feasibility
+        self.veri = Stochastic_Verifier(NCBF=self, case=case,
+                                        EKFGain=self.ekf_gain,
+                                        grid_shape=[100, 100, 100],
+                                        verbose=verbose)
 
     def numerical_delta_gamma(self, grad, gamma):
         '''
@@ -204,8 +207,8 @@ ObsAvoid = ObsAvoid()
 newCBF = SNCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)
 # newCBF.train(50, warm_start=True)
 # newCBF.run += 1
-newCBF.train(num_epoch=10, num_restart=8, warm_start=False)
-# newCBF.model.load_state_dict(torch.load('Trained_model/NCBF/NCBF_Obs4.pt'))
+# newCBF.train(num_epoch=10, num_restart=8, warm_start=False)
+newCBF.model.load_state_dict(torch.load('Trained_model/SNCBF/SNCBFGood/SNCBF_Obs0.pt'))
 
 # There is a bug in verifier that causes memory error due to too many intersections to verify
 veri_result, num = newCBF.veri.proceed_verification()
