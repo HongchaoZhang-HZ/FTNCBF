@@ -136,7 +136,7 @@ class NCBF_Synth(NCBF):
         loss = non_pos_loss + non_neg_loss
         return loss
 
-    def compute_volume(self, rdm_input, model_output):
+    def compute_volume(self, rdm_input, model_output=None):
         '''
         Compute volume covered by b(x)
         :param rdm_input: random uniform samples
