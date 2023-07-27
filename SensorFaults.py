@@ -2,12 +2,14 @@ import torch
 import numpy as np
 from dataclasses import dataclass
 
+
 @dataclass
 class Sensor:
     obs: int
     noise: float
 
-class SensorSet():
+
+class SensorSet:
     num_sensors: int
 
     def __init__(self, sensor_obs=None, sensor_noise=None):
@@ -17,7 +19,7 @@ class SensorSet():
         if sensor_obs is None:
             sensor_obs = [0, 1, 2]
         self.sensor_list = []
-        self.state_dim = np.max(sensor_obs)
+        self.state_dim = np.max(sensor_obs) + 1
         self.sensor_set_init(sensor_obs, sensor_noise)
         self.num_sensors = len(self.sensor_list)
         self.obs_matrix_init()
@@ -40,36 +42,47 @@ class SensorSet():
     def view_sensors(self):
         return self.sensor_list
 
+
 @dataclass
 class Fault:
-    idx: list
+    idx: int
+    target: list
     value: list
 
-class FaultPattern():
-    def __init__(self, Sensors, fault_idx=None, fault_value=None):
-        self.fault_mask = None
+
+class FaultPattern:
+    def __init__(self, sensors, fault_target=None, fault_value=None):
+        self.fault_mask_list = []
         self.fault_list = []
-        if fault_idx is None:
-            fault_idx = [[0], [1, 2]]
+        if fault_target is None:
+            fault_target = [[0], [1, 2]]
         if fault_value is None:
             fault_value = [[0.01], [0.01, 0.01]]
-        self.Sensors = Sensors
-        self.fault_list_init(fault_idx, fault_value)
+        self.Sensors = sensors
+        self.fault_list_init(fault_target, fault_value)
         self.num_faults = len(self.fault_list)
         self.fault_mask_init()
 
-    def fault_list_init(self, fault_idx, fault_value):
+    def fault_list_init(self, fault_target, fault_value):
         fault_list = []
-        for fidx in range(len(fault_idx)):
-            obs = fault_idx[fidx]
+        for fidx in range(len(fault_target)):
+            target = fault_target[fidx]
             attack = fault_value[fidx]
-            fault_list.append(Fault(obs, attack))
+            fault_list.append(Fault(fidx, target, attack))
         self.fault_list = fault_list
 
     def fault_mask_init(self):
-        fault_mask = np.ones(self.Sensors.num_sensors)
-        # If there is no fault, fault_mask = self.Sensors.obs_matrix
         for fault in self.fault_list:
-            for idx in fault.idx:
-                fault_mask[idx] = 0
-        self.fault_mask = fault_mask
+            fault_mask_matrix = self.Sensors.obs_matrix.copy()
+            # If there is no fault, fault_mask = self.Sensors.obs_matrix
+            for target in fault.target:
+                fault_mask_matrix[target][self.Sensors.sensor_list[target].obs] = 0
+            self.fault_mask_list.append(fault_mask_matrix)
+
+
+sensor_list = SensorSet([0, 1, 1, 2, 2], [0.001, 0.002, 0.0015, 0.001, 0.01])
+fault_list = FaultPattern(sensor_list,
+                          fault_target=[[1], [2, 3]],
+                          fault_value=[[0.1], [0.15, 2]])
+
+
