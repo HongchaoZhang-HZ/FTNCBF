@@ -58,6 +58,7 @@ class FTFramework():
         # Define SNCBFs' EKF Gain
         # Todo: update SNCBF EKF Gain
 
+
     def SNCBF_train(self, num_epoch, num_restart):
         for SNCBF in self.SNCBF_list:
             # Train SNCBFs

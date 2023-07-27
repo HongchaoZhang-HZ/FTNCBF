@@ -4,11 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="h_hat training tuned">
-      <change afterPath="$PROJECT_DIR$/.idea/other.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/FTNCBF.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/FTNCBF.iml" afterDir="false" />
+    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="FT-Framework Initial upload">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FTNCBF.py" beforeDir="false" afterPath="$PROJECT_DIR$/FTFrameworkHC.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -216,14 +213,7 @@
       <workItem from="1688703653264" duration="53000" />
       <workItem from="1688703761133" duration="142511000" />
       <workItem from="1689603463610" duration="146470000" />
-      <workItem from="1690469602624" duration="3196000" />
-    </task>
-    <task id="LOCAL-00001" summary="CMAES omitted">
-      <created>1688703920122</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1688703920122</updated>
+      <workItem from="1690469602624" duration="4635000" />
     </task>
     <task id="LOCAL-00002" summary="CMAES omitted">
       <created>1688704117886</created>
@@ -561,7 +551,14 @@
       <option name="project" value="LOCAL" />
       <updated>1690404381419</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="FT-Framework Initial upload">
+      <created>1690473949306</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1690473949306</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -579,7 +576,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="heuristic control input selection incorporated" />
     <MESSAGE value="NCBF training update (feasibility)" />
     <MESSAGE value="Process bar incorporated" />
     <MESSAGE value="Restart/Epoch Number changed" />
@@ -604,7 +600,8 @@
     <MESSAGE value="Sensors, faults, fault patterns are defined" />
     <MESSAGE value="Volume compute update" />
     <MESSAGE value="h_hat training tuned" />
-    <option name="LAST_COMMIT_MESSAGE" value="h_hat training tuned" />
+    <MESSAGE value="FT-Framework Initial upload" />
+    <option name="LAST_COMMIT_MESSAGE" value="FT-Framework Initial upload" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
