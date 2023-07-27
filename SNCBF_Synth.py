@@ -210,12 +210,12 @@ class SNCBF_Synth(NCBF_Synth):
             #     torch.save(self.model.state_dict(), f'Trained_model/NCBF/NCBF_Obs{epoch}.pt'.format(epoch))
             torch.save(self.model.state_dict(), f'Trained_model/NCBF/SNCBF_Obs{self.run}.pt'.format(self.run))
 
-ObsAvoid = ObsAvoid()
-newCBF = SNCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)
-# newCBF.train(50, warm_start=True)
-# newCBF.run += 1
-newCBF.train(num_epoch=10, num_restart=8, warm_start=False)
-# newCBF.model.load_state_dict(torch.load('Trained_model/SNCBF/SNCBFGood/SNCBF_Obs0.pt'))
-
-# There is a bug in verifier that causes memory error due to too many intersections to verify
-veri_result, num = newCBF.veri.proceed_verification()
+# ObsAvoid = ObsAvoid()
+# newCBF = SNCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)
+# # newCBF.train(50, warm_start=True)
+# # newCBF.run += 1
+# newCBF.train(num_epoch=10, num_restart=8, warm_start=False)
+# # newCBF.model.load_state_dict(torch.load('Trained_model/SNCBF/SNCBFGood/SNCBF_Obs0.pt'))
+#
+# # There is a bug in verifier that causes memory error due to too many intersections to verify
+# veri_result, num = newCBF.veri.proceed_verification()

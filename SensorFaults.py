@@ -80,9 +80,7 @@ class FaultPattern:
             self.fault_mask_list.append(fault_mask_matrix)
 
 
-sensor_list = SensorSet([0, 1, 1, 2, 2], [0.001, 0.002, 0.0015, 0.001, 0.01])
-fault_list = FaultPattern(sensor_list,
-                          fault_target=[[1], [2, 3]],
-                          fault_value=[[0.1], [0.15, 2]])
-
-
+# sensor_list = SensorSet([0, 1, 1, 2, 2], [0.001, 0.002, 0.0015, 0.001, 0.01])
+# fault_list = FaultPattern(sensor_list,
+#                           fault_target=[[1], [2, 3]],
+#                           fault_value=[[0.1], [0.15, 2]])

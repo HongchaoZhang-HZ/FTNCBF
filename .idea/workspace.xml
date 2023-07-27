@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="FT-Framework Initial upload">
+    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="Sensor Faults debugged">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FTFrameworkHC.py" beforeDir="false" afterPath="$PROJECT_DIR$/FTFrameworkHC.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SensorFaults.py" beforeDir="false" afterPath="$PROJECT_DIR$/SensorFaults.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -211,14 +212,7 @@
       <workItem from="1688703653264" duration="53000" />
       <workItem from="1688703761133" duration="142511000" />
       <workItem from="1689603463610" duration="146470000" />
-      <workItem from="1690469602624" duration="9368000" />
-    </task>
-    <task id="LOCAL-00003" summary="Initial framework setup">
-      <created>1688704639178</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1688704639178</updated>
+      <workItem from="1690469602624" duration="10188000" />
     </task>
     <task id="LOCAL-00004" summary="Batch training incorporated">
       <created>1688864963461</created>
@@ -556,7 +550,14 @@
       <option name="project" value="LOCAL" />
       <updated>1690475635173</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="Sensor Faults debugged">
+      <created>1690490319494</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1690490319494</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -574,7 +575,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="NCBF training update (feasibility)" />
     <MESSAGE value="Process bar incorporated" />
     <MESSAGE value="Restart/Epoch Number changed" />
     <MESSAGE value="porocess bar incorporated" />
@@ -599,7 +599,8 @@
     <MESSAGE value="Volume compute update" />
     <MESSAGE value="h_hat training tuned" />
     <MESSAGE value="FT-Framework Initial upload" />
-    <option name="LAST_COMMIT_MESSAGE" value="FT-Framework Initial upload" />
+    <MESSAGE value="Sensor Faults debugged" />
+    <option name="LAST_COMMIT_MESSAGE" value="Sensor Faults debugged" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
