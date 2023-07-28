@@ -1,6 +1,8 @@
 from SensorFaults import *
 from SNCBF_Synth import *
 from FTEst import *
+from Controller import NCBFCtrl
+from ConflictResolution import Conflict_Resolution
 
 class FTFramework:
     """
@@ -49,6 +51,12 @@ class FTFramework:
         self.FTEKF_gain_list = []
         self.__FTEst_Init__()
         self.__EKF_gainlist_Init__()
+        self.Ctrl_list = []
+        self.Ctrl_Init()
+        self.CR = Conflict_Resolution(SNCBF_list=self.SNCBF_list,
+                                      sensor_list=self.sensor_list,
+                                      fault_list=self.fault_list,
+                                      controller=self.Ctrl_list)
 
     def __SNCBF_Init__(self):
         # Define SNCBFs
@@ -68,6 +76,12 @@ class FTFramework:
         for i in range(self.fault_list.num_faults):
             gain_list.append(self.FTEst_list.FTEst_list[i].K)
         self.FTEKF_gain_list = gain_list
+
+    def Ctrl_Init(self):
+        controller_list = []
+        for idx in range(self.fault_list.num_faults):
+            controller_list.append(NCBFCtrl(self.case.DIM, self.SNCBF_list[idx]))
+        self.Ctrl_list = controller_list
 
 
     def train(self, num_epoch, num_restart):
