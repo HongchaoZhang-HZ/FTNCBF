@@ -51,6 +51,10 @@ class SNCBF_Synth(NCBF_Synth):
                                         grid_shape=[100, 100, 100],
                                         verbose=verbose)
 
+
+    def update_EKF_gain(self, new_gain):
+        self.ekf_gain = new_gain
+
     def numerical_delta_gamma(self, grad, gamma):
         '''
         We can numerically get b_gamma by decrease along b, i.e. delta gamma

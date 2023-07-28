@@ -9,12 +9,13 @@ from filterpy.stats import plot_covariance_ellipse
 import matplotlib.pyplot as plt
 
 class RobotEKF(EKF):
-    def __init__(self, dt, wheelbase, std_vel, std_steer):
+    def __init__(self, dt, wheelbase, std_vel, std_steer, verbose=False):
         EKF.__init__(self, 3, 3, 1)
         self.dt = dt
         self.wheelbase = wheelbase
         self.std_vel = std_vel
         self.std_steer = std_steer
+        self.verbose = verbose
 
         a, x, y, v, w, theta, time = symbols(
             'a, x, y, v, w, theta, t')
@@ -96,7 +97,7 @@ def Hx(x, landmark_pos):
     """
     px = landmark_pos[0]
     py = landmark_pos[1]
-    dist = sqrt((px - x[0, 0])**2 + (py - x[1, 0])**2)
+    # dist = sqrt((px - x[0, 0])**2 + (py - x[1, 0])**2)
 
     # Hx = np.array([[dist],
     #             [atan2(py - x[1, 0], px - x[0, 0]) - x[2, 0]]])

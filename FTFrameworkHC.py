@@ -1,6 +1,6 @@
 from SensorFaults import *
 from SNCBF_Synth import *
-
+from FTEst import *
 
 class FTFramework:
     """
@@ -39,12 +39,16 @@ class FTFramework:
 
         # Initialize SNCBF list
         self.SNCBF_list = []
+        self.num_SNCBF = None
         self.__SNCBF_Init__()
         # Initialize EKF list
         self.EKF_list = []
         # Initialize FT parameters
         self.gamma_list = gamma_list
         self.FTEst_list = []
+        self.FTEKF_gain_list = []
+        self.__FTEst_Init__()
+        self.__EKF_gainlist_Init__()
 
     def __SNCBF_Init__(self):
         # Define SNCBFs
@@ -54,22 +58,29 @@ class FTFramework:
                                 self.act_layer,
                                 self.case, verbose=self.verbose)
             self.SNCBF_list.append(SNCBF)
-
-    def __EKF_Init__(self):
-        EKF_list = []
-        # Define SNCBFs' EKF Gain
-        # Todo: update SNCBF EKF Gain
+            self.num_SNCBF = len(self.SNCBF_list)
 
     def __FTEst_Init__(self):
-        FTEst_list = []
-        # Define SNCBFs' EKF Gain
-        # Todo: update SNCBF EKF Gain
+        self.FTEst_list = FTEst(None, self.sensor_list, self.fault_list)
+
+    def __EKF_gainlist_Init__(self):
+        gain_list = []
+        for i in range(self.fault_list.num_faults):
+            gain_list.append(self.FTEst_list.FTEst_list[i].K)
+        self.FTEKF_gain_list = gain_list
+
 
     def train(self, num_epoch, num_restart):
-        for SNCBF in self.SNCBF_list:
+        for SNCBF_idx in range(self.num_SNCBF):
             # Train SNCBFs
-            SNCBF.train(num_epoch=num_epoch, num_restart=num_restart, warm_start=False)
+            self.SNCBF_list[SNCBF_idx].update_EKF_gain(self.FTEKF_gain_list[SNCBF_idx])
+            self.SNCBF_list[SNCBF_idx].train(num_epoch=num_epoch, num_restart=num_restart, warm_start=False)
             # veri_result, num = SNCBF.veri.proceed_verification()
+
+    def FTNCBF_Framework(self):
+        # TODO: FTNCBF framework
+        # Define
+        return
 
 
 sensor_list = SensorSet([0, 1, 1, 2, 2], [0.001, 0.002, 0.0015, 0.001, 0.01])
@@ -78,6 +89,7 @@ fault_list = FaultPattern(sensor_list,
                           fault_value=[[0.1], [0.15, 2]])
 ObsAvoid = ObsAvoid()
 gamma_list = [0.001, 0.002, 0.0015, 0.001, 0.01]
-FTFramework(arch=[32, 32], act_layer=[True, True], case=ObsAvoid,
-            sensors=sensor_list, faults=fault_list,
-            gamma_list=gamma_list, verbose=True)
+FTNCBF = FTFramework(arch=[32, 32], act_layer=[True, True], case=ObsAvoid,
+                     sensors=sensor_list, faults=fault_list,
+                     gamma_list=gamma_list, verbose=True)
+FTNCBF.train(num_epoch=10, num_restart=2)
