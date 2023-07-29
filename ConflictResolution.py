@@ -12,13 +12,14 @@ class Conflict_Resolution:
     def __init__(self, SNCBF_list,
                  sensor_list: SensorSet,
                  fault_list: FaultPattern,
-                 controller_list: list):
+                 case, controller: NCBFCtrl):
         self.SNCBF_list = SNCBF_list
         self.sensor_list = sensor_list
         self.fault_list = fault_list
+        self.case = case
         self.obsMatrix = self.sensor_list.obs_matrix
         self.fault_masks = self.fault_list.fault_mask_list
-        self.controller_list = controller_list
+        self.controller = controller
 
     def Resolution(self):
         return

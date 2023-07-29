@@ -44,19 +44,19 @@ class FTFramework:
         self.num_SNCBF = None
         self.__SNCBF_Init__()
         # Initialize EKF list
-        self.EKF_list = []
+        # self.EKF_list = []
         # Initialize FT parameters
         self.gamma_list = gamma_list
-        self.FTEst_list = []
-        self.FTEKF_gain_list = []
-        self.__FTEst_Init__()
-        self.__EKF_gainlist_Init__()
-        self.Ctrl_list = []
-        self.Ctrl_Init()
+        self.FTEst = FTEst(None, self.sensor_list, self.fault_list)
+        self.FTEKF_gain_list = self.FTEst.EKFgain_list
+        self.Controller = NCBFCtrl(self.case.DIM, self.SNCBF_list,
+                                   self.FTEst, self.case,
+                                   self.gamma_list)
         self.CR = Conflict_Resolution(SNCBF_list=self.SNCBF_list,
                                       sensor_list=self.sensor_list,
                                       fault_list=self.fault_list,
-                                      controller_list=self.Ctrl_list)
+                                      case=self.case,
+                                      controller=self.Controller)
 
     def __SNCBF_Init__(self):
         # Define SNCBFs
@@ -67,22 +67,6 @@ class FTFramework:
                                 self.case, verbose=self.verbose)
             self.SNCBF_list.append(SNCBF)
             self.num_SNCBF = len(self.SNCBF_list)
-
-    def __FTEst_Init__(self):
-        self.FTEst_list = FTEst(None, self.sensor_list, self.fault_list)
-
-    def __EKF_gainlist_Init__(self):
-        gain_list = []
-        for i in range(self.fault_list.num_faults):
-            gain_list.append(self.FTEst_list.FTEst_list[i].K)
-        self.FTEKF_gain_list = gain_list
-
-    def Ctrl_Init(self):
-        controller_list = []
-        for idx in range(self.fault_list.num_faults):
-            controller_list.append(NCBFCtrl(self.case.DIM, self.SNCBF_list[idx]))
-        self.Ctrl_list = controller_list
-
 
     def train(self, num_epoch, num_restart):
         for SNCBF_idx in range(self.num_SNCBF):

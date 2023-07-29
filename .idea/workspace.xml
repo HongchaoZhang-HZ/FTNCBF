@@ -4,10 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="training framework initial upload">
+    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="Init controller upload">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cases/Case.py" beforeDir="false" afterPath="$PROJECT_DIR$/Cases/Case.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cases/ObsAvoid.py" beforeDir="false" afterPath="$PROJECT_DIR$/Cases/ObsAvoid.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ConflictResolution.py" beforeDir="false" afterPath="$PROJECT_DIR$/ConflictResolution.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/Controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FTFrameworkHC.py" beforeDir="false" afterPath="$PROJECT_DIR$/FTFrameworkHC.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NCBF_Synth.py" beforeDir="false" afterPath="$PROJECT_DIR$/NCBF_Synth.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SNCBF_Synth.py" beforeDir="false" afterPath="$PROJECT_DIR$/SNCBF_Synth.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -30,23 +34,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/ericzhang/Documents/GitHub/FTNCBF/Trained_model/NCBF/SNCBFGood",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/ericzhang/Documents/GitHub/FTNCBF/Trained_model/NCBF/SNCBFGood&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/Trained_model/NCBF/SNCBFGood" />
@@ -63,7 +67,7 @@
       <recent name="$PROJECT_DIR$/Modules" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.Controller">
+  <component name="RunManager" selected="Python.FTFrameworkHC">
     <configuration name="Controller" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="FTNCBF" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -192,8 +196,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.Controller" />
         <item itemvalue="Python.FTFrameworkHC" />
+        <item itemvalue="Python.Controller" />
         <item itemvalue="Python.RdObsEKF" />
         <item itemvalue="Python.FTEst" />
         <item itemvalue="Python.SNCBF_Synth" />
@@ -215,21 +219,8 @@
       <workItem from="1690569262137" duration="747000" />
       <workItem from="1690570015020" duration="1283000" />
       <workItem from="1690571307142" duration="7663000" />
-      <workItem from="1690597056004" duration="9362000" />
-    </task>
-    <task id="LOCAL-00010" summary="flexible dim incorporated">
-      <created>1689039474432</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1689039474432</updated>
-    </task>
-    <task id="LOCAL-00011" summary="generate data is now compatible to diff dims">
-      <created>1689050492831</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1689050492831</updated>
+      <workItem from="1690597056004" duration="19339000" />
+      <workItem from="1690659609847" duration="3612000" />
     </task>
     <task id="LOCAL-00012" summary="Class Case update">
       <created>1689116334788</created>
@@ -560,7 +551,21 @@
       <option name="project" value="LOCAL" />
       <updated>1690601636352</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="default EKF removed">
+      <created>1690607628141</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1690607628141</updated>
+    </task>
+    <task id="LOCAL-00060" summary="Init controller upload">
+      <created>1690607646867</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1690607646867</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -578,8 +583,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="NCBF_training update" />
-    <MESSAGE value="training speed up less conservative" />
     <MESSAGE value="tensorboard incorporated" />
     <MESSAGE value="volume evaluation" />
     <MESSAGE value="General Synth works for NBF" />
@@ -603,7 +606,9 @@
     <MESSAGE value="SNCBF verbose issue solved" />
     <MESSAGE value="relaxed criterion" />
     <MESSAGE value="training framework initial upload" />
-    <option name="LAST_COMMIT_MESSAGE" value="training framework initial upload" />
+    <MESSAGE value="default EKF removed" />
+    <MESSAGE value="Init controller upload" />
+    <option name="LAST_COMMIT_MESSAGE" value="Init controller upload" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -620,7 +625,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/NCBF_Synth.py</url>
-          <line>91</line>
+          <line>92</line>
           <option name="timeStamp" value="56" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -643,6 +648,11 @@
           <line>178</line>
           <option name="timeStamp" value="78" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Controller.py</url>
+          <line>82</line>
+          <option name="timeStamp" value="80" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
@@ -660,6 +670,7 @@
     <SUITE FILE_PATH="coverage/FTNCBF$NCBF_Synth.coverage" NAME="NCBF_Synth Coverage Results" MODIFIED="1689953659821" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$FTFrameworkHC.coverage" NAME="FTFrameworkHC Coverage Results" MODIFIED="1690601495873" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$SVerifier.coverage" NAME="SVerifier Coverage Results" MODIFIED="1690336440543" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Verifier" />
+    <SUITE FILE_PATH="coverage/FTNCBF$Controller.coverage" NAME="Controller Coverage Results" MODIFIED="1690661365533" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$Darboux.coverage" NAME="Darboux Coverage Results" MODIFIED="1689114548828" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Cases" />
     <SUITE FILE_PATH="coverage/FTNCBF$SNCBF_Synth.coverage" NAME="SNCBF_Synth Coverage Results" MODIFIED="1690515267097" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
