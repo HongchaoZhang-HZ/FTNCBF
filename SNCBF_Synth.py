@@ -53,6 +53,13 @@ class SNCBF_Synth(NCBF_Synth):
                                         grid_shape=[100, 100, 100],
                                         verbose=verbose)
 
+    @property
+    def get_model(self):
+        self.model
+
+    def get_grad(self, x):
+        grad_input = torch.tensor(x, requires_grad=True)
+        return torch.autograd.grad(self.model.forward(grad_input), grad_input)
 
     def update_EKF_gain(self, new_gain):
         self.ekf_gain = new_gain

@@ -11,7 +11,7 @@ class ObsAvoid(case):
     '''
     def __init__(self):
         DOMAIN = [[-2, 2], [-2, 2], [-2, 2]]
-        CTRLDOM = [-2, 2]
+        CTRLDOM = [[-2, 2]]
         discrete = False
         self.v = 1
         super().__init__(DOMAIN, CTRLDOM, discrete=discrete)

@@ -1,5 +1,6 @@
 import torch
 from tqdm import tqdm
+from scipy.optimize import minimize
 # from progress.bar import Bar
 from Modules.NCBF import *
 from torch import optim
@@ -68,7 +69,7 @@ class NCBF_Synth(NCBF):
             return torch.Tensor(res_list).squeeze()
         else:
             # Quick check for scalar u only
-            [u_lb, u_ub] = torch.Tensor(self.case.CTRLDOM)
+            [[u_lb, u_ub]] = torch.Tensor(self.case.CTRLDOM)
             res_list = []
             for i in range(len(dbdxfx)):
                 res_ulb = dbdxfx[i] + dbdxgx[i] * u_lb
