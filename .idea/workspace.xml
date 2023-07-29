@@ -4,15 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="Init controller upload">
+    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="Initial FT framework upload">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cases/Case.py" beforeDir="false" afterPath="$PROJECT_DIR$/Cases/Case.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cases/ObsAvoid.py" beforeDir="false" afterPath="$PROJECT_DIR$/Cases/ObsAvoid.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ConflictResolution.py" beforeDir="false" afterPath="$PROJECT_DIR$/ConflictResolution.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/Controller.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FTFrameworkHC.py" beforeDir="false" afterPath="$PROJECT_DIR$/FTFrameworkHC.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NCBF_Synth.py" beforeDir="false" afterPath="$PROJECT_DIR$/NCBF_Synth.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SNCBF_Synth.py" beforeDir="false" afterPath="$PROJECT_DIR$/SNCBF_Synth.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -220,28 +215,7 @@
       <workItem from="1690570015020" duration="1283000" />
       <workItem from="1690571307142" duration="7663000" />
       <workItem from="1690597056004" duration="19339000" />
-      <workItem from="1690659609847" duration="3612000" />
-    </task>
-    <task id="LOCAL-00012" summary="Class Case update">
-      <created>1689116334788</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1689116334788</updated>
-    </task>
-    <task id="LOCAL-00013" summary="Class Case update">
-      <created>1689129639147</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1689129639147</updated>
-    </task>
-    <task id="LOCAL-00014" summary="NBF multi-dim update">
-      <created>1689130780147</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1689130780147</updated>
+      <workItem from="1690659609847" duration="6930000" />
     </task>
     <task id="LOCAL-00015" summary="NBF multi-dim update">
       <created>1689221073839</created>
@@ -565,7 +539,28 @@
       <option name="project" value="LOCAL" />
       <updated>1690607646867</updated>
     </task>
-    <option name="localTasksCounter" value="61" />
+    <task id="LOCAL-00061" summary="Init NCBF based controller upload">
+      <created>1690663322747</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1690663322748</updated>
+    </task>
+    <task id="LOCAL-00062" summary="first gradient replaced by autograd">
+      <created>1690663358038</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1690663358038</updated>
+    </task>
+    <task id="LOCAL-00063" summary="Initial FT framework upload">
+      <created>1690663376325</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1690663376325</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -583,9 +578,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="tensorboard incorporated" />
-    <MESSAGE value="volume evaluation" />
-    <MESSAGE value="General Synth works for NBF" />
     <MESSAGE value="NCBF tuning" />
     <MESSAGE value="Verifier bug found" />
     <MESSAGE value="Comments added" />
@@ -608,7 +600,10 @@
     <MESSAGE value="training framework initial upload" />
     <MESSAGE value="default EKF removed" />
     <MESSAGE value="Init controller upload" />
-    <option name="LAST_COMMIT_MESSAGE" value="Init controller upload" />
+    <MESSAGE value="Init NCBF based controller upload" />
+    <MESSAGE value="first gradient replaced by autograd" />
+    <MESSAGE value="Initial FT framework upload" />
+    <option name="LAST_COMMIT_MESSAGE" value="Initial FT framework upload" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
