@@ -1,40 +1,51 @@
+import numpy as np
 import torch
 from Cases.Case import case
+from scipy.optimize import NonlinearConstraint
+from scipy.optimize import minimize
 
 from FTEst import FTEst
 from SNCBF_Synth import *
 from Cases.ObsAvoid import ObsAvoid
 from SensorFaults import *
+
 class NCBFCtrl:
-    def __init__(self, DIM, SNCBF_list, FTEst_list, case: object, gamma_list):
+    def __init__(self, DIM, SNCBF_list, FTEst, case: object, gamma_list):
         self.DIM = DIM
         self.SNCBF_list = SNCBF_list
-        self.FTEst_list = FTEst_list
+        self.num_SNCBF = len(SNCBF_list)
+        self.FTEst = FTEst
+        self.FTEKF_gain_list = self.FTEst.EKFgain_list
         self.case = case
         self.fx = self.case.f_x
         self.gx = self.case.g_x
         self.gamma_list = gamma_list
-        self.grad_max_list = self.grad_max_Init()
+        # self.grad_max_list = self.grad_max_Init()
 
-    def compute_u(self, state):
-        # TODO: unconstrained minimization as a baseline
+    def compute_u(self, x):
+        def fcn(u):
+            return (u**2).sum()
         # minimize ||u||
-        u = 0
-        return u
+        u0 = np.array([0])
+        res = minimize(fcn, u0)
+        return res
 
-    def dbdx(self, x):
-        dbdx = 0
+    def d1bdx1(self, SNCBF, x:float):
+        grad_input = torch.tensor(x, requires_grad=True)
+        dbdx = torch.autograd.grad(SNCBF.model.forward(grad_input), grad_input)
         return dbdx
 
-    def d2bdx2(self, x):
-        d2bdx2 = 0
+    def d2bdx2(self, SNCBF, x):
+        grad_input = torch.tensor(x, requires_grad=True)
+        d2bdx2 = torch.autograd.grad(self.d1bdx1(SNCBF, grad_input),
+                                     SNCBF.model.forward(grad_input))
         return d2bdx2
 
     # def grad_max_Init(self):
     #     return
 
-    def solo_SCBF_condition(self, x, EKFGain, obsMatrix, gamma):
-        dbdx = self.dbdx(x)
+    def solo_SCBF_condition(self, SNCBF, x, EKFGain, obsMatrix, gamma):
+        dbdx = SNCBF.get_grad(x)
         # stochastic version
         fx = self.fx(torch.Tensor(x).reshape([1, self.DIM])).numpy()
         dbdxf = dbdx @ fx
@@ -47,24 +58,40 @@ class NCBFCtrl:
 
     def multi_SCBF_conditions(self, x):
         cons = []
+        gain_list = []
         for SNCBF_idx in range(self.num_SNCBF):
             # Update observation matrix
-            obsMatrix = self.fault_list.fault_mask_list[SNCBF_idx]
+            obsMatrix = self.FTEst.fault_list.fault_mask_list[SNCBF_idx]
             # Update EKF gain
             EKFGain = self.FTEKF_gain_list[SNCBF_idx]
             # Compute SCBF constraint
-            SCBF_cons = self.solo_SCBF_condition(x, EKFGain, obsMatrix,
+            SCBF_cons = self.solo_SCBF_condition(self.SNCBF_list[SNCBF_idx],
+                                                 x, EKFGain, obsMatrix,
                                                  self.gamma_list[SNCBF_idx])
+            cons.append(SCBF_cons)
 
-    def CBF_based_u(self, state):
+            # Compute Affine Gain
+            affine_gain = torch.stack(self.SNCBF_list[SNCBF_idx].get_grad(x)) @ self.gx(x)
+            gain_list.append(affine_gain)
+        return cons, gain_list
+
+    def CBF_based_u(self, x):
         # compute based on self.CBF
-        dbdx = self.dbdx(x)
-        affine_gain = dbdx @ self.gx(x)
-        # TODO: constrained minimization
+        SCBF_cons, affine_gain = self.multi_SCBF_conditions(x)
+        cons = tuple()
+        for idx in range(self.num_SNCBF):
+            SoloCBFCon = lambda u: (affine_gain[idx] @ u).squeeze() + (SCBF_cons[idx]).squeeze()
+            SoloOptCBFCon = NonlinearConstraint(SoloCBFCon, 0, np.inf)
+            cons = cons + (SoloOptCBFCon,)
+        def fcn(u):
+            return (u**2).sum()
+        # minimize ||u||
+        u0 = np.zeros(self.case.CTRLDIM)
         # minimize ||u||
         # constraint: affine_gain @ u + self.SCBF_conditions(x)
+        res = minimize(fcn, u0, constraints=SoloOptCBFCon)
+        return res
 
-        return
 
 sensor_list = SensorSet([0, 1, 1, 2, 2], [0.001, 0.002, 0.0015, 0.001, 0.01])
 fault_list = FaultPattern(sensor_list,
@@ -76,5 +103,6 @@ SNCBF0 = SNCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)
 SNCBF0.model.load_state_dict(torch.load('Trained_model/SNCBF/SNCBFGood/SNCBF_Obs0.pt'), strict=True)
 SNCBF1 = SNCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)
 SNCBF1.model.load_state_dict(torch.load('Trained_model/SNCBF/SNCBFGood/SNCBF_Obs1.pt'), strict=True)
-FTEst_list = FTEst(None, sensor_list, fault_list)
-ctrl = NCBFCtrl(ObsAvoid.DIM, [SNCBF0, SNCBF1], FTEst_list, ObsAvoid, gamma_list)
+FTEst = FTEst(None, sensor_list, fault_list)
+ctrl = NCBFCtrl(ObsAvoid.DIM, [SNCBF0, SNCBF1], FTEst, ObsAvoid, gamma_list)
+res = ctrl.CBF_based_u(np.array([[0,0,0]],dtype=np.float32))

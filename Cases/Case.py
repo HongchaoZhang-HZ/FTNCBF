@@ -24,6 +24,7 @@ class case:
         :param discrete: [bool] If the system is discrete-time then True
         '''
         self.CTRLDOM = CTRLDOM
+        self.CTRLDIM = len(self.CTRLDOM)
         self.DOMAIN = DOMAIN
         self.DIM = len(self.DOMAIN)
         self.discrete = discrete
