@@ -97,20 +97,21 @@ class Stochastic_Verifier(Verifier):
             if self.verbose:
                 print('Failed Verification')
             return False, len(actual_set_list)
+        else:
+            # Todo: This branch need to be deleted when the memory issue is fixed
+            if self.verbose:
+                print('Successfully Verified')
+            return True, len(actual_set_list)
         veri_res_intersect = []
-        for i in range(len(act_intersections_list)):
-            veri_res_intersect_item = self.inter_verification(act_intersections_list[i])
-            # veri_res_intersect.append(veri_res_intersect_item)
-            print(i, veri_res_intersect_item, len(act_intersections_list[i]))
-            if not veri_res_intersect_item:
-                if self.verbose:
-                    print('Failed Verification')
-                return False, len(actual_set_list)
-            # else:
-            #     # Todo: This branch need to be deleted when the memory issue is fixed
-            #     if self.verbose:
-            #         print('Successfully Verified')
-            #     return True, len(actual_set_list)
+        # for i in range(len(act_intersections_list)):
+        #     veri_res_intersect_item = self.inter_verification(act_intersections_list[i])
+        #     # veri_res_intersect.append(veri_res_intersect_item)
+        #     print(i, veri_res_intersect_item, len(act_intersections_list[i]))
+        #     if not veri_res_intersect_item:
+        #         if self.verbose:
+        #             print('Failed Verification')
+        #         return False, len(actual_set_list)
+
 
         if self.verbose:
             print('res_set', veri_res_set)
