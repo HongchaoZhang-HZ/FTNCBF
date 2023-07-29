@@ -40,7 +40,9 @@ class SNCBF_Synth(NCBF_Synth):
         self.gamma = 0.1
         self.delta_gamma = torch.zeros(1)
         self.c = torch.diag(torch.ones(self.DIM))
-        self.ekf_gain = torch.Tensor(self.EKF())
+        self.ekf_gain = torch.Tensor([[0.06415174, -0.01436932, -0.04649317],
+                                      [-0.06717124, 0.02750288,  0.14107035],
+                                      [-0.0201735,  0.00625575, -0.0836058]])
         # [[0.06415174 -0.01436932 -0.04649317]
         #  [-0.06717124 0.02750288  0.14107035]
         #  [-0.0201735  0.00625575 -0.0836058]]
@@ -54,6 +56,9 @@ class SNCBF_Synth(NCBF_Synth):
 
     def update_EKF_gain(self, new_gain):
         self.ekf_gain = new_gain
+
+    def update_obs_matrix_c(self, obs_matrix):
+        self.c = obs_matrix
 
     def numerical_delta_gamma(self, grad, gamma):
         '''
