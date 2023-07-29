@@ -73,14 +73,14 @@ class SNCBF_Synth(NCBF_Synth):
         # return torch.max(delta_gamma, self.delta_gamma)
         return delta_gamma
 
-    def EKF(self):
-        landmarks = np.array([[5, 10, 0.5], [10, 5, 0.5], [15, 15, 0.5]])
-
-        ekf = run_localization(
-            landmarks, std_vel=0.1, std_steer=np.radians(1),
-            std_range=0.3, std_bearing=0.1)
-        print('Final P:', ekf.P.diagonal())
-        return ekf.K
+    # def EKF(self):
+    #     landmarks = np.array([[5, 10, 0.5], [10, 5, 0.5], [15, 15, 0.5]])
+    #
+    #     ekf = run_localization(
+    #         landmarks, std_vel=0.1, std_steer=np.radians(1),
+    #         std_range=0.3, std_bearing=0.1)
+    #     print('Final P:', ekf.P.diagonal())
+    #     return ekf.K
 
     def feasibility_loss(self, grad_vector, X_batch):
         # compute loss based on (db/dx)*fx + (db/dx)*gx*u
