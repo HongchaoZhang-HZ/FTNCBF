@@ -56,7 +56,7 @@ class FTFramework:
         self.CR = Conflict_Resolution(SNCBF_list=self.SNCBF_list,
                                       sensor_list=self.sensor_list,
                                       fault_list=self.fault_list,
-                                      controller=self.Ctrl_list)
+                                      controller_list=self.Ctrl_list)
 
     def __SNCBF_Init__(self):
         # Define SNCBFs
@@ -86,8 +86,11 @@ class FTFramework:
 
     def train(self, num_epoch, num_restart):
         for SNCBF_idx in range(self.num_SNCBF):
+            # Update observation matrix
+            self.SNCBF_list[SNCBF_idx].update_obs_matrix_c(torch.Tensor(self.fault_list.fault_mask_list[SNCBF_idx]))
+            # Update EKF gain
+            self.SNCBF_list[SNCBF_idx].update_EKF_gain(torch.Tensor(self.FTEKF_gain_list[SNCBF_idx]))
             # Train SNCBFs
-            self.SNCBF_list[SNCBF_idx].update_EKF_gain(self.FTEKF_gain_list[SNCBF_idx])
             self.SNCBF_list[SNCBF_idx].train(num_epoch=num_epoch, num_restart=num_restart, warm_start=False)
             # veri_result, num = SNCBF.veri.proceed_verification()
 

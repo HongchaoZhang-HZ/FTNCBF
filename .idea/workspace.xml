@@ -4,11 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="FT-framework init">
-      <change afterPath="$PROJECT_DIR$/ConflictResolution.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Controller.py" afterDir="false" />
+    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="CR FT-F init upload">
+      <change afterPath="$PROJECT_DIR$/Trained_model/NCBF/SNCBFGood/SNCBF_Obs6.pt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ConflictResolution.py" beforeDir="false" afterPath="$PROJECT_DIR$/ConflictResolution.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EKF.py" beforeDir="false" afterPath="$PROJECT_DIR$/EKF.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FTFrameworkHC.py" beforeDir="false" afterPath="$PROJECT_DIR$/FTFrameworkHC.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SNCBF_Synth.py" beforeDir="false" afterPath="$PROJECT_DIR$/SNCBF_Synth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Verifier/SVerifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/Verifier/SVerifier.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,29 +33,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/ericzhang/Documents/GitHub/FTNCBF/Trained_model/SNCBF&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "/Users/ericzhang/Documents/GitHub/FTNCBF/Trained_model/NCBF/SNCBFGood",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Trained_model/NCBF/SNCBFGood" />
       <recent name="$PROJECT_DIR$/Trained_model/SNCBF" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/Trained_model/NCBF/NCBFGood" />
       <recent name="$PROJECT_DIR$/Trained_model/NBF" />
-      <recent name="$PROJECT_DIR$/Trained_model" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/Trained_model/SNCBF/SNCBFGood" />
@@ -89,9 +93,6 @@
       <module name="FTNCBF" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -198,8 +199,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.FTFrameworkHC" />
-        <item itemvalue="Python.FTEst" />
         <item itemvalue="Python.RdObsEKF" />
+        <item itemvalue="Python.FTEst" />
         <item itemvalue="Python.SNCBF_Synth" />
         <item itemvalue="Python.SensorFaults" />
       </list>
@@ -219,14 +220,8 @@
       <workItem from="1690469602624" duration="27996000" />
       <workItem from="1690569262137" duration="747000" />
       <workItem from="1690570015020" duration="1283000" />
-      <workItem from="1690571307142" duration="5596000" />
-    </task>
-    <task id="LOCAL-00006" summary="Succeed in feasibility">
-      <created>1688880828566</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1688880828566</updated>
+      <workItem from="1690571307142" duration="7663000" />
+      <workItem from="1690597056004" duration="3748000" />
     </task>
     <task id="LOCAL-00007" summary="full verificaiton incorporated">
       <created>1688920524831</created>
@@ -564,7 +559,14 @@
       <option name="project" value="LOCAL" />
       <updated>1690522838831</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="CR FT-F init upload">
+      <created>1690580749500</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1690580749500</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -582,7 +584,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Restart/Epoch Number changed" />
     <MESSAGE value="porocess bar incorporated" />
     <MESSAGE value="stochastic term incorporated" />
     <MESSAGE value="FT_NN_SCBF initial upload" />
@@ -607,7 +608,8 @@
     <MESSAGE value="FT-Framework Initial upload" />
     <MESSAGE value="Sensor Faults debugged" />
     <MESSAGE value="FT-framework init" />
-    <option name="LAST_COMMIT_MESSAGE" value="FT-framework init" />
+    <MESSAGE value="CR FT-F init upload" />
+    <option name="LAST_COMMIT_MESSAGE" value="CR FT-F init upload" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -643,15 +645,15 @@
           <option name="timeStamp" value="74" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Verifier/SVerifier.py</url>
-          <line>44</line>
-          <option name="timeStamp" value="75" />
+          <url>file://$PROJECT_DIR$/RdObsEKF.py</url>
+          <line>178</line>
+          <option name="timeStamp" value="78" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/FTNCBF$RdObsEKF.coverage" NAME="RdObsEKF Coverage Results" MODIFIED="1690517691294" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FTNCBF$RdObsEKF.coverage" NAME="RdObsEKF Coverage Results" MODIFIED="1690601073997" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$NCBF_SynthBF.coverage" NAME="NCBF_SynthBF Coverage Results" MODIFIED="1689914532596" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$NCBF_Verification.coverage" NAME="NCBF_Verification Coverage Results" MODIFIED="1690318093037" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Verifier" />
     <SUITE FILE_PATH="coverage/FTNCBF$EKF_test.coverage" NAME="EKF_test Coverage Results" MODIFIED="1690309595379" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -662,7 +664,7 @@
     <SUITE FILE_PATH="coverage/FTNCBF$ReLUNN_Decom.coverage" NAME="ReLUNN_Decom Coverage Results" MODIFIED="1689217009983" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Verifier" />
     <SUITE FILE_PATH="coverage/FTNCBF$EKF.coverage" NAME="EKF Coverage Results" MODIFIED="1690311345710" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$NCBF_Synth.coverage" NAME="NCBF_Synth Coverage Results" MODIFIED="1689953659821" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/FTNCBF$FTFrameworkHC.coverage" NAME="FTFrameworkHC Coverage Results" MODIFIED="1690522478594" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FTNCBF$FTFrameworkHC.coverage" NAME="FTFrameworkHC Coverage Results" MODIFIED="1690601495873" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$SVerifier.coverage" NAME="SVerifier Coverage Results" MODIFIED="1690336440543" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Verifier" />
     <SUITE FILE_PATH="coverage/FTNCBF$Darboux.coverage" NAME="Darboux Coverage Results" MODIFIED="1689114548828" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Cases" />
     <SUITE FILE_PATH="coverage/FTNCBF$SNCBF_Synth.coverage" NAME="SNCBF_Synth Coverage Results" MODIFIED="1690515267097" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
