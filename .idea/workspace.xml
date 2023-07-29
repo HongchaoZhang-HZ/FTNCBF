@@ -4,14 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="CR FT-F init upload">
-      <change afterPath="$PROJECT_DIR$/Trained_model/NCBF/SNCBFGood/SNCBF_Obs6.pt" afterDir="false" />
+    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="training framework initial upload">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ConflictResolution.py" beforeDir="false" afterPath="$PROJECT_DIR$/ConflictResolution.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EKF.py" beforeDir="false" afterPath="$PROJECT_DIR$/EKF.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FTFrameworkHC.py" beforeDir="false" afterPath="$PROJECT_DIR$/FTFrameworkHC.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/Controller.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SNCBF_Synth.py" beforeDir="false" afterPath="$PROJECT_DIR$/SNCBF_Synth.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Verifier/SVerifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/Verifier/SVerifier.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,7 +63,26 @@
       <recent name="$PROJECT_DIR$/Modules" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.FTFrameworkHC">
+  <component name="RunManager" selected="Python.Controller">
+    <configuration name="Controller" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="FTNCBF" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Controller.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="FTEst" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="FTNCBF" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -152,28 +168,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="SensorFaults" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="FTNCBF" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/SensorFaults.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="true" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="FTNCBF" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -198,11 +192,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.Controller" />
         <item itemvalue="Python.FTFrameworkHC" />
         <item itemvalue="Python.RdObsEKF" />
         <item itemvalue="Python.FTEst" />
         <item itemvalue="Python.SNCBF_Synth" />
-        <item itemvalue="Python.SensorFaults" />
       </list>
     </recent_temporary>
   </component>
@@ -221,28 +215,7 @@
       <workItem from="1690569262137" duration="747000" />
       <workItem from="1690570015020" duration="1283000" />
       <workItem from="1690571307142" duration="7663000" />
-      <workItem from="1690597056004" duration="3748000" />
-    </task>
-    <task id="LOCAL-00007" summary="full verificaiton incorporated">
-      <created>1688920524831</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1688920524831</updated>
-    </task>
-    <task id="LOCAL-00008" summary="trivial penalty included">
-      <created>1689014705253</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1689014705253</updated>
-    </task>
-    <task id="LOCAL-00009" summary="converge to valid NBF">
-      <created>1689037268314</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1689037268314</updated>
+      <workItem from="1690597056004" duration="9362000" />
     </task>
     <task id="LOCAL-00010" summary="flexible dim incorporated">
       <created>1689039474432</created>
@@ -566,7 +539,28 @@
       <option name="project" value="LOCAL" />
       <updated>1690580749500</updated>
     </task>
-    <option name="localTasksCounter" value="56" />
+    <task id="LOCAL-00056" summary="SNCBF verbose issue solved">
+      <created>1690601589508</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1690601589508</updated>
+    </task>
+    <task id="LOCAL-00057" summary="relaxed criterion">
+      <created>1690601614222</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1690601614222</updated>
+    </task>
+    <task id="LOCAL-00058" summary="training framework initial upload">
+      <created>1690601636352</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1690601636352</updated>
+    </task>
+    <option name="localTasksCounter" value="59" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -584,9 +578,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="porocess bar incorporated" />
-    <MESSAGE value="stochastic term incorporated" />
-    <MESSAGE value="FT_NN_SCBF initial upload" />
     <MESSAGE value="NCBF_training update" />
     <MESSAGE value="training speed up less conservative" />
     <MESSAGE value="tensorboard incorporated" />
@@ -609,7 +600,10 @@
     <MESSAGE value="Sensor Faults debugged" />
     <MESSAGE value="FT-framework init" />
     <MESSAGE value="CR FT-F init upload" />
-    <option name="LAST_COMMIT_MESSAGE" value="CR FT-F init upload" />
+    <MESSAGE value="SNCBF verbose issue solved" />
+    <MESSAGE value="relaxed criterion" />
+    <MESSAGE value="training framework initial upload" />
+    <option name="LAST_COMMIT_MESSAGE" value="training framework initial upload" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

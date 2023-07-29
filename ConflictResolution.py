@@ -24,10 +24,11 @@ class Conflict_Resolution:
         return
 
 
-sensor_list = SensorSet([0, 1, 1, 2, 2], [0.001, 0.002, 0.0015, 0.001, 0.01])
-fault_list = FaultPattern(sensor_list,
-                          fault_target=[[1], [2, 3]],
-                          fault_value=[[0.1], [0.15, 2]])
-ObsAvoid = ObsAvoid()
-gamma_list = [0.001, 0.002, 0.0015, 0.001, 0.01]
-CR = Conflict_Resolution()
+
+# sensor_list = SensorSet([0, 1, 1, 2, 2], [0.001, 0.002, 0.0015, 0.001, 0.01])
+# fault_list = FaultPattern(sensor_list,
+#                           fault_target=[[1], [2, 3]],
+#                           fault_value=[[0.1], [0.15, 2]])
+# ObsAvoid = ObsAvoid()
+# gamma_list = [0.001, 0.002, 0.0015, 0.001, 0.01]
+# CR = Conflict_Resolution()
