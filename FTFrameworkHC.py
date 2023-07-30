@@ -128,26 +128,60 @@ class FTFramework:
             # veri_result, num = SNCBF.veri.proceed_verification()
 
     def FTNCBF_Framework(self, T, dt, x0):
-        # TODO: FTNCBF framework
         # Define initial state x
         x0 = np.array([[1,1,0]])
         x = x0
 
+        # TODO: put these in self.CR.Resolution(res.success)
         for t in range(T):
             # NCBF control optimizer output
             res = self.Controller.CBF_based_u(x)
 
-            # compute u
+            # STEP 1 compute u that satisfy all SNCBF cons
             if res.success:
                 u = res.x
+            # if the result has a false feasibility flag,
+            # then go step 2
             else:
+                # TODO: tempt_flist = self.BackUp_list
+                tempt_flist = self.fault_list.fault_list
+                # STEP 2 Get difference
+                # 2-1. Get estimates
+                est = []
+                diff_list = []
+                double_check_diff_list = []
+                for idx in range(2):
+                    # TODO: replace number 2 with self.fault_list.num_faults
+                    est.append(self.FTEst.FTEst_list[idx].x)
+                    diff_list.append(np.linalg.norm(self.FTEst.FTEst_list[idx].x - x.transpose()))
+                    # TODO: replace 3-2 with (backuplist length - self.fault_list.num_faults)
+                    dc_diff_list = np.linalg.norm(np.array([self.FTEst.FTEst_list[3-2].x]) - self.FTEst.FTEst_list[idx].x)
+                    double_check_diff_list.append(np.min(dc_diff_list))
+
+                est_list = np.array(est)
+                diff_array = np.array(diff_list)
+                double_check_diff_array = np.array(double_check_diff_list)
+                # 2-2. Get Difference
+                if np.min(double_check_diff_array) >= self.gamma_list[np.argmin(double_check_diff_array)]:
+                    # update fault_list
+                    tempt_flist.remove(self.fault_list.fault_list[np.min(double_check_diff_array)])
+                    NCBFCtrl(ObsAvoid.DIM, tempt_flist, FTEst, ObsAvoid, gamma_list)
+                # TODO: fix this
+                safe_idx = self.fault_list.fault_list.index(tempt_flist)
+                step2res = self.BackUpCtrl_list[safe_idx].compute_u(x)
+                u = step2res.x
+
+                step2res = False
                 # if the result has a false feasibility flag,
-                # then call conflict resolution
-                self.CR.Resolution(res.success)
-                self.FTEst.FTEst_list
-
-
-
+                # then go step 3
+                if not step2res:
+                    max_residual_idx = np.argmax(diff_array)
+                    tempt_flist.remove(self.fault_list.fault_list[max_residual_idx])
+                    # TODO: fix this
+                    safe_idx = self.fault_list.fault_list.index(tempt_flist)
+                    step3res = self.BackUpCtrl_list[safe_idx].compute_u(x)
+                    u = step3res.x
+            # Post controller steps
 
             # update state x in a discrete time manner
             x = x + dt * (self.case.f_x(x) + self.case.g_x(x) @ u)

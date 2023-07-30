@@ -24,6 +24,7 @@ class Conflict_Resolution:
         self.backupctrl_list = backupctrl_list
 
     def Resolution(self, feasible_flag):
+
         return
 
 

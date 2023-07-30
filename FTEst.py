@@ -20,7 +20,9 @@ class FTEst:
             self.gamma_list = 0.001 * np.ones(self.num_faults)
         else:
             self.gamma_list = gamma_list
-        self.FTEst_list = []
+        self.EKF = RdObsEKF(self.sensor_list, dt, wheelbase=0.5, std_vel=0.1,
+                            std_steer=np.radians(1), std_range=0.3, std_bearing=0.1, verbose=False)
+        self.FTEst_list = [self.EKF]
         self.EKFgain_list = []
         self.RdEKF_Init()
         self.RdEKF_Trail()
@@ -37,7 +39,7 @@ class FTEst:
         for idx in range(self.num_faults):
             # TODO: make it customizable
             ekf = RdObsEKF(self.sensor_list, dt, wheelbase=0.5, std_vel=0.1,
-                       std_steer=np.radians(1), std_range=0.3, std_bearing=0.1, verbose=False)
+                           std_steer=np.radians(1), std_range=0.3, std_bearing=0.1, verbose=False)
             ekf.obs_change(self.fault_list.fault_mask_list[idx])
             self.FTEst_list.append(ekf)
 

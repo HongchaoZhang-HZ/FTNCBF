@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="Initial FT framework upload">
+    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="backup issue identified and listed in TODOs">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ConflictResolution.py" beforeDir="false" afterPath="$PROJECT_DIR$/ConflictResolution.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FTEst.py" beforeDir="false" afterPath="$PROJECT_DIR$/FTEst.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FTFrameworkHC.py" beforeDir="false" afterPath="$PROJECT_DIR$/FTFrameworkHC.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -215,21 +216,7 @@
       <workItem from="1690570015020" duration="1283000" />
       <workItem from="1690571307142" duration="7663000" />
       <workItem from="1690597056004" duration="19339000" />
-      <workItem from="1690659609847" duration="6930000" />
-    </task>
-    <task id="LOCAL-00015" summary="NBF multi-dim update">
-      <created>1689221073839</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1689221073839</updated>
-    </task>
-    <task id="LOCAL-00016" summary="NCBF ObsAvoid initial commit">
-      <created>1689221101706</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1689221101706</updated>
+      <workItem from="1690659609847" duration="19919000" />
     </task>
     <task id="LOCAL-00017" summary="bug fixed">
       <created>1689391254375</created>
@@ -560,7 +547,21 @@
       <option name="project" value="LOCAL" />
       <updated>1690663376325</updated>
     </task>
-    <option name="localTasksCounter" value="64" />
+    <task id="LOCAL-00064" summary="backup controller init wait for CR">
+      <created>1690666657764</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1690666657764</updated>
+    </task>
+    <task id="LOCAL-00065" summary="backup issue identified and listed in TODOs">
+      <created>1690736910635</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1690736910635</updated>
+    </task>
+    <option name="localTasksCounter" value="66" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -578,8 +579,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="NCBF tuning" />
-    <MESSAGE value="Verifier bug found" />
     <MESSAGE value="Comments added" />
     <MESSAGE value="Debug" />
     <MESSAGE value="description" />
@@ -603,7 +602,9 @@
     <MESSAGE value="Init NCBF based controller upload" />
     <MESSAGE value="first gradient replaced by autograd" />
     <MESSAGE value="Initial FT framework upload" />
-    <option name="LAST_COMMIT_MESSAGE" value="Initial FT framework upload" />
+    <MESSAGE value="backup controller init wait for CR" />
+    <MESSAGE value="backup issue identified and listed in TODOs" />
+    <option name="LAST_COMMIT_MESSAGE" value="backup issue identified and listed in TODOs" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -644,9 +645,9 @@
           <option name="timeStamp" value="78" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Controller.py</url>
-          <line>82</line>
-          <option name="timeStamp" value="80" />
+          <url>file://$PROJECT_DIR$/FTFrameworkHC.py</url>
+          <line>137</line>
+          <option name="timeStamp" value="81" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -663,7 +664,7 @@
     <SUITE FILE_PATH="coverage/FTNCBF$ReLUNN_Decom.coverage" NAME="ReLUNN_Decom Coverage Results" MODIFIED="1689217009983" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Verifier" />
     <SUITE FILE_PATH="coverage/FTNCBF$EKF.coverage" NAME="EKF Coverage Results" MODIFIED="1690311345710" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$NCBF_Synth.coverage" NAME="NCBF_Synth Coverage Results" MODIFIED="1689953659821" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/FTNCBF$FTFrameworkHC.coverage" NAME="FTFrameworkHC Coverage Results" MODIFIED="1690601495873" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FTNCBF$FTFrameworkHC.coverage" NAME="FTFrameworkHC Coverage Results" MODIFIED="1690736714613" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$SVerifier.coverage" NAME="SVerifier Coverage Results" MODIFIED="1690336440543" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Verifier" />
     <SUITE FILE_PATH="coverage/FTNCBF$Controller.coverage" NAME="Controller Coverage Results" MODIFIED="1690661365533" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$Darboux.coverage" NAME="Darboux Coverage Results" MODIFIED="1689114548828" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Cases" />
