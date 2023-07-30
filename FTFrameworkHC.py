@@ -73,16 +73,40 @@ class FTFramework:
             self.SNCBF_list.append(SNCBF)
             self.num_SNCBF = len(self.SNCBF_list)
 
-    def __BackUp_Ctrl_Init__(self):
+    def __Fault_list_Init__(self):
         import itertools
-        lst = list(itertools.product([0, 1], repeat=self.num_SNCBF))
+        lst = list(itertools.product([0, 1], repeat=self.fault_list.num_faults))
         backup_list = []
-        BackUpCtrl_list = []
-        for item in lst[1:-1]:
+        BackUp_Faultlist = []
+        for item in lst:
             item = list(item)
             backup_list.append(item)
+        # Scan all fault combinations
         for idx in range(len(backup_list)):
             switch = backup_list[idx]
+            BackUp_Fault = []
+            # Combine faults
+            for item in range(len(switch)):
+                if item:
+                    BackUp_Fault.append(self.SNCBF_list[idx])
+        # TODO: make backup list automatically update itself based on faults
+        FaultPattern(sensor_list,
+                     fault_target=[[1], [2], [1, 2]],
+                     fault_value=[[0.1], [0.15], [0.1, 0.15]])
+
+    def __BackUp_Ctrl_Init__(self):
+        # import itertools
+        # lst = list(itertools.product([0, 1], repeat=self.num_SNCBF))
+        # backup_list = []
+        # for item in lst:
+        #     item = list(item)
+        #     backup_list.append(item)
+
+        BackUpCtrl_list = []
+        # TODO: change BackUp_List to self.BackUp_List when init is finished
+        BackUp_List = [[1,0], [0,1], [1,1]]
+        for idx in range(len(BackUp_List)):
+            switch = BackUp_List[idx]
             backup_scbf_list = []
             for item in range(len(switch)):
                 if item:
@@ -120,6 +144,7 @@ class FTFramework:
                 # if the result has a false feasibility flag,
                 # then call conflict resolution
                 self.CR.Resolution(res.success)
+                self.FTEst.FTEst_list
 
 
 
@@ -132,11 +157,12 @@ class FTFramework:
 
 sensor_list = SensorSet([0, 1, 1, 2, 2], [0.001, 0.002, 0.0015, 0.001, 0.01])
 fault_list = FaultPattern(sensor_list,
-                          fault_target=[[1], [2, 3]],
-                          fault_value=[[0.1], [0.15, 2]])
+                          fault_target=[[1], [2], [1,2]],
+                          fault_value=[[0.1], [0.15], [0.1, 0.15]])
 ObsAvoid = ObsAvoid()
 gamma_list = [0.001, 0.002, 0.0015, 0.001, 0.01]
 FTNCBF = FTFramework(arch=[32, 32], act_layer=[True, True], case=ObsAvoid,
                      sensors=sensor_list, faults=fault_list,
                      gamma_list=gamma_list, verbose=True)
-FTNCBF.train(num_epoch=10, num_restart=2)
+# FTNCBF.train(num_epoch=10, num_restart=2)
+FTNCBF.FTNCBF_Framework(100, dt, np.array([[1,1,0]]))
