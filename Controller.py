@@ -93,16 +93,16 @@ class NCBFCtrl:
         return res
 
 
-sensor_list = SensorSet([0, 1, 1, 2, 2], [0.001, 0.002, 0.0015, 0.001, 0.01])
-fault_list = FaultPattern(sensor_list,
-                          fault_target=[[1], [2, 3]],
-                          fault_value=[[0.1], [0.15, 2]])
-ObsAvoid = ObsAvoid()
-gamma_list = [0.001, 0.002, 0.0015, 0.001, 0.01]
-SNCBF0 = SNCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)
-SNCBF0.model.load_state_dict(torch.load('Trained_model/SNCBF/SNCBFGood/SNCBF_Obs0.pt'), strict=True)
-SNCBF1 = SNCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)
-SNCBF1.model.load_state_dict(torch.load('Trained_model/SNCBF/SNCBFGood/SNCBF_Obs1.pt'), strict=True)
-FTEst = FTEst(None, sensor_list, fault_list)
-ctrl = NCBFCtrl(ObsAvoid.DIM, [SNCBF0, SNCBF1], FTEst, ObsAvoid, gamma_list)
-res = ctrl.CBF_based_u(np.array([[0,0,0]],dtype=np.float32))
+# sensor_list = SensorSet([0, 1, 1, 2, 2], [0.001, 0.002, 0.0015, 0.001, 0.01])
+# fault_list = FaultPattern(sensor_list,
+#                           fault_target=[[1], [2, 3]],
+#                           fault_value=[[0.1], [0.15, 2]])
+# ObsAvoid = ObsAvoid()
+# gamma_list = [0.001, 0.002, 0.0015, 0.001, 0.01]
+# SNCBF0 = SNCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)
+# SNCBF0.model.load_state_dict(torch.load('Trained_model/SNCBF/SNCBFGood/SNCBF_Obs0.pt'), strict=True)
+# SNCBF1 = SNCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)
+# SNCBF1.model.load_state_dict(torch.load('Trained_model/SNCBF/SNCBFGood/SNCBF_Obs1.pt'), strict=True)
+# FTEst = FTEst(None, sensor_list, fault_list)
+# ctrl = NCBFCtrl(ObsAvoid.DIM, [SNCBF0, SNCBF1], FTEst, ObsAvoid, gamma_list)
+# res = ctrl.CBF_based_u(np.array([[0,0,0]],dtype=np.float32))

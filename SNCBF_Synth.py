@@ -58,7 +58,7 @@ class SNCBF_Synth(NCBF_Synth):
         self.model
 
     def get_grad(self, x):
-        grad_input = torch.tensor(x, requires_grad=True)
+        grad_input = torch.tensor(x, requires_grad=True, dtype=torch.float)
         return torch.autograd.grad(self.model.forward(grad_input), grad_input)
 
     def update_EKF_gain(self, new_gain):

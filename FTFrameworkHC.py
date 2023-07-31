@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 
 from SensorFaults import *
 from SNCBF_Synth import *
@@ -129,7 +130,7 @@ class FTFramework:
 
     def FTNCBF_Framework(self, T, dt, x0):
         # Define initial state x
-        x0 = np.array([[1,1,0]])
+        x0 = np.array([[1.0,1.0,0.0]])
         x = x0
 
         # TODO: put these in self.CR.Resolution(res.success)
@@ -184,7 +185,9 @@ class FTFramework:
             # Post controller steps
 
             # update state x in a discrete time manner
-            x = x + dt * (self.case.f_x(x) + self.case.g_x(x) @ u)
+            x = torch.tensor(x)
+            x = x + dt * (self.case.f_x(x) + (self.case.g_x(x) @ u).unsqueeze(1)).transpose(0, 1)
+            x = x.numpy()
 
         return
 
@@ -199,4 +202,4 @@ FTNCBF = FTFramework(arch=[32, 32], act_layer=[True, True], case=ObsAvoid,
                      sensors=sensor_list, faults=fault_list,
                      gamma_list=gamma_list, verbose=True)
 # FTNCBF.train(num_epoch=10, num_restart=2)
-FTNCBF.FTNCBF_Framework(100, dt, np.array([[1,1,0]]))
+FTNCBF.FTNCBF_Framework(100, dt, np.array([[1.0, 1.0, 0.0]]))
