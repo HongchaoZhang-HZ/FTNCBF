@@ -16,7 +16,7 @@ class NNet:
         self.verbose = verbose
         self.arch = arch
         self.DOMAIN = DOMAIN
-        self.act_fun = nn.ReLU()
+        self.act_fun = nn.Tanh()
         self.act_layer = act_layer
         self.device = self.get_device()
         self.DIM = len(self.DOMAIN)

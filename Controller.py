@@ -10,7 +10,10 @@ from Cases.ObsAvoid import ObsAvoid
 from SensorFaults import *
 
 class NCBFCtrl:
-    def __init__(self, DIM, SNCBF_list, FTEst, case: object, gamma_list):
+    def __init__(self, DIM, SNCBF_list, FTEst,
+                 case: object,
+                 sigma, nu,
+                 gamma_list):
         self.DIM = DIM
         self.SNCBF_list = SNCBF_list
         self.num_SNCBF = len(SNCBF_list)
@@ -20,6 +23,8 @@ class NCBFCtrl:
         self.fx = self.case.f_x
         self.gx = self.case.g_x
         self.gamma_list = gamma_list
+        self.sigma = sigma
+        self.nu = nu
         # self.grad_max_list = self.grad_max_Init()
 
     def compute_u(self, x):
@@ -36,10 +41,19 @@ class NCBFCtrl:
         return dbdx
 
     def d2bdx2(self, SNCBF, x):
-        grad_input = torch.tensor(x, requires_grad=True)
-        d2bdx2 = torch.autograd.grad(self.d1bdx1(SNCBF, grad_input),
-                                     SNCBF.model.forward(grad_input))
-        return d2bdx2
+        # grad_input = torch.tensor([[0.0,0.0,0.0]], requires_grad=True)
+        # out = FTNCBF.SNCBF_list[0].model.forward(grad_input)
+        # out.backward(create_graph=True) # first order grad
+        # out.backward(retain_graph=True) # second order grad
+
+        from torch.autograd.functional import hessian
+        grad_input = torch.tensor(x, dtype=torch.float, requires_grad=True)
+        hessian_matrix = hessian(SNCBF.model.forward, grad_input).squeeze()
+
+        # grad_input = torch.tensor(x, requires_grad=True)
+        # d2bdx2 = torch.autograd.grad(self.d1bdx1(SNCBF, grad_input),
+        #                              SNCBF.model.forward(grad_input))
+        return hessian_matrix
 
     # def grad_max_Init(self):
     #     return
@@ -52,9 +66,18 @@ class NCBFCtrl:
         EKF_term = dbdx @ EKFGain @ obsMatrix
         # stochastic_term = gamma * np.linalg.norm(EKF_term) - grad_max * gamma
         stochastic_term = gamma * np.linalg.norm(EKF_term)
-        # TODO: second order derivative
 
-        return dbdxf - stochastic_term
+        # second order derivative term
+        hessian = self.d2bdx2(SNCBF, x)
+        second_order_term = self.nu.transpose(0, 1).numpy() @ EKFGain.transpose() \
+                            @ hessian.numpy() @ EKFGain @ self.nu.numpy()
+
+        # if second_order_term.shape == torch.Size([1]):
+        #     trace_term = second_order_term.item()
+        # else:
+        #     trace_term = second_order_term.trace()
+        trace_term = second_order_term.trace()
+        return dbdxf - stochastic_term + trace_term
 
     def multi_SCBF_conditions(self, x):
         cons = []

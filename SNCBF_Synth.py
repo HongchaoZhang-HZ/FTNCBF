@@ -209,22 +209,22 @@ class SNCBF_Synth(NCBF_Synth):
                                   'Vol': volume.item()})
                 pbar.update(1)
                 scheduler.step()
-                if feasibility_running_loss <= 0.0001 and not warm_start:
-                    try:
-                        veri_result, num = self.veri.proceed_verification()
-                    except:
-                        pass
+                # if feasibility_running_loss <= 0.0001 and not warm_start:
+                #     try:
+                #         veri_result, num = self.veri.proceed_verification()
+                #     except:
+                #         pass
 
 
             pbar.close()
-            if feasibility_running_loss <= 0.0001 and not warm_start:
-                try:
-                    veri_result, num = self.veri.proceed_verification()
-                except:
-                    pass
+            # if feasibility_running_loss <= 0.0001 and not warm_start:
+            #     try:
+            #         veri_result, num = self.veri.proceed_verification()
+            #     except:
+            #         pass
             # if veri_result:
             #     torch.save(self.model.state_dict(), f'Trained_model/NCBF/NCBF_Obs{epoch}.pt'.format(epoch))
-            torch.save(self.model.state_dict(), f'Trained_model/NCBF/SNCBF_Obs{self.run}.pt'.format(self.run))
+            torch.save(self.model.state_dict(), f'Trained_model/SNCBF/SNCBF_Obs{self.run}.pt'.format(self.run))
 
 # ObsAvoid = ObsAvoid()
 # newCBF = SNCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)

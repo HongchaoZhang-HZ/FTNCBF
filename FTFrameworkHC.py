@@ -24,6 +24,7 @@ class FTFramework:
     def __init__(self, arch, act_layer, case,
                  sensors: SensorSet,
                  faults: FaultPattern,
+                 sigma: list, nu: list,
                  gamma_list: list,
                  verbose=False):
         """
@@ -41,6 +42,8 @@ class FTFramework:
         self.sensor_list = sensors
         self.fault_list = faults
         self.verbose = verbose
+        self.sigma = torch.tensor(sigma, dtype=torch.float).unsqueeze(1)
+        self.nu = torch.tensor(nu, dtype=torch.float).unsqueeze(1)
 
         # Initialize SNCBF list
         self.SNCBF_list = []
@@ -54,7 +57,9 @@ class FTFramework:
         self.FTEKF_gain_list = self.FTEst.EKFgain_list
         self.Controller = NCBFCtrl(self.case.DIM, self.SNCBF_list,
                                    self.FTEst, self.case,
-                                   self.gamma_list)
+                                   sigma=self.sigma,
+                                   nu=self.nu,
+                                   gamma_list=self.gamma_list)
         self.BackUpCtrl_list = []
         self.__BackUp_Ctrl_Init__()
         self.CR = Conflict_Resolution(SNCBF_list=self.SNCBF_list,
@@ -114,6 +119,7 @@ class FTFramework:
                     backup_scbf_list.append(self.SNCBF_list[idx])
             BackupCtrl = NCBFCtrl(self.case.DIM, backup_scbf_list,
                                   self.FTEst, self.case,
+                                  self.sigma, self.nu,
                                   self.gamma_list)
             BackUpCtrl_list.append(BackupCtrl)
         self.BackUpCtrl_list = BackUpCtrl_list
@@ -200,6 +206,8 @@ ObsAvoid = ObsAvoid()
 gamma_list = [0.001, 0.002, 0.0015, 0.001, 0.01]
 FTNCBF = FTFramework(arch=[32, 32], act_layer=[True, True], case=ObsAvoid,
                      sensors=sensor_list, faults=fault_list,
+                     sigma=[0.1000, 0.1000, 0.1000, 0.1000, 0.1000],
+                     nu=[0.1000, 0.1000, 0.1000, 0.1000, 0.1000],
                      gamma_list=gamma_list, verbose=True)
 # FTNCBF.train(num_epoch=10, num_restart=2)
 FTNCBF.FTNCBF_Framework(100, dt, np.array([[1.0, 1.0, 0.0]]))
