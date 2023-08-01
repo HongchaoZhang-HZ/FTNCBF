@@ -3,6 +3,7 @@ import torch
 from Cases.Case import case
 from scipy.optimize import NonlinearConstraint
 from scipy.optimize import minimize
+from torch.autograd.functional import hessian
 
 from FTEst import FTEst
 from SNCBF_Synth import *
@@ -46,7 +47,7 @@ class NCBFCtrl:
         # out.backward(create_graph=True) # first order grad
         # out.backward(retain_graph=True) # second order grad
 
-        from torch.autograd.functional import hessian
+
         grad_input = torch.tensor(x, dtype=torch.float, requires_grad=True)
         hessian_matrix = hessian(SNCBF.model.forward, grad_input).squeeze()
 

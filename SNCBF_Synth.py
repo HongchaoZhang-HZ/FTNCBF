@@ -1,3 +1,4 @@
+import numpy as np
 import torch
 from NCBF_Synth import NCBF_Synth
 from tqdm import tqdm
@@ -6,6 +7,7 @@ from Modules.NCBF import *
 from torch import optim
 from torch.optim.lr_scheduler import ExponentialLR
 from torch.utils.tensorboard import SummaryWriter
+from torch.autograd.functional import hessian
 import torchvision
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
@@ -21,7 +23,7 @@ class SNCBF_Synth(NCBF_Synth):
     Synthesize an NCBF for a given safe region h(x)
     for given a system with polynomial f(x) and g(x)
     '''
-    def __init__(self, arch, act_layer, case, verbose=False):
+    def __init__(self, arch, act_layer, case, sigma, nu, verbose=False):
         '''
         Input architecture and ReLU layers, input case, verbose for display
         :param arch: [list of int] architecture of the NN
@@ -38,6 +40,8 @@ class SNCBF_Synth(NCBF_Synth):
 
         # Initialize stochastic term related data
         self.gamma = 0.1
+        self.sigma = sigma
+        self.nu = nu
         self.delta_gamma = torch.zeros(1)
         self.c = torch.diag(torch.ones(self.DIM))
         self.ekf_gain = torch.Tensor([[0.06415174, -0.01436932, -0.04649317],
@@ -55,11 +59,16 @@ class SNCBF_Synth(NCBF_Synth):
 
     @property
     def get_model(self):
-        self.model
+        return self.model
 
     def get_grad(self, x):
         grad_input = torch.tensor(x, requires_grad=True, dtype=torch.float)
         return torch.autograd.grad(self.model.forward(grad_input), grad_input)
+
+    def get_hessian(self, x):
+        grad_input = torch.tensor(x, requires_grad=True, dtype=torch.float)
+        hessian_matrix = hessian(self.model.forward, grad_input).squeeze()
+        return hessian_matrix
 
     def update_EKF_gain(self, new_gain):
         self.ekf_gain = new_gain
@@ -100,7 +109,19 @@ class SNCBF_Synth(NCBF_Synth):
         self.delta_gamma = self.numerical_delta_gamma(grad_vector, self.gamma)
         EKF_term = grad_vector.transpose(0,1) @ self.ekf_gain @ self.c
         stochastic_term = -self.gamma * EKF_term.norm(dim=1)
-        feasibility_output = dbdxfx + dbdxgx * u + stochastic_term
+
+        # second order term
+        hes_array = []
+        trace_term_list = []
+        for idx in range(len(X_batch)):
+            hess = self.get_hessian(X_batch[idx])
+            second_order_term = self.nu.transpose(0, 1).numpy() @ self.ekf_gain.numpy().transpose() \
+                                @ hess.numpy() @ self.ekf_gain.numpy() @ self.nu.numpy()
+            trace_term = second_order_term.trace()
+            trace_term_list.append(trace_term)
+        trace_term_list = torch.tensor(np.array(trace_term_list))
+
+        feasibility_output = dbdxfx + dbdxgx * u + stochastic_term + trace_term_list
         return feasibility_output
 
     def feasible_violations(self, model_output, feasibility_output, batch_length, rlambda):

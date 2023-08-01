@@ -73,9 +73,11 @@ class FTFramework:
         # Define SNCBFs
         for i in range(self.fault_list.num_faults):
             # Todo: adjustment The adjustment allow users to modify the arch of each NN.
-            SNCBF = SNCBF_Synth(self.arch,
-                                self.act_layer,
-                                self.case, verbose=self.verbose)
+            SNCBF = SNCBF_Synth(self.arch, self.act_layer,
+                                self.case,
+                                sigma=self.sigma,
+                                nu=self.nu,
+                                verbose=self.verbose)
             self.SNCBF_list.append(SNCBF)
             self.num_SNCBF = len(self.SNCBF_list)
 
@@ -209,5 +211,5 @@ FTNCBF = FTFramework(arch=[32, 32], act_layer=[True, True], case=ObsAvoid,
                      sigma=[0.1000, 0.1000, 0.1000, 0.1000, 0.1000],
                      nu=[0.1000, 0.1000, 0.1000, 0.1000, 0.1000],
                      gamma_list=gamma_list, verbose=True)
-# FTNCBF.train(num_epoch=10, num_restart=2)
-FTNCBF.FTNCBF_Framework(100, dt, np.array([[1.0, 1.0, 0.0]]))
+FTNCBF.train(num_epoch=10, num_restart=2)
+# FTNCBF.FTNCBF_Framework(100, dt, np.array([[1.0, 1.0, 0.0]]))
