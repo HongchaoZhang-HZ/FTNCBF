@@ -150,7 +150,7 @@ class RdObsEKF(RobotEKF):
 
     def run_localization(self, landmarks,
                          step=10, ellipse_step=20, ylim=None):
-
+        # TODO: get P being a function of x and K as a function of x
         self.x = np.array([[2, 6, .3]]).T  # x, y, steer angle
         self.P = np.diag([.1, .1, .1])
         self.R = np.diag([self.std_range ** 2,
