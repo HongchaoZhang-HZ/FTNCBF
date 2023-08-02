@@ -41,16 +41,20 @@ class FTFramework:
         self.arch = arch
         self.act_layer = act_layer
         self.case = case
+        # Define sensors
         self.sensor_list = sensors
+        # Define faults
         self.fault_target = fault_target
         self.fault_value = fault_value
+        # Define fault list with object faults
         self.fault_target_list = []
         self.fault_value_list = []
         self.fault_list = []
+        # Initialization: fill list with (m 2) fault combinations
         self.__Fault_list_Init__()
-        self.verbose = verbose
         self.sigma = torch.tensor(sigma, dtype=torch.float).unsqueeze(1)
         self.nu = torch.tensor(nu, dtype=torch.float).unsqueeze(1)
+        self.verbose = verbose
 
         # Initialize SNCBF list
         self.SNCBF_list = []
