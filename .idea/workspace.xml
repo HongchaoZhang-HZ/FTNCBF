@@ -4,7 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="fault automation enhanced" />
+    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="fault automation enhanced">
+      <change afterPath="$PROJECT_DIR$/CEample.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Cases/CExample.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Cases/Quads.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/NCBF_Obs_1_256.pt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/NCBF_Obs_2_128.pt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/NCBF_Verification.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Rebuttal_comp.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Trained_model/sigmoid_obs_hs.pt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Trained_model/tanh_obs_hs.pt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FTFrameworkHC.py" beforeDir="false" afterPath="$PROJECT_DIR$/FTFrameworkHC.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/NNet.py" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/NNet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NBF_Synth.py" beforeDir="false" afterPath="$PROJECT_DIR$/NBF_Synth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NCBF_Synth.py" beforeDir="false" afterPath="$PROJECT_DIR$/NCBF_Synth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Verifier/NCBF_Verification.py" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -35,53 +51,38 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/ericzhang/Documents/GitHub/FTNCBF/Trained_model/NCBF/SNCBFGood&quot;,
+    &quot;full.screen.before.presentation.mode&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/ericzhang/Documents/GitHub/FTNCBF/Verifier&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;pyconsole&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myShowVariablesByDefault" value="false" />
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Verifier" />
+      <recent name="$PROJECT_DIR$/runs" />
+      <recent name="$PROJECT_DIR$/Cases" />
+      <recent name="$PROJECT_DIR$/Trained_model" />
       <recent name="$PROJECT_DIR$/Trained_model/NCBF/SNCBFGood" />
-      <recent name="$PROJECT_DIR$/Trained_model/SNCBF" />
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/Trained_model/NCBF/NCBFGood" />
-      <recent name="$PROJECT_DIR$/Trained_model/NBF" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/runs/testfolder" />
       <recent name="$PROJECT_DIR$/Trained_model/SNCBF/SNCBFGood" />
       <recent name="$PROJECT_DIR$/Trained_model/NCBF/NCBFVeriTuning" />
       <recent name="$PROJECT_DIR$/Trained_model/NBF/GoodNBF" />
-      <recent name="$PROJECT_DIR$/Trained_model/NCBF" />
-      <recent name="$PROJECT_DIR$/Modules" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.FTFrameworkHC">
-    <configuration name="Controller" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="FTNCBF" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Controller.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="true" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="FTEst" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.Rebuttal_comp">
+    <configuration name="CEample" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="FTNCBF" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -94,7 +95,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FTEst.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/CEample.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -107,6 +108,9 @@
       <module name="FTNCBF" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -122,7 +126,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="RdObsEKF" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="NCBF_Synth" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="FTNCBF" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -135,7 +139,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/RdObsEKF.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/NCBF_Synth.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -144,7 +148,29 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="SNCBF_Synth" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="NCBF_Verification" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="FTNCBF" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Verifier" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/NCBF_Verification.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Rebuttal_comp" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="FTNCBF" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -157,9 +183,9 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/SNCBF_Synth.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Rebuttal_comp.py" />
       <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
       <option name="REDIRECT_INPUT" value="false" />
@@ -190,11 +216,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.Rebuttal_comp" />
+        <item itemvalue="Python.NCBF_Verification" />
+        <item itemvalue="Python.CEample" />
         <item itemvalue="Python.FTFrameworkHC" />
-        <item itemvalue="Python.Controller" />
-        <item itemvalue="Python.RdObsEKF" />
-        <item itemvalue="Python.FTEst" />
-        <item itemvalue="Python.SNCBF_Synth" />
+        <item itemvalue="Python.NCBF_Synth" />
       </list>
     </recent_temporary>
   </component>
@@ -214,21 +240,11 @@
       <workItem from="1690570015020" duration="1283000" />
       <workItem from="1690571307142" duration="7663000" />
       <workItem from="1690597056004" duration="19339000" />
-      <workItem from="1690659609847" duration="51065000" />
-    </task>
-    <task id="LOCAL-00022" summary="Restart/Epoch Number changed">
-      <created>1689483326455</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1689483326455</updated>
-    </task>
-    <task id="LOCAL-00023" summary="porocess bar incorporated">
-      <created>1689527726602</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1689527726602</updated>
+      <workItem from="1690659609847" duration="55774000" />
+      <workItem from="1691078969338" duration="65638000" />
+      <workItem from="1691358597606" duration="43812000" />
+      <workItem from="1691513041855" duration="44417000" />
+      <workItem from="1691766974204" duration="457000" />
     </task>
     <task id="LOCAL-00024" summary="stochastic term incorporated">
       <created>1689540283316</created>
@@ -559,7 +575,21 @@
       <option name="project" value="LOCAL" />
       <updated>1690986339253</updated>
     </task>
-    <option name="localTasksCounter" value="71" />
+    <task id="LOCAL-00071" summary="fault automation enhanced">
+      <created>1690986392788</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1690986392788</updated>
+    </task>
+    <task id="LOCAL-00072" summary="fault automation enhanced">
+      <created>1690986530127</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1690986530127</updated>
+    </task>
+    <option name="localTasksCounter" value="73" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -618,11 +648,6 @@
           <option name="timeStamp" value="54" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/NCBF_Synth.py</url>
-          <line>92</line>
-          <option name="timeStamp" value="56" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/EKF_test.py</url>
           <line>92</line>
           <option name="timeStamp" value="63" />
@@ -644,7 +669,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/FTFrameworkHC.py</url>
-          <line>218</line>
+          <line>224</line>
           <option name="timeStamp" value="85" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -654,16 +679,64 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/FTFrameworkHC.py</url>
-          <line>109</line>
+          <line>115</line>
           <option name="timeStamp" value="89" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/NCBF_Synth.py</url>
+          <line>298</line>
+          <option name="timeStamp" value="90" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/NCBF_Synth.py</url>
+          <line>61</line>
+          <option name="timeStamp" value="104" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/NCBF_Synth.py</url>
+          <line>93</line>
+          <option name="timeStamp" value="106" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/CEample.py</url>
+          <line>272</line>
+          <option name="timeStamp" value="108" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Rebuttal_comp.py</url>
+          <line>87</line>
+          <option name="timeStamp" value="113" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Rebuttal_comp.py</url>
+          <line>34</line>
+          <option name="timeStamp" value="116" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Rebuttal_comp.py</url>
+          <line>123</line>
+          <option name="timeStamp" value="117" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Verifier/Verifier.py</url>
+          <line>186</line>
+          <option name="timeStamp" value="118" />
+        </line-breakpoint>
       </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/FTNCBF$RdObsEKF.coverage" NAME="RdObsEKF Coverage Results" MODIFIED="1690601073997" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$NCBF_SynthBF.coverage" NAME="NCBF_SynthBF Coverage Results" MODIFIED="1689914532596" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$NCBF_Verification.coverage" NAME="NCBF_Verification Coverage Results" MODIFIED="1690318093037" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Verifier" />
+    <SUITE FILE_PATH="coverage/FTNCBF$CEample.coverage" NAME="CEample Coverage Results" MODIFIED="1691525147978" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$EKF_test.coverage" NAME="EKF_test Coverage Results" MODIFIED="1690309595379" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$ObsNCBF_Synth.coverage" NAME="SNBF_Synth Coverage Results" MODIFIED="1689527479327" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$NBF_Synth.coverage" NAME="NBF_Synth Coverage Results" MODIFIED="1689823582696" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -671,11 +744,12 @@
     <SUITE FILE_PATH="coverage/FTNCBF$SensorFaults.coverage" NAME="SensorFaults Coverage Results" MODIFIED="1690490146746" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$ReLUNN_Decom.coverage" NAME="ReLUNN_Decom Coverage Results" MODIFIED="1689217009983" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Verifier" />
     <SUITE FILE_PATH="coverage/FTNCBF$EKF.coverage" NAME="EKF Coverage Results" MODIFIED="1690311345710" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/FTNCBF$NCBF_Synth.coverage" NAME="NCBF_Synth Coverage Results" MODIFIED="1689953659821" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FTNCBF$NCBF_Synth.coverage" NAME="NCBF_Synth Coverage Results" MODIFIED="1691340665348" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$FTFrameworkHC.coverage" NAME="FTFrameworkHC Coverage Results" MODIFIED="1690914791365" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$SVerifier.coverage" NAME="SVerifier Coverage Results" MODIFIED="1690336440543" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Verifier" />
     <SUITE FILE_PATH="coverage/FTNCBF$Controller.coverage" NAME="Controller Coverage Results" MODIFIED="1690854830837" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$Darboux.coverage" NAME="Darboux Coverage Results" MODIFIED="1689114548828" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Cases" />
     <SUITE FILE_PATH="coverage/FTNCBF$SNCBF_Synth.coverage" NAME="SNCBF_Synth Coverage Results" MODIFIED="1690515267097" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FTNCBF$Rebuttal_comp.coverage" NAME="Rebuttal_comp Coverage Results" MODIFIED="1691566455026" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
