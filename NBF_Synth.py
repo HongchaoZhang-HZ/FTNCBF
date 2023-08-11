@@ -81,7 +81,7 @@ class NCBF_Synth(NCBF):
         rdm_input = self.generate_data(size)
         # rdm_input = self.generate_input(shape)
         # ref_output = torch.unsqueeze(self.h_x(rdm_input.transpose(0, self.DIM)), self.DIM)
-        ref_output = self.h_x(rdm_input.transpose(0, 1)).unsqueeze(1)
+        ref_output = self.case.h_x(rdm_input.transpose(0, 1)).unsqueeze(1)
         batch_length = 16
         training_loader = DataLoader(list(zip(rdm_input, ref_output)), batch_size=batch_length, shuffle=True)
         for epoch in range(num_epoch):
@@ -147,7 +147,7 @@ class NCBF_Synth(NCBF):
 # x0, x1 = sp.symbols('x0, x1')
 
 Darboux = Darboux()
-newCBF = NCBF_Synth([10, 10], [True, True], Darboux, verbose=False)
+newCBF = NCBF_Synth([32, 32], [True, True], Darboux, verbose=False)
 newCBF.veri.proceed_verification()
 for restart in range(3):
     newCBF.train(1000)
