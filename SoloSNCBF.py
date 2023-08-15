@@ -1,7 +1,9 @@
 import numpy as np
 import torch
+from SensorFaults import *
 from NCBF_Synth import NCBF_Synth
 from tqdm import tqdm
+import itertools
 # from progress.bar import Bar
 from Modules.NCBF import *
 from torch import optim
@@ -16,6 +18,7 @@ from Verifier.SVerifier import Stochastic_Verifier
 # from Critic_Synth.NCritic import *
 import time
 from EKF import *
+from FTEst import *
 # from collections import OrderedDict
 
 class SNCBF_Synth(NCBF_Synth):
@@ -23,7 +26,12 @@ class SNCBF_Synth(NCBF_Synth):
     Synthesize an NCBF for a given safe region h(x)
     for given a system with polynomial f(x) and g(x)
     '''
-    def __init__(self, arch, act_layer, case, sigma, nu, verbose=False):
+    def __init__(self, arch, act_layer, case,
+                 sensors: SensorSet,
+                 fault_target: list,
+                 fault_value: list,
+                 sigma, nu, gamma_list,
+                 verbose=False):
         '''
         Input architecture and ReLU layers, input case, verbose for display
         :param arch: [list of int] architecture of the NN
@@ -50,12 +58,27 @@ class SNCBF_Synth(NCBF_Synth):
         # [[0.06415174 -0.01436932 -0.04649317]
         #  [-0.06717124 0.02750288  0.14107035]
         #  [-0.0201735  0.00625575 -0.0836058]]
+        self.gamma = gamma_list
         self.run = 0
         # Verifier proposed to verify feasibility
         self.veri = Stochastic_Verifier(NCBF=self, case=case,
                                         EKFGain=self.ekf_gain,
                                         grid_shape=[100, 100, 100],
                                         verbose=verbose)
+
+        # Define sensors
+        self.sensor_list = sensors
+        # Define faults
+        self.fault_target = fault_target
+        self.fault_value = fault_value
+        # Define fault list with object faults
+        self.fault_target_list = []
+        self.fault_value_list = []
+        self.fault_list = []
+        # Initialization: fill list with (m 2) fault combinations
+        self.__Fault_list_Init__()
+        self.FTEst = FTEst(None, self.sensor_list, self.fault_list)
+        self.FTEKF_gain_list = self.FTEst.EKFgain_list
 
     @property
     def get_model(self):
@@ -84,21 +107,47 @@ class SNCBF_Synth(NCBF_Synth):
         :param gamma: [scalar] gamma of state x
         :return: delta gamma
         '''
-        vec_gamma = torch.amax(torch.abs(grad), 1)
+        vec_gamma = torch.amax(torch.abs(grad), 0)
         delta_gamma = torch.norm(vec_gamma) * gamma
         # return torch.max(delta_gamma, self.delta_gamma)
         return delta_gamma
 
-    # def EKF(self):
-    #     landmarks = np.array([[5, 10, 0.5], [10, 5, 0.5], [15, 15, 0.5]])
-    #
-    #     ekf = run_localization(
-    #         landmarks, std_vel=0.1, std_steer=np.radians(1),
-    #         std_range=0.3, std_bearing=0.1)
-    #     print('Final P:', ekf.P.diagonal())
-    #     return ekf.K
+    def __Fault_list_Init__(self):
+        # fault_target=[{1}, {2}]
+        # fault_value=[{0.1}, {0.15}]
+        target_comb = list(itertools.combinations(self.fault_target, 2))
+        # value_comb = list(itertools.combinations(self.fault_value, 2))
+        total_tar = []
+        # total_val = []
+        for com_idx in range(len(target_comb)):
+            target_set = target_comb[com_idx][0]
+            # value_set = value_comb[com_idx][0]
+            for item_idx in range(len(target_comb[com_idx])):
+                target_set = target_set.union(target_comb[com_idx][item_idx])
+                # value_set = value_set.union(value_comb[com_idx][item_idx])
+            total_tar.append(target_set)
+            # total_val.append(value_set)
 
-    def feasibility_loss(self, grad_vector, X_batch):
+        # initiate fault target list
+        fault_target_list = []
+        fault_value_list = []
+        for item in self.fault_target:
+            # get fault list items of each fault
+            flist = list(item)
+            # make it a list
+            fault_target_list.append(flist)
+            # append corresponding values
+            fault_value_list.append([self.fault_value[self.fault_target.index({i})] for i in item])
+        for item in total_tar:
+            flist = list(item)
+            fault_target_list.append(flist)
+            fault_value_list.append([self.fault_value[self.fault_target.index({i})] for i in item])
+        self.fault_target_list = fault_target_list
+        self.fault_list = FaultPattern(self.sensor_list,
+                                       fault_target=fault_target_list,
+                                       fault_value=fault_value_list)
+
+    def feasibility_loss(self, grad_vector, X_batch, ekf_gain, gamma):
         # compute loss based on (db/dx)*fx + (db/dx)*gx*u
         # dbdxfx = (grad_vector.transpose(0, 1).unsqueeze(1)
         #           @ self.case.f_x(X_batch).transpose(0, 1).unsqueeze(2)).squeeze()
@@ -110,18 +159,18 @@ class SNCBF_Synth(NCBF_Synth):
                   @ self.case.g_x(X_batch).transpose(0, 1).unsqueeze(2)).squeeze()
         u = self.feasible_u(dbdxfx, dbdxgx)
         # update delta_gamma
-        self.delta_gamma = self.numerical_delta_gamma(grad_vector, self.gamma)
+        self.delta_gamma = self.numerical_delta_gamma(grad_vector, gamma)
         # EKF_term = grad_vector.transpose(0,1) @ self.ekf_gain @ self.c
         EKF_term = grad_vector @ self.ekf_gain @ self.c
-        stochastic_term = -self.gamma * EKF_term.norm(dim=1)
+        stochastic_term = -gamma * EKF_term.norm(dim=1)
 
         # second order term
         hes_array = []
         trace_term_list = []
         for idx in range(len(X_batch)):
             hess = self.get_hessian(X_batch[idx])
-            second_order_term = self.nu.transpose(0, 1).numpy() @ self.ekf_gain.numpy().transpose() \
-                                @ hess.numpy() @ self.ekf_gain.numpy() @ self.nu.numpy()
+            second_order_term = self.nu.transpose(0, 1).numpy() @ ekf_gain.transpose() \
+                                @ hess.numpy() @ ekf_gain @ self.nu.numpy()
             trace_term = second_order_term.trace()
             trace_term_list.append(trace_term)
         trace_term_list = torch.tensor(np.array(trace_term_list))
@@ -137,8 +186,8 @@ class SNCBF_Synth(NCBF_Synth):
         return torch.max(violations, torch.zeros([1, batch_length]))
 
     def train(self, num_epoch, num_restart=10, alpha1=None, alpha2=None, warm_start=False):
-        optimizer = optim.Adam(self.model.parameters(), lr=1e-5)
-        scheduler = ExponentialLR(optimizer, gamma=0.9)
+        optimizer = optim.Adam(self.model.parameters(), lr=1e-8)
+        scheduler = ExponentialLR(optimizer, gamma=0.99)
         # define hyper-parameters
         if alpha1 is None and alpha2 is None:
             alpha1, alpha2 = 1, 0
@@ -179,15 +228,18 @@ class SNCBF_Synth(NCBF_Synth):
 
                     # grad = self.numerical_gradient(X_batch, model_output, batch_length, epsilon=0.001)
                     # grad_vector = torch.vstack(grad)
+                    feasibility_output = 0
                     grad_vector = torch.vstack([self.get_grad(x)[0] for x in X_batch])
-                    feasibility_output = self.feasibility_loss(grad_vector, X_batch)
-                    check_item = torch.max((-torch.abs(model_output)+0.2).reshape([1, batch_length]), torch.zeros([1, batch_length]))
+                    for i in range(len(self.FTEKF_gain_list)):
+                        feasibility_output += self.feasibility_loss(grad_vector, X_batch,
+                                                                    self.FTEKF_gain_list[i], self.gamma[i])
+                    # check_item = torch.max((-torch.abs(model_output)+0.2).reshape([1, batch_length]), torch.zeros([1, batch_length]))
                     # feasibility_loss = torch.sum(torch.tanh(check_item*feasibility_output))
 
                     # Our loss function
                     # violations = -check_item * self.feasible_violations(model_output, feasibility_output, batch_length, rlambda)
                     # Chuchu Fan loss function
-                    violations = check_item * self.feasible_violations(model_output, feasibility_output, batch_length, rlambda)
+                    violations = -1 * self.feasible_violations(model_output, feasibility_output, batch_length, rlambda)
                     # violations = -1 * feasibility_output - torch.max(rlambda * torch.abs(model_output.transpose(0, 1)),
                     #                                                  torch.zeros([1, batch_length]))
                     feasibility_loss = 2 * torch.sum(torch.max(violations - 1e-4, torch.zeros([1, batch_length])))
@@ -255,11 +307,21 @@ class SNCBF_Synth(NCBF_Synth):
             torch.save(self.model.state_dict(), f'Trained_model/SNCBF/SNCBF_Obs{self.run}.pt'.format(self.run))
 
 ObsAvoid = ObsAvoid()
+sensor_list = SensorSet([0, 1, 1, 2, 2], [0.001, 0.002, 0.0015, 0.001, 0.01])
+fault_list = FaultPattern(sensor_list,
+                          fault_target=[[1], [2]],
+                          fault_value=[[0.1], [0.15]])
+gamma_list = [0.001, 0.002, 0.0015, 0.001, 0.01]
 newCBF = SNCBF_Synth([32, 32], [True, True], ObsAvoid,
-                     sigma=[0.1000, 0.1000, 0.1000],
-                     nu=[0.1000, 0.1000, 0.1000], verbose=True)
+                     sensors=sensor_list,
+                     fault_target=[{1}, {2}],
+                     fault_value=[[0.1], [0.15]],
+                     sigma=[0.1000, 0.1000, 0.1000, 0.1000, 0.1000],
+                     nu=[0.1000, 0.1000, 0.1000, 0.1000, 0.1000],
+                     gamma_list=gamma_list, verbose=True)
 # newCBF.train(50, warm_start=True)
 # newCBF.run += 1
+# newCBF.model.load_state_dict(torch.load('Trained_model/SNCBF/SNCBFGood/SNCBF_Obs0.pt'))
 newCBF.train(num_epoch=10, num_restart=8, warm_start=False)
 # newCBF.model.load_state_dict(torch.load('Trained_model/SNCBF/SNCBFGood/SNCBF_Obs0.pt'))
 #
