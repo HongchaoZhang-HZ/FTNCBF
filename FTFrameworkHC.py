@@ -123,7 +123,7 @@ class FTFramework:
             fault_target_list.append(flist)
             fault_value_list.append([self.fault_value[self.fault_target.index({i})] for i in item])
         self.fault_target_list = fault_target_list
-        self.fault_list = FaultPattern(sensor_list,
+        self.fault_list = FaultPattern(self.sensor_list,
                                        fault_target=fault_target_list,
                                        fault_value=fault_value_list)
 
@@ -151,14 +151,15 @@ class FTFramework:
             BackUpCtrl_list.append(BackupCtrl)
         self.BackUpCtrl_list = BackUpCtrl_list
 
-    def train(self, num_epoch, num_restart):
+    def train(self, num_epoch, num_restart, alpha1, alpha2):
         for SNCBF_idx in range(self.num_SNCBF):
             # Update observation matrix
             self.SNCBF_list[SNCBF_idx].update_obs_matrix_c(torch.Tensor(self.fault_list.fault_mask_list[SNCBF_idx]))
             # Update EKF gain
             self.SNCBF_list[SNCBF_idx].update_EKF_gain(torch.Tensor(self.FTEKF_gain_list[SNCBF_idx]))
             # Train SNCBFs
-            self.SNCBF_list[SNCBF_idx].train(num_epoch=num_epoch, num_restart=num_restart, warm_start=False)
+            self.SNCBF_list[SNCBF_idx].train(num_epoch=num_epoch, num_restart=num_restart,
+                                             alpha1=alpha1, alpha2=alpha2, warm_start=False)
             # veri_result, num = SNCBF.veri.proceed_verification()
 
     def FTNCBF_Framework(self, T, dt, x0):
@@ -231,12 +232,12 @@ fault_list = FaultPattern(sensor_list,
                           fault_value=[[0.1], [0.15]])
 ObsAvoid = ObsAvoid()
 gamma_list = [0.001, 0.002, 0.0015, 0.001, 0.01]
-FTNCBF = FTFramework(arch=[32, 32], act_layer=[True, True], case=ObsAvoid,
+FTNCBF = FTFramework(arch=[256, 256], act_layer=[True, True], case=ObsAvoid,
                      sensors=sensor_list,
                      fault_target=[{1}, {2}],
                      fault_value=[[0.1], [0.15]],
                      sigma=[0.1000, 0.1000, 0.1000, 0.1000, 0.1000],
                      nu=[0.1000, 0.1000, 0.1000, 0.1000, 0.1000],
                      gamma_list=gamma_list, verbose=True)
-# FTNCBF.train(num_epoch=10, num_restart=2)
-FTNCBF.FTNCBF_Framework(100, dt, np.array([[1.0, 1.0, 0.0]]))
+FTNCBF.train(num_epoch=10, num_restart=2, alpha1=1, alpha2=0.1)
+# FTNCBF.FTNCBF_Framework(100, dt, np.array([[1.0, 1.0, 0.0]]))

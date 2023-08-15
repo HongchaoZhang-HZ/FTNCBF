@@ -3,7 +3,7 @@ import torch.nn as nn
 import numpy as np
 
 
-class NNet:
+class NNet(nn.Module):
     def __init__(self, arch, act_layer, DOMAIN, n_output=1, verbose=False):
         '''
         Initialize NCBF with a given architecture and ReLU layers
@@ -12,11 +12,12 @@ class NNet:
         :param DOMAIN: state space domain
         '''
         assert len(arch) == len(act_layer), 'Arch should match act_layer'
+        super(NNet, self).__init__()
 
         self.verbose = verbose
         self.arch = arch
         self.DOMAIN = DOMAIN
-        self.act_fun = nn.ReLU()
+        self.act_fun = nn.Tanh()
         self.act_layer = act_layer
         self.device = self.get_device()
         self.DIM = len(self.DOMAIN)

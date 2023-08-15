@@ -151,8 +151,8 @@ class NCBF_Synth(NCBF):
 
 
     def train(self, num_epoch, num_restart=10, warm_start=False):
-        optimizer = optim.Adam(self.model.parameters(), lr=1e-3)
-        scheduler = ExponentialLR(optimizer, gamma=0.99)
+        optimizer = optim.Adam(self.model.parameters(), lr=1e-7)
+        scheduler = ExponentialLR(optimizer, gamma=0.9)
         # define hyper-parameters
         alpha1, alpha2 = 1, 0
         # 1, 1e-8
@@ -260,9 +260,12 @@ class NCBF_Synth(NCBF):
             #     torch.save(self.model.state_dict(), f'Trained_model/NCBF/NCBF_Obs{epoch}.pt'.format(epoch))
             torch.save(self.model.state_dict(), f'Trained_model/NCBF/NCBF_Obs{self.run}.pt'.format(self.run))
 
-# ObsAvoid = ObsAvoid()
-# newCBF = NCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)
-# # newCBF.train(50, warm_start=True)
+ObsAvoid = ObsAvoid()
+
+newCBF = NCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)
+# newCBF.model.load_state_dict(torch.load('Trained_model/NCBF/NCBF_Obs4.pt'))
+newCBF.train(num_epoch=10, num_restart=1, warm_start=True)
+newCBF.train(num_epoch=10, num_restart=8, warm_start=False)
 # # newCBF.run += 1
 # newCBF.train(num_epoch=10, num_restart=8, warm_start=False)
 # # newCBF.model.load_state_dict(torch.load('Trained_model/NCBF/NCBF_Obs4.pt'))
