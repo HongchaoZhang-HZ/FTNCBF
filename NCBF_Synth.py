@@ -89,7 +89,8 @@ class NCBF_Synth(NCBF):
         return feasibility_output
 
     def feasible_violations(self, model_output, feasibility_output, batch_length, rlambda):
-        violations = -1 * feasibility_output - rlambda * torch.abs(model_output.transpose(0, 1))
+        # violations = -1 * feasibility_output - rlambda * torch.abs(model_output.transpose(0, 1))
+        violations = -1 * feasibility_output - rlambda * torch.abs(model_output.squeeze())
         # return torch.max(violations, torch.zeros([1,batch_length]))
         return violations
 
@@ -154,11 +155,11 @@ class NCBF_Synth(NCBF):
         if warm_start:
             learning_rate = 1e-4
         else:
-            learning_rate = 1e-7
+            learning_rate = 1e-5
         optimizer = optim.Adam(self.model.parameters(), lr=learning_rate)
-        scheduler = ExponentialLR(optimizer, gamma=0.9)
+        scheduler = ExponentialLR(optimizer, gamma=0.99)
         # define hyper-parameters
-        alpha1, alpha2 = 1, 0
+        alpha1, alpha2 = 100, 0
         # 1, 1e-8
         # Set alpha2=0 for feasibility test with Floss quickly converge to 0
         # If set alpha2 converges but does not pass the verification, then increase the sampling number.
@@ -212,10 +213,11 @@ class NCBF_Synth(NCBF):
                     floss = mseloss(torch.max(violations - 1e-4, torch.zeros([1, batch_length])), torch.zeros(batch_length))
                     tloss = mseloss(trivial_loss, torch.Tensor([0.0]))
                     if warm_start:
-                        correctness_loss = self.safe_correctness(y_batch, model_output, l_co=1, alpha1=alpha1, alpha2=alpha2)
+                        correctness_loss = self.safe_correctness(y_batch, model_output, l_co=1, alpha1=1, alpha2=0.0001)
                         loss = correctness_loss + tloss
                     else:
-                        loss = correctness_loss + feasibility_loss + tloss
+                        loss = feasibility_loss + 1e4*correctness_loss
+                        # loss = correctness_loss + feasibility_loss + tloss
 
 
                     loss.backward()
@@ -269,8 +271,8 @@ class NCBF_Synth(NCBF):
 ObsAvoid = ObsAvoid()
 
 newCBF = NCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)
-# newCBF.model.load_state_dict(torch.load('Trained_model/NCBF/NCBF_Obs4.pt'))
-newCBF.train(num_epoch=10, num_restart=1, warm_start=True)
+newCBF.model.load_state_dict(torch.load('WarmModel1.pt'))
+# newCBF.train(num_epoch=10, num_restart=2, warm_start=True)
 newCBF.train(num_epoch=10, num_restart=8, warm_start=False)
 # # newCBF.run += 1
 # newCBF.train(num_epoch=10, num_restart=8, warm_start=False)
