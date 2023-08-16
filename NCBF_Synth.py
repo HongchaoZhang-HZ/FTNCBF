@@ -151,7 +151,11 @@ class NCBF_Synth(NCBF):
 
 
     def train(self, num_epoch, num_restart=10, warm_start=False):
-        optimizer = optim.Adam(self.model.parameters(), lr=1e-7)
+        if warm_start:
+            learning_rate = 1e-4
+        else:
+            learning_rate = 1e-7
+        optimizer = optim.Adam(self.model.parameters(), lr=learning_rate)
         scheduler = ExponentialLR(optimizer, gamma=0.9)
         # define hyper-parameters
         alpha1, alpha2 = 1, 0
@@ -170,7 +174,7 @@ class NCBF_Synth(NCBF):
         normalized_ref_output = torch.tanh(10*ref_output)
         batch_length = 8**self.DIM
         training_loader = DataLoader(list(zip(rdm_input, normalized_ref_output)), batch_size=batch_length, shuffle=True)
-
+        volume = torch.Tensor([0])
         for self.run in range(num_restart):
             pbar = tqdm(total=num_epoch)
             veri_result = False
@@ -208,7 +212,8 @@ class NCBF_Synth(NCBF):
                     floss = mseloss(torch.max(violations - 1e-4, torch.zeros([1, batch_length])), torch.zeros(batch_length))
                     tloss = mseloss(trivial_loss, torch.Tensor([0.0]))
                     if warm_start:
-                        loss = self.warm_start(y_batch, model_output)
+                        correctness_loss = self.safe_correctness(y_batch, model_output, l_co=1, alpha1=alpha1, alpha2=alpha2)
+                        loss = correctness_loss + tloss
                     else:
                         loss = correctness_loss + feasibility_loss + tloss
 
@@ -230,24 +235,25 @@ class NCBF_Synth(NCBF):
                     # else:
                     #     alpha2 = 0
                 # Log details of losses
-                if not warm_start:
-                    self.writer.add_scalar('Loss/Loss', running_loss, self.run*num_epoch+epoch)
-                    self.writer.add_scalar('Loss/FLoss', feasibility_running_loss.item(), self.run*num_epoch+epoch)
-                    self.writer.add_scalar('Loss/CLoss', correctness_running_loss.item(), self.run*num_epoch+epoch)
-                    self.writer.add_scalar('Loss/TLoss', trivial_running_loss.item(), self.run*num_epoch+epoch)
+                # if not warm_start:
+                self.writer.add_scalar('Loss/Loss', running_loss, self.run*num_epoch+epoch)
+                self.writer.add_scalar('Loss/FLoss', feasibility_running_loss.item(), self.run*num_epoch+epoch)
+                self.writer.add_scalar('Loss/CLoss', correctness_running_loss.item(), self.run*num_epoch+epoch)
+                self.writer.add_scalar('Loss/TLoss', trivial_running_loss.item(), self.run*num_epoch+epoch)
+                pbar.set_postfix({'Loss': running_loss,
+                                  'Floss': feasibility_running_loss.item(),
+                                  'Closs': correctness_running_loss.item(),
+                                  'Tloss': trivial_running_loss.item(),
+                                  'WarmUp': str(warm_start),
+                                  'Vol': volume.item()})
+                pbar.update(1)
+                scheduler.step()
                 # Log volume of safe region
                 volume = self.compute_volume(rdm_input)
                 self.writer.add_scalar('Volume', volume, self.run*num_epoch+epoch)
                 # self.writer.add_scalar('Verifiable', veri_result, self.run * num_epoch + epoch)
                 # Process Bar Print Losses
-                pbar.set_postfix({'Loss': running_loss,
-                                  'Floss': feasibility_running_loss.item(),
-                                  'Closs': correctness_running_loss.item(),
-                                  'Tloss': trivial_running_loss.item(),
-                                  'PVeri': str(veri_result),
-                                  'Vol': volume.item()})
-                pbar.update(1)
-                scheduler.step()
+
 
 
             pbar.close()
