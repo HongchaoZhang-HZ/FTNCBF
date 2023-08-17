@@ -35,26 +35,31 @@ class NCBF_Synth(NCBF):
         # self.critic = NeuralCritic(case)
         # Verifier proposed to verify feasibility
         self.veri = Verifier(NCBF=self, case=case, grid_shape=[100, 100, 100], verbose=verbose)
-        lctime = time.ctime(time.time())
+        # lctime = time.ctime(time.time())
+        lctime = time.strftime("%Y%m%d%H%M%S")
         # Tensorboard
         self.writer = SummaryWriter(f'./runs/NCBF/{lctime}'.format(lctime))
         self.run = 0
 
-    def numerical_gradient(self, X_batch, model_output, batch_length, epsilon=0.001):
-        # compute numerical gradient for each dimension by (x+dx)/dx
-        grad = []
-        for i in range(self.DIM):
-            gradStep = torch.zeros(self.DIM)
-            gradStep[i] += epsilon
-            gradData = X_batch + gradStep
-            dbdxi = ((self.forward(gradData) - model_output) / epsilon).reshape([batch_length])
-            grad.append(dbdxi)
+    # def numerical_gradient(self, X_batch, model_output, batch_length, epsilon=0.001):
+    #     # compute numerical gradient for each dimension by (x+dx)/dx
+    #     grad = []
+    #     for i in range(self.DIM):
+    #         gradStep = torch.zeros(self.DIM)
+    #         gradStep[i] += epsilon
+    #         gradData = X_batch + gradStep
+    #         dbdxi = ((self.forward(gradData) - model_output) / epsilon).reshape([batch_length])
+    #         grad.append(dbdxi)
+    #
+    #     return grad
 
-        return grad
+    def get_grad(self, x):
+        grad_input = torch.tensor(x, requires_grad=True, dtype=torch.float)
+        return torch.autograd.grad(self.model.forward(grad_input), grad_input)
 
     def feasible_con(self, u, dbdxfx, dbdxgx):
         # function to minimize: (db/dx)*fx + (db/dx)*gx*u
-        return np.min(dbdxfx + dbdxgx * u)
+        return np.max(-dbdxfx - dbdxgx * u)
 
     def feasible_u(self, dbdxfx, dbdxgx, min_flag=False):
         # find u that minimize (db/dx)*fx + (db/dx)*gx*u
@@ -80,17 +85,18 @@ class NCBF_Synth(NCBF):
 
     def feasibility_loss(self, grad_vector, X_batch):
         # compute loss based on (db/dx)*fx + (db/dx)*gx*u
-        dbdxfx = (grad_vector.transpose(0, 1).unsqueeze(1)
+        dbdxfx = (grad_vector.unsqueeze(-1).transpose(-1, -2)
                   @ self.case.f_x(X_batch).transpose(0, 1).unsqueeze(2)).squeeze()
-        dbdxgx = (grad_vector.transpose(0, 1).unsqueeze(1)
+        dbdxgx = (grad_vector.unsqueeze(-1).transpose(-1, -2)
                   @ self.case.g_x(X_batch).transpose(0, 1).unsqueeze(2)).squeeze()
         u = self.feasible_u(dbdxfx, dbdxgx)
-        feasibility_output = dbdxfx + dbdxgx * u
+        # feasibility_output = dbdxfx + dbdxgx * u
+        feasibility_output = dbdxfx
         return feasibility_output
 
     def feasible_violations(self, model_output, feasibility_output, batch_length, rlambda):
         # violations = -1 * feasibility_output - rlambda * torch.abs(model_output.transpose(0, 1))
-        violations = -1 * feasibility_output - rlambda * torch.abs(model_output.squeeze())
+        violations = -1 * feasibility_output - rlambda * model_output.squeeze()
         # return torch.max(violations, torch.zeros([1,batch_length]))
         return violations
 
@@ -155,8 +161,8 @@ class NCBF_Synth(NCBF):
         if warm_start:
             learning_rate = 1e-4
         else:
-            learning_rate = 1e-5
-        optimizer = optim.Adam(self.model.parameters(), lr=learning_rate)
+            learning_rate = 1e-6
+        optimizer = optim.Adam(self.model.parameters(), lr=learning_rate, weight_decay=0.01)
         scheduler = ExponentialLR(optimizer, gamma=0.99)
         # define hyper-parameters
         alpha1, alpha2 = 100, 0
@@ -167,7 +173,7 @@ class NCBF_Synth(NCBF):
         rlambda = 1
 
         # Generate data
-        size = 128
+        size = 64
         rdm_input = self.generate_data(size)
         # rdm_input = self.generate_input(shape)
         # ref_output = torch.unsqueeze(self.h_x(rdm_input.transpose(0, self.DIM)), self.DIM)
@@ -190,34 +196,38 @@ class NCBF_Synth(NCBF):
                 for X_batch, y_batch in training_loader:
                     model_output = self.forward(X_batch)
 
-                    warm_start_loss = self.warm_start(y_batch, model_output)
+                    # warm_start_loss = self.warm_start(y_batch, model_output)
                     correctness_loss = self.safe_correctness(y_batch, model_output, l_co=1, alpha1=alpha1, alpha2=alpha2)
                     # trivial_loss = self.trivial_panelty(ref_output, self.model.forward(rdm_input), 1)
                     trivial_loss = self.trivial_panelty(y_batch, model_output, 1)
 
-                    grad = self.numerical_gradient(X_batch, model_output, batch_length, epsilon=0.001)
-                    grad_vector = torch.vstack(grad)
-                    feasibility_output = self.feasibility_loss(grad_vector, X_batch)
-                    check_item = torch.max((-torch.abs(model_output)+0.2).reshape([1, batch_length]), torch.zeros([1, batch_length]))
+                    # grad = self.numerical_gradient(X_batch, model_output, batch_length, epsilon=0.001)
+                    # grad_vector = torch.vstack(grad)
+                    grad_vector = torch.vstack([self.get_grad(x)[0] for x in X_batch])
+                    # dbdx(fx + gx*u) should be >=0. If <0, a penalty will be added.
+                    feasibility_output = (torch.relu(model_output)*self.feasibility_loss(grad_vector, X_batch))
+                    # check_item = torch.max((-torch.abs(model_output)+0.2).reshape([1, len(model_output)]), torch.zeros([1, len(model_output)]))
                     # feasibility_loss = torch.sum(torch.tanh(check_item*feasibility_output))
 
                     # Our loss function
                     # violations = -check_item * self.feasible_violations(model_output, feasibility_output, batch_length, rlambda)
                     # Chuchu Fan loss function
-                    violations = check_item * self.feasible_violations(model_output, feasibility_output, batch_length, rlambda)
+                    violations = torch.relu(-feasibility_output).sum()
+                    # violations = check_item * self.feasible_violations(model_output, feasibility_output, batch_length, rlambda)
                     # violations = -1 * feasibility_output - torch.max(rlambda * torch.abs(model_output.transpose(0, 1)),
                     #                                                  torch.zeros([1, batch_length]))
-                    feasibility_loss = 2 * torch.sum(torch.max(violations - 1e-4, torch.zeros([1, batch_length])))
+                    # feasibility_loss = 2 * torch.sum(torch.max(violations - 1e-4, torch.zeros([1, len(model_output)])))
+                    feasibility_loss = violations
                     mseloss = torch.nn.MSELoss()
                     # loss = self.def_loss(1 * correctness_loss + 1 * feasibility_loss + 1 * trivial_loss)
-                    floss = mseloss(torch.max(violations - 1e-4, torch.zeros([1, batch_length])), torch.zeros(batch_length))
+                    # floss = mseloss(torch.max(violations - 1e-4, torch.zeros([1, batch_length])), torch.zeros(batch_length))
                     tloss = mseloss(trivial_loss, torch.Tensor([0.0]))
                     if warm_start:
                         correctness_loss = self.safe_correctness(y_batch, model_output, l_co=1, alpha1=1, alpha2=0.0001)
                         loss = correctness_loss + tloss
                     else:
-                        loss = feasibility_loss + 1e4*correctness_loss
-                        # loss = correctness_loss + feasibility_loss + tloss
+                        # loss = feasibility_loss
+                        loss = correctness_loss + feasibility_loss + tloss
 
 
                     loss.backward()
@@ -259,19 +269,12 @@ class NCBF_Synth(NCBF):
 
 
             pbar.close()
-            if feasibility_running_loss <= 0.0001 and not warm_start:
-                try:
-                    veri_result, num = self.veri.proceed_verification()
-                except:
-                    pass
-            # if veri_result:
-            #     torch.save(self.model.state_dict(), f'Trained_model/NCBF/NCBF_Obs{epoch}.pt'.format(epoch))
             torch.save(self.model.state_dict(), f'Trained_model/NCBF/NCBF_Obs{self.run}.pt'.format(self.run))
 
 ObsAvoid = ObsAvoid()
 
 newCBF = NCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)
-newCBF.model.load_state_dict(torch.load('WarmModel1.pt'))
+newCBF.model.load_state_dict(torch.load('WarmModel2.pt'))
 # newCBF.train(num_epoch=10, num_restart=2, warm_start=True)
 newCBF.train(num_epoch=10, num_restart=8, warm_start=False)
 # # newCBF.run += 1
