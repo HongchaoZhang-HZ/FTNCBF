@@ -12,7 +12,7 @@ class Darboux(case):
         The system is 2D open-loop nonlinear CT system
         '''
         DOMAIN = [[-2, 2], [-2, 2]]
-        CTRLDOM = [-2, 2]
+        CTRLDOM = [[0, 0]]
         discrete = False
         super().__init__(DOMAIN, CTRLDOM, discrete=discrete)
 
