@@ -13,6 +13,7 @@ from Cases.ObsAvoid import ObsAvoid
 from Verifier.Verifier import Verifier
 # from Critic_Synth.NCritic import *
 import time
+from Visualization.visualization import visualize
 # from collections import OrderedDict
 
 class NCBF_Synth(NCBF):
@@ -58,8 +59,8 @@ class NCBF_Synth(NCBF):
         return torch.autograd.grad(self.model.forward(grad_input), grad_input)
 
     def feasible_con(self, u, dbdxfx, dbdxgx):
-        # function to minimize: (db/dx)*fx + (db/dx)*gx*u
-        return np.max(-dbdxfx - dbdxgx * u)
+        # function to maximize: (db/dx)*fx + (db/dx)*gx*u
+        return dbdxfx + dbdxgx * u
 
     def feasible_u(self, dbdxfx, dbdxgx, min_flag=False):
         # find u that minimize (db/dx)*fx + (db/dx)*gx*u
@@ -79,7 +80,8 @@ class NCBF_Synth(NCBF):
             for i in range(len(dbdxfx)):
                 res_ulb = dbdxfx[i] + dbdxgx[i] * u_lb
                 res_uub = dbdxfx[i] + dbdxgx[i] * u_ub
-                res = torch.max(res_ulb, res_uub)
+                # res = torch.max(res_ulb, res_uub)
+                res = [u_lb, u_ub][np.argmax([res_ulb, res_uub])]
                 res_list.append(res)
             return torch.Tensor(res_list).squeeze()
 
@@ -90,8 +92,9 @@ class NCBF_Synth(NCBF):
         dbdxgx = (grad_vector.unsqueeze(-1).transpose(-1, -2)
                   @ self.case.g_x(X_batch).transpose(0, 1).unsqueeze(2)).squeeze()
         u = self.feasible_u(dbdxfx, dbdxgx)
-        # feasibility_output = dbdxfx + dbdxgx * u
-        feasibility_output = dbdxfx
+        # u = -X_batch[:,-1]
+        feasibility_output = dbdxfx + dbdxgx * u
+        # feasibility_output = dbdxfx
         return feasibility_output
 
     def feasible_violations(self, model_output, feasibility_output, batch_length, rlambda):
@@ -119,12 +122,15 @@ class NCBF_Synth(NCBF):
         norm_model_output = torch.tanh(model_output)
         length = len(-ref_output + norm_model_output)
         # norm_ref_output = torch.tanh(ref_output)
-        FalsePositive_loss = torch.max(-ref_output.reshape([1, length]), torch.zeros([1, length])) * \
-                             torch.max((model_output + 0.01).reshape([1, length]), torch.zeros([1, length]))
-        FalseNegative_loss = torch.max(ref_output.reshape([1, length]), torch.zeros([1, length])) * \
-                             torch.max((-model_output + 0.01).reshape([1, length]), torch.zeros([1, length]))
-        loss = l_co * torch.sum(alpha1*FalsePositive_loss + alpha2*FalseNegative_loss)
-        return loss
+        # FalsePositive_loss = torch.max(-ref_output.reshape([1, length]), torch.zeros([1, length])) * \
+        #                      torch.max((model_output + 0.01).reshape([1, length]), torch.zeros([1, length]))
+        # FalseNegative_loss = torch.max(ref_output.reshape([1, length]), torch.zeros([1, length])) * \
+        #                      torch.max((-model_output + 0.01).reshape([1, length]), torch.zeros([1, length]))
+        FalsePositive_loss = torch.relu(-ref_output) * torch.relu((model_output))
+        FalseNegative_loss = torch.relu(ref_output) * torch.relu((-model_output))
+        # loss = l_co * torch.sum(alpha1*FalsePositive_loss + alpha2*FalseNegative_loss)
+        # return loss
+        return torch.sum(FalsePositive_loss), torch.sum(FalseNegative_loss)
 
     def trivial_panelty(self, ref_output, model_output, coeff=1, epsilon=0.001):
         min_ref = torch.max(ref_output)
@@ -159,13 +165,13 @@ class NCBF_Synth(NCBF):
 
     def train(self, num_epoch, num_restart=10, warm_start=False):
         if warm_start:
-            learning_rate = 1e-4
+            learning_rate = 1e-2
         else:
-            learning_rate = 1e-6
+            learning_rate = 1e-2
         optimizer = optim.Adam(self.model.parameters(), lr=learning_rate, weight_decay=0.01)
         scheduler = ExponentialLR(optimizer, gamma=0.99)
         # define hyper-parameters
-        alpha1, alpha2 = 100, 0
+        alphaf, alpha1, alpha2 = 1, 1, 0.0001
         # 1, 1e-8
         # Set alpha2=0 for feasibility test with Floss quickly converge to 0
         # If set alpha2 converges but does not pass the verification, then increase the sampling number.
@@ -173,18 +179,23 @@ class NCBF_Synth(NCBF):
         rlambda = 1
 
         # Generate data
-        size = 64
-        rdm_input = self.generate_data(size)
-        # rdm_input = self.generate_input(shape)
-        # ref_output = torch.unsqueeze(self.h_x(rdm_input.transpose(0, self.DIM)), self.DIM)
-        ref_output = self.case.h_x(rdm_input).unsqueeze(1)
-        normalized_ref_output = torch.tanh(10*ref_output)
-        batch_length = 8**self.DIM
-        training_loader = DataLoader(list(zip(rdm_input, normalized_ref_output)), batch_size=batch_length, shuffle=True)
+        size = 128
         volume = torch.Tensor([0])
         for self.run in range(num_restart):
+            rdm_input = self.generate_data(size)
+            # rdm_input = self.generate_input(shape)
+            # ref_output = torch.unsqueeze(self.h_x(rdm_input.transpose(0, self.DIM)), self.DIM)
+            ref_output = self.case.h_x(rdm_input).unsqueeze(1)
+            normalized_ref_output = torch.tanh(10 * ref_output)
+            # batch_length = 8**self.DIM
+            batch_length = size ** (self.DIM-1)
+            training_loader = DataLoader(list(zip(rdm_input, normalized_ref_output)), batch_size=batch_length,
+                                         shuffle=True)
+
             pbar = tqdm(total=num_epoch)
             veri_result = False
+            if not warm_start:
+                pass
             for epoch in range(num_epoch):
                 # Initialize loss
                 running_loss = 0.0
@@ -197,7 +208,7 @@ class NCBF_Synth(NCBF):
                     model_output = self.forward(X_batch)
 
                     # warm_start_loss = self.warm_start(y_batch, model_output)
-                    correctness_loss = self.safe_correctness(y_batch, model_output, l_co=1, alpha1=alpha1, alpha2=alpha2)
+                    correctness_loss, coverage_loss = self.safe_correctness(y_batch, model_output, l_co=1, alpha1=alpha1, alpha2=alpha2)
                     # trivial_loss = self.trivial_panelty(ref_output, self.model.forward(rdm_input), 1)
                     trivial_loss = self.trivial_panelty(y_batch, model_output, 1)
 
@@ -205,29 +216,37 @@ class NCBF_Synth(NCBF):
                     # grad_vector = torch.vstack(grad)
                     grad_vector = torch.vstack([self.get_grad(x)[0] for x in X_batch])
                     # dbdx(fx + gx*u) should be >=0. If <0, a penalty will be added.
-                    feasibility_output = (torch.relu(model_output)*self.feasibility_loss(grad_vector, X_batch))
+                    # feasibility_output = (torch.relu(model_output)*self.feasibility_loss(grad_vector, X_batch))
+                    feasibility_output = batch_length * (torch.relu(model_output.squeeze()) * torch.relu(-model_output.squeeze()+1e-2) *
+                                          (self.feasibility_loss(grad_vector, X_batch) + model_output.squeeze()))
+                    ce_indicator = (torch.relu(model_output.squeeze())/model_output.squeeze() *
+                                    torch.relu(-model_output.squeeze()+1e-2)/(-model_output.squeeze()+1e-2) *
+                                    torch.relu(-self.feasibility_loss(grad_vector, X_batch) - model_output.squeeze())
+                                    /((-self.feasibility_loss(grad_vector, X_batch) - model_output.squeeze())))
                     # check_item = torch.max((-torch.abs(model_output)+0.2).reshape([1, len(model_output)]), torch.zeros([1, len(model_output)]))
                     # feasibility_loss = torch.sum(torch.tanh(check_item*feasibility_output))
 
                     # Our loss function
                     # violations = -check_item * self.feasible_violations(model_output, feasibility_output, batch_length, rlambda)
+                    feasibility_loss = torch.relu(-feasibility_output).sum()
                     # Chuchu Fan loss function
-                    violations = torch.relu(-feasibility_output).sum()
                     # violations = check_item * self.feasible_violations(model_output, feasibility_output, batch_length, rlambda)
                     # violations = -1 * feasibility_output - torch.max(rlambda * torch.abs(model_output.transpose(0, 1)),
                     #                                                  torch.zeros([1, batch_length]))
                     # feasibility_loss = 2 * torch.sum(torch.max(violations - 1e-4, torch.zeros([1, len(model_output)])))
-                    feasibility_loss = violations
+                    if feasibility_loss <= 0.001:
+                        pass
                     mseloss = torch.nn.MSELoss()
                     # loss = self.def_loss(1 * correctness_loss + 1 * feasibility_loss + 1 * trivial_loss)
                     # floss = mseloss(torch.max(violations - 1e-4, torch.zeros([1, batch_length])), torch.zeros(batch_length))
-                    tloss = mseloss(trivial_loss, torch.Tensor([0.0]))
+                    # tloss = mseloss(trivial_loss, torch.Tensor([0.0]))
                     if warm_start:
-                        correctness_loss = self.safe_correctness(y_batch, model_output, l_co=1, alpha1=1, alpha2=0.0001)
-                        loss = correctness_loss + tloss
+                        correctness_loss, coverage_loss = self.safe_correctness(y_batch, model_output, l_co=1, alpha1=1, alpha2=0.0001)
+                        loss = correctness_loss + coverage_loss + trivial_loss
                     else:
                         # loss = feasibility_loss
-                        loss = correctness_loss + feasibility_loss + tloss
+                        loss = (alpha1*correctness_loss + alpha2*coverage_loss
+                                + alphaf*feasibility_loss + trivial_loss)
 
 
                     loss.backward()
@@ -235,6 +254,8 @@ class NCBF_Synth(NCBF):
                     #     loss = torch.max(loss)
                     optimizer.step()
                     optimizer.zero_grad()
+                    alpha1 += 0.1 * correctness_loss.item()
+                    # alphaf += 0.1 * feasibility_loss.item()
 
                     # Print Detailed Loss
                     running_loss += loss.item()
@@ -257,6 +278,7 @@ class NCBF_Synth(NCBF):
                                   'Closs': correctness_running_loss.item(),
                                   'Tloss': trivial_running_loss.item(),
                                   'WarmUp': str(warm_start),
+                                  'FCEnum': ce_indicator.sum().item(),
                                   'Vol': volume.item()})
                 pbar.update(1)
                 scheduler.step()
@@ -269,14 +291,27 @@ class NCBF_Synth(NCBF):
 
 
             pbar.close()
-            torch.save(self.model.state_dict(), f'Trained_model/NCBF/NCBF_Obs{self.run}.pt'.format(self.run))
+            # visualize(self.model)
+            # torch.save(self.model.state_dict(), f'Trained_model/NCBF/NCBF_Obs{self.run}.pt'.format(self.run))
 
-ObsAvoid = ObsAvoid()
-
-newCBF = NCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)
-newCBF.model.load_state_dict(torch.load('WarmModel2.pt'))
-# newCBF.train(num_epoch=10, num_restart=2, warm_start=True)
-newCBF.train(num_epoch=10, num_restart=8, warm_start=False)
+# ObsAvoid = ObsAvoid()
+#
+# newCBF = NCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)
+# newCBF.model.load_state_dict(torch.load('WarmModel2.pt'))
+# # newCBF.train(num_epoch=20, num_restart=2, warm_start=True)
+# # layers_to_freeze = ['0.weight', '0.bias']
+# # for name, param in newCBF.model.named_parameters():
+# #     # Check if the current parameter belongs to a layer you want to freeze
+# #     if any(layer_name in name for layer_name in layers_to_freeze):
+# #         param.requires_grad = False
+# #     else:
+# #         param.requires_grad = True
+# newCBF.train(num_epoch=10, num_restart=2, warm_start=False)
+# newCBF.train(num_epoch=10, num_restart=2, warm_start=False)
+# newCBF.train(num_epoch=10, num_restart=2, warm_start=False)
+# newCBF.train(num_epoch=10, num_restart=2, warm_start=False)
+# newCBF.train(num_epoch=10, num_restart=2, warm_start=False)
+# newCBF.train(num_epoch=10, num_restart=2, warm_start=False)
 # # newCBF.run += 1
 # newCBF.train(num_epoch=10, num_restart=8, warm_start=False)
 # # newCBF.model.load_state_dict(torch.load('Trained_model/NCBF/NCBF_Obs4.pt'))
