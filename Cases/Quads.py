@@ -68,4 +68,4 @@ class Quads(case):
         :return: [np.array/torch.Tensor] scalar output in R
         '''
         hx = (x[:, 2]**2 ) - 1
-        return hx
+        return -hx

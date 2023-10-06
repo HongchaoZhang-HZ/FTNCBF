@@ -4,12 +4,41 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="training modification">
-      <change afterPath="$PROJECT_DIR$/NCBF_SynthCBF.py" afterDir="false" />
+    <list default="true" id="f92133bc-79a9-4035-9a74-7b546b883ad2" name="Changes" comment="solo sncbf training">
+      <change afterPath="$PROJECT_DIR$/CRNN_v1.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CRNN_v2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Cases/LinearSat.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ConflictResolutionV1.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ConflictResolutionV2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FTFrameworkLinearSat.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GAN.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/NCBF_Synth_AutoTune.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Plot_6Dbound.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Plot_6Dtraj.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Plot_TrainingData.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Quad_NCBF_auto.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SoloSNCBF2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SoloSNCBF3.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SoloSNCBFLinearSat.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SoloSNCBFLinearSatV2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/linearKF.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/linearSat00_init.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/linearSat0_init.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/linearSat0_plot.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/linearSat11_init.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/linearSat_fixn.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/linearSat_initV1.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/loss_batch0_initplot.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/loss_batch1_initplot.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cases/Darboux.py" beforeDir="false" afterPath="$PROJECT_DIR$/Cases/Darboux.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cases/Quads.py" beforeDir="false" afterPath="$PROJECT_DIR$/Cases/Quads.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ConflictResolution.py" beforeDir="false" afterPath="$PROJECT_DIR$/ConflictResolution.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/Controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EKF_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/EKF_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FTFrameworkHC.py" beforeDir="false" afterPath="$PROJECT_DIR$/FTFrameworkHC.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/NCBF_Synth.py" beforeDir="false" afterPath="$PROJECT_DIR$/NCBF_Synth.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NCBF_SynthBF.py" beforeDir="false" afterPath="$PROJECT_DIR$/NCBF_SynthBF.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RdObsEKF.py" beforeDir="false" afterPath="$PROJECT_DIR$/RdObsEKF.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SNCBF_Synth.py" beforeDir="false" afterPath="$PROJECT_DIR$/SNCBF_Synth.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SoloSNCBF.py" beforeDir="false" afterPath="$PROJECT_DIR$/SoloSNCBF.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -66,9 +95,9 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/Cases" />
       <recent name="$PROJECT_DIR$/Verifier" />
       <recent name="$PROJECT_DIR$/runs" />
-      <recent name="$PROJECT_DIR$/Cases" />
       <recent name="$PROJECT_DIR$/Trained_model" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -79,8 +108,8 @@
       <recent name="$PROJECT_DIR$/Trained_model/NBF/GoodNBF" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.SoloSNCBF">
-    <configuration name="NCBF_Synth" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.SoloSNCBF2">
+    <configuration name="Plot_6Dbound" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="FTNCBF" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -93,7 +122,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/NCBF_Synth.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Plot_6Dbound.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -102,7 +131,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="NCBF_SynthBF" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="Plot_6Dtraj" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="FTNCBF" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -115,7 +144,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/NCBF_SynthBF.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Plot_6Dtraj.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -124,7 +153,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="NCBF_SynthCBF" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="Plot_TrainingData" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="FTNCBF" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -137,7 +166,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/NCBF_SynthCBF.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Plot_TrainingData.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -146,7 +175,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="SNCBF_Synth" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="SoloSNCBF2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="FTNCBF" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -159,7 +188,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/SNCBF_Synth.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/SoloSNCBF2.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -168,17 +197,20 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="SoloSNCBF" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="SoloSNCBFLinearSatV2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="FTNCBF" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/SoloSNCBF.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/SoloSNCBFLinearSatV2.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -211,11 +243,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.SoloSNCBF" />
-        <item itemvalue="Python.NCBF_SynthCBF" />
-        <item itemvalue="Python.NCBF_SynthBF" />
-        <item itemvalue="Python.NCBF_Synth" />
-        <item itemvalue="Python.SNCBF_Synth" />
+        <item itemvalue="Python.SoloSNCBF2" />
+        <item itemvalue="Python.SoloSNCBFLinearSatV2" />
+        <item itemvalue="Python.Plot_TrainingData" />
+        <item itemvalue="Python.Plot_6Dbound" />
+        <item itemvalue="Python.Plot_6Dtraj" />
       </list>
     </recent_temporary>
   </component>
@@ -245,7 +277,15 @@
       <workItem from="1692124961164" duration="102000" />
       <workItem from="1692133030994" duration="1601000" />
       <workItem from="1692197809873" duration="95761000" />
-      <workItem from="1692475386870" duration="13318000" />
+      <workItem from="1692475386870" duration="71096000" />
+      <workItem from="1692818639905" duration="40953000" />
+      <workItem from="1692932999427" duration="102942000" />
+      <workItem from="1693343018931" duration="80580000" />
+      <workItem from="1694392940900" duration="92656000" />
+      <workItem from="1695055612896" duration="1215000" />
+      <workItem from="1695332480931" duration="4000" />
+      <workItem from="1696452493808" duration="2608000" />
+      <workItem from="1696464623634" duration="33000" />
     </task>
     <task id="LOCAL-00030" summary="volume evaluation">
       <created>1689817425804</created>
@@ -590,7 +630,7 @@
       <option name="project" value="LOCAL" />
       <updated>1692114159233</updated>
     </task>
-    <option name="localTasksCounter" value="82" />
+    <option name="localTasksCounter" value="86" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -608,9 +648,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="FT-Framework Initial upload" />
-    <MESSAGE value="Sensor Faults debugged" />
-    <MESSAGE value="FT-framework init" />
     <MESSAGE value="CR FT-F init upload" />
     <MESSAGE value="SNCBF verbose issue solved" />
     <MESSAGE value="relaxed criterion" />
@@ -633,7 +670,10 @@
     <MESSAGE value="fix bugs" />
     <MESSAGE value="CRNN prepare" />
     <MESSAGE value="training modification" />
-    <option name="LAST_COMMIT_MESSAGE" value="training modification" />
+    <MESSAGE value="bug fixed" />
+    <MESSAGE value="dedicate to NCBF training" />
+    <MESSAGE value="solo sncbf training" />
+    <option name="LAST_COMMIT_MESSAGE" value="solo sncbf training" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -649,11 +689,6 @@
           <option name="timeStamp" value="54" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/EKF_test.py</url>
-          <line>92</line>
-          <option name="timeStamp" value="63" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/EKF.py</url>
           <line>189</line>
           <option name="timeStamp" value="64" />
@@ -664,24 +699,9 @@
           <option name="timeStamp" value="74" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/RdObsEKF.py</url>
-          <line>178</line>
-          <option name="timeStamp" value="78" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/FTFrameworkHC.py</url>
-          <line>223</line>
+          <line>229</line>
           <option name="timeStamp" value="85" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Controller.py</url>
-          <line>72</line>
-          <option name="timeStamp" value="86" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/FTFrameworkHC.py</url>
-          <line>113</line>
-          <option name="timeStamp" value="89" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/CEample.py</url>
@@ -724,11 +744,6 @@
           <option name="timeStamp" value="126" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/NCBF_Synth.py</url>
-          <line>128</line>
-          <option name="timeStamp" value="129" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/NCBF_SynthBF.py</url>
           <line>196</line>
           <option name="timeStamp" value="133" />
@@ -743,6 +758,66 @@
           <line>93</line>
           <option name="timeStamp" value="138" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/NCBF_Synth_AutoTune.py</url>
+          <line>67</line>
+          <option name="timeStamp" value="148" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Quad_NCBF_auto.py</url>
+          <line>317</line>
+          <option name="timeStamp" value="151" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/ConflictResolutionV2.py</url>
+          <line>152</line>
+          <option name="timeStamp" value="178" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/EKF_test.py</url>
+          <line>123</line>
+          <option name="timeStamp" value="182" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/SoloSNCBF2.py</url>
+          <line>293</line>
+          <option name="timeStamp" value="183" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/NCBF_Synth.py</url>
+          <line>71</line>
+          <option name="timeStamp" value="191" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/SoloSNCBFLinearSat.py</url>
+          <line>237</line>
+          <option name="timeStamp" value="202" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/FTFrameworkLinearSat.py</url>
+          <line>411</line>
+          <option name="timeStamp" value="208" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/FTFrameworkLinearSat.py</url>
+          <line>395</line>
+          <option name="timeStamp" value="209" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Plot_6Dbound.py</url>
+          <line>152</line>
+          <option name="timeStamp" value="212" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/SoloSNCBFLinearSatV2.py</url>
+          <line>441</line>
+          <option name="timeStamp" value="213" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/SoloSNCBF2.py</url>
+          <line>379</line>
+          <option name="timeStamp" value="214" />
+        </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
@@ -755,24 +830,35 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/FTNCBF$SNCBF_Synth.coverage" NAME="SNCBF_Synth Coverage Results" MODIFIED="1692059563554" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/FTNCBF$NCBF_SynthBF.coverage" NAME="NCBF_SynthBF Coverage Results" MODIFIED="1692333582091" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/FTNCBF$Rebuttal_comp.coverage" NAME="Rebuttal_comp Coverage Results" MODIFIED="1691566455026" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FTNCBF$CRNN_v1.coverage" NAME="CRNN_v1 Coverage Results" MODIFIED="1692933870449" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FTNCBF$ConflictResolution.coverage" NAME="ConflictResolution Coverage Results" MODIFIED="1692936056864" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$CEample.coverage" NAME="CEample Coverage Results" MODIFIED="1691525147978" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/FTNCBF$SVerifier.coverage" NAME="SVerifier Coverage Results" MODIFIED="1690336440543" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Verifier" />
+    <SUITE FILE_PATH="coverage/FTNCBF$NCBF_Synth_AutoTune.coverage" NAME="NCBF_Synth_AutoTune Coverage Results" MODIFIED="1693794272202" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$SensorFaults.coverage" NAME="SensorFaults Coverage Results" MODIFIED="1690490146746" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/FTNCBF$EKF.coverage" NAME="EKF Coverage Results" MODIFIED="1690311345710" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$ReLUNN_Decom.coverage" NAME="ReLUNN_Decom Coverage Results" MODIFIED="1689217009983" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Verifier" />
     <SUITE FILE_PATH="coverage/FTNCBF$NCBF_SynthCBF.coverage" NAME="NCBF_SynthCBF Coverage Results" MODIFIED="1692415317530" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/FTNCBF$RdObsEKF.coverage" NAME="RdObsEKF Coverage Results" MODIFIED="1690601073997" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FTNCBF$LinearSat.coverage" NAME="LinearSat Coverage Results" MODIFIED="1694474343230" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Cases" />
     <SUITE FILE_PATH="coverage/FTNCBF$ObsNCBF_Synth.coverage" NAME="SNBF_Synth Coverage Results" MODIFIED="1689527479327" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/FTNCBF$SoloSNCBF.coverage" NAME="SoloSNCBF Coverage Results" MODIFIED="1692071704480" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FTNCBF$SoloSNCBFLinearSat.coverage" NAME="SoloSNCBFLinearSat Coverage Results" MODIFIED="1694485240992" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$NBF_Synth.coverage" NAME="NBF_Synth Coverage Results" MODIFIED="1689823582696" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/FTNCBF$Controller.coverage" NAME="Controller Coverage Results" MODIFIED="1690854830837" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FTNCBF$ConflictResolutionV2.coverage" NAME="ConflictResolutionV2 Coverage Results" MODIFIED="1693286873150" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FTNCBF$FTFrameworkLinearSat.coverage" NAME="FTFrameworkLinearSat Coverage Results" MODIFIED="1694575544183" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$NCBF_Verification.coverage" NAME="NCBF_Verification Coverage Results" MODIFIED="1690318093037" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Verifier" />
     <SUITE FILE_PATH="coverage/FTNCBF$Darboux.coverage" NAME="Darboux Coverage Results" MODIFIED="1689114548828" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Cases" />
+    <SUITE FILE_PATH="coverage/FTNCBF$Plot_6Dbound.coverage" NAME="Plot_6Dbound Coverage Results" MODIFIED="1694586886347" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$Verifier.coverage" NAME="Verifier Coverage Results" MODIFIED="1689039047527" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Verifier" />
+    <SUITE FILE_PATH="coverage/FTNCBF$FTFrameworkHC.coverage" NAME="FTFrameworkHC Coverage Results" MODIFIED="1693456004600" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FTNCBF$EKF_test.coverage" NAME="EKF_test Coverage Results" MODIFIED="1693272392696" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FTNCBF$NCBF_SynthBF.coverage" NAME="NCBF_SynthBF Coverage Results" MODIFIED="1692333582091" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FTNCBF$Rebuttal_comp.coverage" NAME="Rebuttal_comp Coverage Results" MODIFIED="1691566455026" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FTNCBF$SVerifier.coverage" NAME="SVerifier Coverage Results" MODIFIED="1690336440543" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Verifier" />
+    <SUITE FILE_PATH="coverage/FTNCBF$EKF.coverage" NAME="EKF Coverage Results" MODIFIED="1690311345710" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FTNCBF$SoloSNCBF2.coverage" NAME="SoloSNCBF2 Coverage Results" MODIFIED="1694715370494" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FTNCBF$RdObsEKF.coverage" NAME="RdObsEKF Coverage Results" MODIFIED="1692588614056" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FTNCBF$SoloSNCBFLinearSatV2.coverage" NAME="SoloSNCBFLinearSatV2 Coverage Results" MODIFIED="1694715257131" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FTNCBF$Quad_NCBF_auto.coverage" NAME="Quad_NCBF_auto Coverage Results" MODIFIED="1692807624880" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FTNCBF$SoloSNCBF.coverage" NAME="SoloSNCBF Coverage Results" MODIFIED="1692071704480" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FTNCBF$Controller.coverage" NAME="Controller Coverage Results" MODIFIED="1690854830837" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/FTNCBF$NCBF_Synth.coverage" NAME="NCBF_Synth Coverage Results" MODIFIED="1692287755581" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/FTNCBF$FTFrameworkHC.coverage" NAME="FTFrameworkHC Coverage Results" MODIFIED="1690914791365" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/FTNCBF$EKF_test.coverage" NAME="EKF_test Coverage Results" MODIFIED="1690309595379" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

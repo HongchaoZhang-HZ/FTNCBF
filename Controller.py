@@ -116,7 +116,6 @@ class NCBFCtrl:
         res = minimize(fcn, u0, constraints=SoloOptCBFCon)
         return res
 
-
 # sensor_list = SensorSet([0, 1, 1, 2, 2], [0.001, 0.002, 0.0015, 0.001, 0.01])
 # fault_list = FaultPattern(sensor_list,
 #                           fault_target=[[1], [2, 3]],

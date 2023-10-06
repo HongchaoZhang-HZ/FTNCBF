@@ -4,6 +4,7 @@ from SensorFaults import *
 from NCBF_Synth import NCBF_Synth
 from tqdm import tqdm
 import itertools
+import pandas as pd
 # from progress.bar import Bar
 from Modules.NCBF import *
 from torch import optim
@@ -178,7 +179,7 @@ class SNCBF_Synth(NCBF_Synth):
             trace_term_list.append(trace_term)
         trace_term_list = torch.tensor(np.array(trace_term_list))
 
-        feasibility_output = dbdxfx + dbdxgx * u + stochastic_term + trace_term_list
+        feasibility_output = dbdxfx + dbdxgx * u + stochastic_term + trace_term_list - 1e-3
         return feasibility_output
 
     def feasible_violations(self, model_output, feasibility_output, batch_length, rlambda):
@@ -192,11 +193,12 @@ class SNCBF_Synth(NCBF_Synth):
         if warm_start:
             learning_rate = 1e-2
         else:
-            learning_rate = 1e-3
+            learning_rate = 7e-6
+
         optimizer = optim.Adam(self.model.parameters(), lr=learning_rate, weight_decay=0.01)
         scheduler = ExponentialLR(optimizer, gamma=0.99)
         # define hyper-parameters
-        alphaf, alpha1, alpha2 = 1, 1, 0.0001
+        alphaf, alpha1, alpha2 = 1, 1, 0.00001
         # 1, 1e-8
         # Set alpha2=0 for feasibility test with Floss quickly converge to 0
         # If set alpha2 converges but does not pass the verification, then increase the sampling number.
@@ -204,7 +206,7 @@ class SNCBF_Synth(NCBF_Synth):
         rlambda = 1
 
         # Generate data
-        size = 128
+        size = 32
         volume = torch.Tensor([0])
         volume_pre = torch.Tensor([0])
         rdm_input = self.generate_data(size)
@@ -212,16 +214,19 @@ class SNCBF_Synth(NCBF_Synth):
         # ref_output = torch.unsqueeze(self.h_x(rdm_input.transpose(0, self.DIM)), self.DIM)
         ref_output = self.case.h_x(rdm_input).unsqueeze(1)
         normalized_ref_output = torch.tanh(10*ref_output)
-        batch_length = 16**self.DIM
+        # batch_length = 16**self.DIM
+        batch_length = 32
         training_loader = DataLoader(list(zip(rdm_input, normalized_ref_output)), batch_size=batch_length, shuffle=True)
 
         for self.run in range(num_restart):
             pbar = tqdm(total=num_epoch)
             veri_result = False
+            loss_batch = pd.DataFrame(columns=['loss', 'floss', 'closs', 'tloss', 'vloss','FCEnum', 'volume'])
             for epoch in range(num_epoch):
                 # Initialize loss
                 running_loss = 0.0
                 feasibility_running_loss = torch.Tensor([0.0])
+                coverage_running_loss = torch.Tensor([0.0])
                 correctness_running_loss = torch.Tensor([0.0])
                 trivial_running_loss = torch.Tensor([0.0])
 
@@ -239,9 +244,11 @@ class SNCBF_Synth(NCBF_Synth):
                     # grad_vector = torch.vstack(grad)
                     feasibility_output = 0
                     ce_indicator = 0
-                    grad_vector = torch.vstack([self.get_grad(x)[0] for x in X_batch])
+                    # grad_vector = torch.vstack([self.get_grad(x)[0] for x in X_batch])
                     for i in range(len(self.FTEKF_gain_list)):
-                        tempt_feas_loss = self.feasibility_loss(grad_vector, X_batch,
+                        perturbe = 1e-3*torch.randn(X_batch.shape)
+                        grad_vector = torch.vstack([self.get_grad(x)[0] for x in X_batch+perturbe])
+                        tempt_feas_loss = self.feasibility_loss(grad_vector, X_batch+perturbe,
                                                                 self.FTEKF_gain_list[i], self.gamma[i])
                         feasibility_output += batch_length * (torch.relu(model_output.squeeze()) *
                                                               torch.relu(-model_output.squeeze()+1e-2) *
@@ -273,20 +280,31 @@ class SNCBF_Synth(NCBF_Synth):
                         # loss = feasibility_loss
                         loss = (alpha1 * correctness_loss + alpha2 * coverage_loss
                                 + alphaf * feasibility_loss + trivial_loss)
-
                     loss.backward()
                     # with torch.no_grad():
                     #     loss = torch.max(loss)
                     optimizer.step()
                     optimizer.zero_grad()
-                    alpha1 += 0.1 * correctness_loss.item()
-                    alphaf += 0.1 * feasibility_loss.item()
-
+                    # alpha1 += 0.1 * correctness_loss.item()
+                    alpha1 += 0.001 * correctness_loss.item()
+                    alphaf += 100 * feasibility_loss.item()
+                    # alphaf += 0.1 * feasibility_loss.item()
                     # Print Detailed Loss
                     running_loss += loss.item()
+                    coverage_running_loss += coverage_loss.item()
                     feasibility_running_loss += feasibility_loss.item()
                     correctness_running_loss += correctness_loss.item()
                     trivial_running_loss += trivial_loss.item()
+                    # volume = self.compute_volume(rdm_input)
+                    # loss_batch = loss_batch.append(
+                    #     {'loss': loss.item(),
+                    #      'floss': feasibility_loss.item(),
+                    #      'closs': correctness_loss.item(),
+                    #      'tloss': trivial_loss.item(),
+                    #      'FCEnum': ce_indicator.sum().item(),
+                    #      'volume': volume.item()},
+                    #     ignore_index=True)
+                    # loss_batch.to_csv(f'plotloss_minibatch{self.run}.csv'.format(self.run))
 
                     # if feasibility_running_loss <= 0.001 and correctness_loss <= 0.01:
                     #     alpha2 = 0.01
@@ -307,6 +325,16 @@ class SNCBF_Synth(NCBF_Synth):
                                   'WarmUp': str(warm_start),
                                   'FCEnum': ce_indicator.sum().item(),
                                   'Vol': volume.item()})
+                loss_batch = loss_batch.append(
+                    {'loss': running_loss,
+                     'floss': feasibility_running_loss.item(),
+                     'closs': correctness_running_loss.item(),
+                     'tloss': trivial_running_loss.item(),
+                     'vloss': coverage_running_loss.item(),
+                     'FCEnum': ce_indicator.sum().item(),
+                     'volume': volume.item()},
+                    ignore_index=True)
+                loss_batch.to_csv(f'loss_epoch{self.run}.csv'.format(self.run))
                 pbar.update(1)
                 scheduler.step()
                 # Log volume of safe region
@@ -323,8 +351,6 @@ class SNCBF_Synth(NCBF_Synth):
                 #         veri_result, num = self.veri.proceed_verification()
                 #     except:
                 #         pass
-
-
             pbar.close()
             # if feasibility_running_loss <= 0.0001 and not warm_start:
             #     try:
@@ -351,7 +377,7 @@ newCBF = SNCBF_Synth([32, 32], [True, True], ObsAvoid,
 # newCBF.train(50, warm_start=True)
 # newCBF.run += 1
 # newCBF.model.load_state_dict(torch.load('Trained_model/SNCBF/SNCBFGood/SNCBF_Obs0.pt'))
-newCBF.train(num_epoch=10, num_restart=8, warm_start=False)
+newCBF.train(num_epoch=20, num_restart=5, warm_start=False)
 # newCBF.model.load_state_dict(torch.load('Trained_model/SNCBF/SNCBFGood/SNCBF_Obs0.pt'))
 #
 # # There is a bug in verifier that causes memory error due to too many intersections to verify

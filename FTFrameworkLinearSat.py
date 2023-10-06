@@ -2,9 +2,11 @@ import numpy as np
 import torch
 
 from SensorFaults import *
-from SNCBF_Synth import *
+from SoloSNCBFLinearSat import *
 from FTEst import *
 from Controller import NCBFCtrl
+import linearKF
+from Cases.LinearSat import LinearSat
 # from ConflictResolution import Conflict_Resolution
 import itertools
 
@@ -137,7 +139,7 @@ class FTFramework:
 
         BackUpCtrl_list = []
         # TODO: change BackUp_List to self.BackUp_List when init is finished
-        BackUp_List = [[1,0], [0,1], [1,1]]
+        BackUp_List = [[1,0], [0,1]]
         for idx in range(len(BackUp_List)):
             switch = BackUp_List[idx]
             backup_scbf_list = []
@@ -264,24 +266,170 @@ class FTFramework:
             # est_list.append(self.FTEst.FTEst_list[0].x)
         return traj, u_list, co_flag
 
+
+
 sensor_list = SensorSet([0, 1, 1, 2, 2], [0.001, 0.002, 0.0015, 0.001, 0.01])
 fault_list = FaultPattern(sensor_list,
                           fault_target=[[1], [2]],
                           fault_value=[[0.1], [0.15]])
-ObsAvoid = ObsAvoid()
-gamma_list = [0.001, 0.002, 0.0015, 0.001, 0.01]
-FTNCBF = FTFramework(arch=[256, 256], act_layer=[True, True], case=ObsAvoid,
-                     sensors=sensor_list,
-                     fault_target=[{1}, {2}],
-                     fault_value=[[0.1], [0.15]],
-                     sigma=[0.1000, 0.1000, 0.1000, 0.1000, 0.1000],
-                     nu=[0.1000, 0.1000, 0.1000, 0.1000, 0.1000],
-                     gamma_list=gamma_list, verbose=True)
-# FTNCBF.train(num_epoch=10, num_restart=2, alpha1=1, alpha2=0.001)
-traj, u_list, co_flag = FTNCBF.FTNCBF_Framework(1000, dt=0.01, x0=np.array([[0.5, -0.5, 0.0]]))
-# print(traj)
-# print(est)
-plt.plot(np.array(traj).squeeze()[:,0],np.array(traj).squeeze()[:,1])
-plt.xlim([-2,2])
-plt.ylim([-2,2])
-plt.show()
+LinearSat = LinearSat()
+sensor_list = SensorSet([0, 1, 1, 2, 2, 3, 4, 5],
+                        [0.001, 0.002, 0.0015, 0.001, 0.01, 0.001, 0.01, 0.001])
+fault_list = FaultPattern(sensor_list,
+                          fault_target=[[1], [3]],
+                          fault_value=[[0.1], [0.15]])
+gamma_list = [0.001, 0.002, 0.0015, 0.001, 0.01, 0.001, 0.01, 0.001]
+newCBF = SNCBF_Synth([128, 128], [True, True], LinearSat,
+                     sigma=[0.001, 0.001, 0.001, 0.00001, 0.0001, 0.00001, 0.00001, 0.00001],
+                     nu=[0.001, 0.001, 0.001, 0.00001, 0.00001, 0.00001, 0.00001, 0.00001],
+                     gamma_list=gamma_list,
+                     verbose=True)
+newCBF.model.load_state_dict(torch.load('Trained_model/NCBF/lSat_fixnt.pt'))
+K1, K3 = linearKF.linearKF()
+
+MU = 3.986e14
+a = 500e3
+n = sqrt(MU/a**3)
+# A = np.array([[1, 0, 0, 0, 0, 0],
+#               [0, 1, 0, 0, 0, 0],
+#               [0, 0, 1, 0, 0, 0],
+#               [3 * n ** 2, 0, 0, 0, 2 * n, 0],
+#               [0, 0, 0, -2 * n, 0, 0],
+#               [0, 0, -n ** 2, 0, 0, 0]])
+dt = 1e-2
+# A = np.array([[1, 0, 0, 0, 0, 0],
+#               [0, 1, 0, 0, 0, 0],
+#               [0, 0, 1, 0, 0, 0],
+#               [0.03015, 0, 0, 0.9998, 0.002, 0],
+#               [-0.000301, 0, 0, -0.002, 0.9998, 0],
+#               [0, 0, -0.01005, 0, 0, 1]])
+A = np.array([[1, 0, 0, dt, 0, 0],
+              [0, 1, 0, 0, dt, 0],
+              [0, 0, 1, 0, 0, dt],
+              [0.03015, 0, 0, 0.9998, 0.002, 0],
+              [-0.000301, 0, 0, -0.002, 0.9998, 0],
+              [0, 0, -0.01005, 0, 0, 1]])
+# dt = 1e-3
+# B = np.array([[0, 0, 0],
+#               [0, 0, 0],
+#               [0, 0, 0],
+#               [1, 0, 0],
+#               [0, 1, 0],
+#               [0, 0, 1]])
+B = np.array([[0, 0, 0],
+              [0, 0, 0],
+              [0, 0, 0],
+              [0.009999, 0.0001, 0],
+              [-0.0001, 0.009999, 0],
+              [0, 0, 0.01]])
+
+C1 = np.array([[1, 0, 0, 0, 0, 0],
+              [1, 0, 0, 0, 0, 0],
+              [0, 1, 0, 0, 0, 0],
+              [0, 1, 0, 0, 0, 0],
+              [0, 0, 1, 0, 0, 0],
+              [0, 0, 0, 1, 0, 0],
+              [0, 0, 0, 0, 1, 0],
+              [0, 0, 0, 0, 0, 1]])
+
+C3 = np.array([[1, 0, 0, 0, 0, 0],
+              [1, 0, 0, 0, 0, 0],
+              [0, 1, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0],
+              [0, 0, 1, 0, 0, 0],
+              [0, 0, 0, 1, 0, 0],
+              [0, 0, 0, 0, 1, 0],
+              [0, 0, 0, 0, 0, 1]])
+
+# Define initial state estimate and covariance
+x_hat = np.zeros((6, 1))  # Initial state estimate
+P = np.eye(6)  # Initial state covariance
+
+# Define process and measurement noise covariances
+Q = np.eye(6)  # Process noise covariance (adjust as needed)
+R = np.eye(8)  # Measurement noise covariance (adjust as needed)
+
+# Simulated measurements (replace with your measurements)
+num_time_steps = 50
+u = np.zeros((3, 1))  # Control input (if any)
+# tensor([ 1.7551, -1.7449,  1.7551, -1.7449, -1.7449,  1.7551])
+init_x = torch.Tensor([-0.7410,  1.2590, -0.2410,  1.7590, -1.2410,  1.7590]).numpy()
+x_hat_minus = np.expand_dims(init_x, -1)
+# x_hat_minus = np.array([[1.6760], [-1.6573], [1.6760], [-1.6573], [-1.6573], [1.6760]])
+x_hat1 = x_hat_minus
+x_hat3 = x_hat_minus
+P1 = np.eye(6)
+P3 = np.eye(6)
+traj = []
+# Kalman filter loop
+for k in range(num_time_steps):
+    # Prediction step
+
+    traj.append(x_hat_minus)
+    P1_minus = np.dot(np.dot(A, P1), A.T) + Q
+    P3_minus = np.dot(np.dot(A, P3), A.T) + Q
+
+    measurement = C1 @ x_hat_minus + np.expand_dims(np.random.normal(0, 0.001, 8), -1)
+    attack = np.array([[0],[0],[0],np.random.normal(-1, 0.1, 1),[0],[0],[0],[0]])
+    measurement = measurement + attack
+    # Update step
+    K1 = np.dot(np.dot(P1_minus, C1.T), np.linalg.inv(np.dot(np.dot(C1, P1_minus), C1.T) + R))
+    x_hat1 = x_hat_minus + K1 @ (measurement - C1 @ x_hat_minus)
+    P1 = np.dot((np.eye(6) - np.dot(K1, C1)), P1_minus)
+    K3 = np.dot(np.dot(P3_minus, C3.T), np.linalg.inv(np.dot(np.dot(C3, P3_minus), C3.T) + R))
+    x_hat3 = x_hat_minus + K3 @ (measurement - C3 @ x_hat_minus)
+    P3 = np.dot((np.eye(6) - np.dot(K3, C3)), P3_minus)
+    ekf_gain = [K1, K3]
+    C = newCBF.c
+
+    trace_term_list = []
+    stochastic_term_list = []
+    cons = tuple()
+    if np.linalg.norm(x_hat3-x_hat1)<0.1:
+        xlist = [x_hat1, x_hat3]
+    else:
+        xlist = [x_hat3]
+    for i in range(len(xlist)):
+        x = xlist[i]
+        grad_vector = newCBF.get_grad(x.transpose())[0].numpy()
+        # dbdxfx = grad_vector @ newCBF.case.f_x(torch.Tensor(x.transpose())).numpy()
+        dbdxfx = (grad_vector @ A @ x)[0]
+        # dbdxgx = grad_vector @ newCBF.case.g_x(torch.Tensor(x.transpose())).numpy()
+        dbdxgx = (grad_vector @ B)[0]
+        EKF_term = grad_vector @ ekf_gain[i] @ C[i].numpy()
+        stochastic_term = -newCBF.gamma[i] * np.linalg.norm(EKF_term)
+        stochastic_term_list.append(stochastic_term)
+
+        hess = newCBF.get_hessian(torch.Tensor(x.transpose()))
+        second_order_term = newCBF.nu.transpose(0, 1).numpy() @ ekf_gain[i].transpose() \
+                            @ hess.numpy() @ ekf_gain[i] @ newCBF.nu.numpy()
+        trace_term = second_order_term.trace()
+        trace_term_list.append(trace_term)
+        SoloCBFCon = lambda u: (dbdxgx @ u + dbdxfx)*dt + newCBF.forward(torch.Tensor(x.transpose())).detach().numpy()[0][0] + stochastic_term + trace_term - 0.002
+        SoloOptCBFCon = NonlinearConstraint(SoloCBFCon, 0, np.inf)
+        cons = cons + (SoloOptCBFCon,)
+
+    u0 = np.array([0.001, -0.001, -0.001])
+    def fcn(u, dbdxgx):
+        np.sum(u**2)
+        return 0
+    res = minimize(fcn, u0, args=dbdxgx, constraints=SoloOptCBFCon)
+    u = np.expand_dims(res.x, -1)
+    # u = np.expand_dims(u0, -1)
+    x_hat_minus = A @ x_hat_minus + B @ u  # u is the control input (if any)
+
+trajr = []
+for i in traj:
+    r = sqrt(np.sum(i[:3] ** 2))
+    trajr.append(r)
+for i in traj:
+    print(newCBF.forward(torch.Tensor(i).transpose(0, 1)))
+# binput = newCBF.generate_data(8)
+# bout = newCBF.forward(binput)
+# bout.argmax()
+# for i in range(binput.shape[0]):
+#     if sqrt(np.sum(binput[i][:3].numpy() ** 2)) < 1.5 and sqrt(np.sum(binput[i][:3].numpy() ** 2)) > 0.25:
+#         if newCBF.forward(binput[i]) > 0:
+#             bout.append(newCBF.forward(binput[i]))
+#             if newCBF.forward(binput[i]) > 0.007:
+#                 print(i)
