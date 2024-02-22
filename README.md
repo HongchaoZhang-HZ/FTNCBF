@@ -43,7 +43,12 @@
   </ol>
 <!-- </details> -->
 
-
+<p align="center">
+    <a href="https://github.com/HongchaoZhang-HZ/exactverif-reluncbf-nips23">
+    <img src="./FTNCBF_comp.gif" alt="gif" width="70%">
+  </a>
+  <br />
+</p>
 
 <!-- EXACT VERIFICATION ALGORITHM
 ## Exact Verification Algorithm
@@ -70,7 +75,7 @@ The above figure illustrates the proposed coarser-to-finer searching method. Hyp
 <!-- EXPERIMENTS -->
 ## Experiments
 
-**Obstacle Avoidance:** We evaluate our proposed method on a controlled system [[1]](barry2). We consider an Unmanned Aerial Vehicles (UAVs) avoiding collision with a tree trunk. We model the system as a  Dubins-style [[2]](dubins1957curves) aircraft model. The system state consists of 2-D position and aircraft yaw rate $x:=[x_1, x_2, \psi]^T$. We let $u$ denote the control input to manipulate yaw rate and the dynamics defined in the supplement. 
+**Obstacle Avoidance:** We evaluate our proposed method on a controlled system [[1]](barry2). We consider an Unmanned Aerial Vehicle (UAV) avoiding collision with a tree trunk. We model the system as a  Dubins-style [[2]](dubins1957curves) aircraft model. The system state consists of 2-D position and aircraft yaw rate $x:=[x_1, x_2, \psi]^T$. We let $u$ denote the control input to manipulate yaw rate and the dynamics defined in the supplement. 
 We train the NCBF via the method proposed in [[3]](zhao2020synthesizing) with $v$ assumed to be $1$ and the control law $u$ designed as
  $u=\mu_{nom}(x)=-\sin \psi+3 \cdot \frac{x_1 \cdot \sin \psi+x_2 \cdot \cos \psi}{0.5+x_1^2+x_2^2}$. 
 
