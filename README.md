@@ -45,7 +45,7 @@
 
 <p align="center">
     <a href="https://github.com/HongchaoZhang-HZ/exactverif-reluncbf-nips23">
-    <img src="./FTNCBF_comp.gif" alt="gif" width="70%">
+    <img src="./FTNCBF_comp.gif" alt="gif" width="80%">
   </a>
   <br />
 </p>
