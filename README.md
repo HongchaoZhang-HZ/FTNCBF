@@ -22,9 +22,9 @@
 <!-- <details> -->
   <summary>Table of Contents</summary>
   <ol>
-    <li>
+    <!-- <li>
       <a href="#exact-verification-algorithm">Exact Verification Algorithm</a>
-    </li>
+    </li> -->
     <li><a href="#experiments">Experiments</a></li>
     <li>
       <a href="#getting-started">Getting Started</a>
@@ -45,7 +45,7 @@
 
 
 
-<!-- EXACT VERIFICATION ALGORITHM -->
+<!-- EXACT VERIFICATION ALGORITHM
 ## Exact Verification Algorithm
 
 <p align="center">
@@ -63,22 +63,18 @@ The preceding proposition motivates our overall approach to verifying a NCBF $b(
 The above figure illustrates the proposed coarser-to-finer searching method. Hyper-cubes that intersect the safety boundaries are marked in red. When all possible activation sets are listed, we can  identify exact activation set and intersections. 
 
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#readme-top">back to top</a>)</p> -->
 
 
 
 <!-- EXPERIMENTS -->
 ## Experiments
 
-**Darboux:** We consider the Darboux system proposed by [[1]](zeng2016darboux), a nonlinear open-loop polynomial system that has been widely used as a benchmark for constructing barrier certificates. The dynamic model is given in the supplement. We obtain the trained NCBF by following the method proposed in [[2]](zhao2020synthesizing). 
-
-**Obstacle Avoidance:** We evaluate our proposed method on a controlled system [[3]](barry2). We consider an Unmanned Aerial Vehicles (UAVs) avoiding collision with a tree trunk. We model the system as a  Dubins-style [[4]](dubins1957curves) aircraft model. The system state  consists of 2-D position and aircraft yaw rate $x:=[x_1, x_2, \psi]^T$. We let $u$ denote the control input to manipulate yaw rate and the dynamics defined in the supplement. 
-We train the NCBF via the method proposed in [[2]](zhao2020synthesizing) with $v$ assumed to be $1$ and the control law $u$ designed as
+**Obstacle Avoidance:** We evaluate our proposed method on a controlled system [[1]](barry2). We consider an Unmanned Aerial Vehicles (UAVs) avoiding collision with a tree trunk. We model the system as a  Dubins-style [[2]](dubins1957curves) aircraft model. The system state consists of 2-D position and aircraft yaw rate $x:=[x_1, x_2, \psi]^T$. We let $u$ denote the control input to manipulate yaw rate and the dynamics defined in the supplement. 
+We train the NCBF via the method proposed in [[3]](zhao2020synthesizing) with $v$ assumed to be $1$ and the control law $u$ designed as
  $u=\mu_{nom}(x)=-\sin \psi+3 \cdot \frac{x_1 \cdot \sin \psi+x_2 \cdot \cos \psi}{0.5+x_1^2+x_2^2}$. 
 
 **Spacecraft Rendezvous:** We evaluate our approach on a spacecraft rendezvous problem from [[5]](jewison2016spacecraft). A station-keeping controller is required to keep the "chaser" satellite within a certain relative distance to the "target" satellite. The state of the chaser is expressed relative to the target using linearized Clohessy–Wiltshire–Hill equations, with state $x=[p_x, p_y, p_z, v_x, v_y, v_z]^T$, control input $u=[u_x, u_y, u_z]^T$ and dynamics defined in the supplement. We train the NCBF as in [[6]](dawson2023safe). 
-
-**hi-ord $_8$:** We evaluate our approach on an eight-dimensional system that first appeared in [[7]](abate2021fossil) to evaluate the scalability of proposed verification method. 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -92,9 +88,9 @@ To get a local copy up and running follow these simple example steps.
 
 Clone the repo and navigate to the folder
 ```sh
-git clone https://github.com/HongchaoZhang-HZ/exactverif-reluncbf-nips23.git
+git clone https://github.com/HongchaoZhang-HZ/FTNCBF.git
 
-cd exactverif-reluncbf-nips23
+cd FTNCBF
 ```
 
 Install packages via pip
@@ -151,7 +147,7 @@ Hongchao Zhang - [Homepage](https://hongchaozhang-hz.github.io/) - hongchao@wust
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
-This research was partially supported by the NSF (grants CNS-1941670, ECCS-2020289, IIS-1905558, and IIS-2214141), AFOSR (grant FA9550-22-1-0054), and ARO (grant W911NF-19-1-0241).
+This research was supported by the AFOSR (grants FA9550-22-1-0054 and FA9550-23-1-0208), and NSF (grants CNS-1941670).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
