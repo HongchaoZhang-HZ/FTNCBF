@@ -1,15 +1,13 @@
 <a name="readme-top"></a>
 <div align="center">
-  <!-- <a href="https://github.com/HongchaoZhang-HZ/exactverif-reluncbf-nips23">
-    <img src="images/illustrate_searchv2.jpg" alt="Logo" width="70%">
-  </a> -->
+
 
   <h2 align="center">Fault Tolerant Neural Control Barrier Functions</h2>
 
   <p align="center">
     Fault Tolerant Neural Control Barrier Functions for Robotic Systems under Sensor Faults and Attacks (ICRA 2024)
     <br />
-    <a href="https://github.com/HongchaoZhang-HZ/exactverif-reluncbf-nips23/blob/main/zhang2023exact.pdf"><strong>Full Paper »</strong></a>
+    <a href="https://github.com/HongchaoZhang-HZ/exactverif-reluncbf-nips23/ICRA2024 FTNCBF Camera Ready.pdf"><strong>Full Paper »</strong></a>
     <br />
   </p>
 </div>
