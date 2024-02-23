@@ -7,7 +7,7 @@
   <p align="center">
     Fault Tolerant Neural Control Barrier Functions for Robotic Systems under Sensor Faults and Attacks (ICRA 2024)
     <br />
-    <a href="https://github.com/HongchaoZhang-HZ/exactverif-reluncbf-nips23/ICRA2024 FTNCBF Camera Ready.pdf"><strong>Full Paper »</strong></a>
+    <a href="https://github.com/HongchaoZhang-HZ/exactverif-reluncbf-nips23/ICRA2024_FTNCBF_CameraReady.pdf"><strong>Full Paper »</strong></a>
     <br />
   </p>
 </div>
