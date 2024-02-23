@@ -48,36 +48,14 @@
   <br />
 </p>
 
-<!-- EXACT VERIFICATION ALGORITHM
-## Exact Verification Algorithm
-
-<p align="center">
-    <a href="https://github.com/HongchaoZhang-HZ/exactverif-reluncbf-nips23">
-    <img src="images/illustrate_searchv2.jpg" alt="Logo" width="70%">
-  </a>
-  <br />
-</p>
-
-The preceding proposition motivates our overall approach to verifying a NCBF $b(x)$, consisting of the following steps. 
-1. We conduct coarser-to-finer search by discretizing the state space into hyper-cubes and use linear relaxation based perturbation analysis (LiRPA) to identify grid squares that intersect the boundary $\{x: b(x) = 0\}$. 
-2. We enumerate all possible activation sets within each hyper-cube using Interval Bound Propagation (IBP). We then identify the activation sets and intersections that satisfy $b(x)=0$ using linear programming. 
-3. For each activation set and intersection of activation sets, we verify the conditions of Proposition \ref{prop:safety-condition}. In what follows, we describe each step in detail.
-
-The above figure illustrates the proposed coarser-to-finer searching method. Hyper-cubes that intersect the safety boundaries are marked in red. When all possible activation sets are listed, we can  identify exact activation set and intersections. 
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p> -->
-
-
-
 <!-- EXPERIMENTS -->
 ## Experiments
 
-**Obstacle Avoidance:** We evaluate our proposed method on a controlled system [[1]](barry2). We consider an Unmanned Aerial Vehicle (UAV) avoiding collision with a tree trunk. We model the system as a  Dubins-style [[2]](dubins1957curves) aircraft model. The system state consists of 2-D position and aircraft yaw rate $x:=[x_1, x_2, \psi]^T$. We let $u$ denote the control input to manipulate yaw rate and the dynamics defined in the supplement. 
+**Obstacle Avoidance:** We evaluate our proposed method on a controlled system [[1]](barry2). We consider an Unmanned Aerial Vehicle (UAV) to avoid collision with a tree trunk. We model the system as a  Dubins-style [[2]](dubins1957curves) aircraft model. The system state consists of a 2D position and aircraft yaw rate $x:=[x_1, x_2, \psi]^T$. We let $u$ denote the control input to manipulate the yaw rate and the dynamics defined in the supplement. 
 We train the NCBF via the method proposed in [[3]](zhao2020synthesizing) with $v$ assumed to be $1$ and the control law $u$ designed as
  $u=\mu_{nom}(x)=-\sin \psi+3 \cdot \frac{x_1 \cdot \sin \psi+x_2 \cdot \cos \psi}{0.5+x_1^2+x_2^2}$. 
 
-**Spacecraft Rendezvous:** We evaluate our approach on a spacecraft rendezvous problem from [[5]](jewison2016spacecraft). A station-keeping controller is required to keep the "chaser" satellite within a certain relative distance to the "target" satellite. The state of the chaser is expressed relative to the target using linearized Clohessy–Wiltshire–Hill equations, with state $x=[p_x, p_y, p_z, v_x, v_y, v_z]^T$, control input $u=[u_x, u_y, u_z]^T$ and dynamics defined in the supplement. We train the NCBF as in [[6]](dawson2023safe). 
+**Spacecraft Rendezvous:** We evaluate our approach to a spacecraft rendezvous problem from [[5]](jewison2016spacecraft). A station-keeping controller is required to keep the "chaser" satellite within a certain relative distance from the "target" satellite. The state of the chaser is expressed relative to the target using linearized Clohessy–Wiltshire–Hill equations, with state $x=[p_x, p_y, p_z, v_x, v_y, v_z]^T$, control input $u=[u_x, u_y, u_z]^T$ and dynamics defined in the supplement. We train the NCBF as in [[6]](dawson2023safe). 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -106,6 +84,12 @@ Install packages via pip
 Choose the system and corresponding NCBFs, e.g., train NCBF for vehicle obstacle avoidance, to train by running the code
    ```sh
    python main_Obs.py
+   ```
+
+### Run Obstacle Avoidance in Carla
+Copy code and the trained NCBF to Carla folder `PythonAPI/examples`, and run 
+   ```sh
+   python main.py
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
