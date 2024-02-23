@@ -19,8 +19,8 @@ from Cases.LinearSat import LinearSat
 # from Verifier.SVerifier import Stochastic_Verifier
 # from Critic_Synth.NCritic import *
 import time
-from EKF import *
-from FTEst import *
+from FTEst.EKF import *
+from FTEst.FTEst import *
 import linearKF
 # from collections import OrderedDict
 

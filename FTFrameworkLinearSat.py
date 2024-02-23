@@ -1,11 +1,11 @@
 import numpy as np
 import torch
 
-from SensorFaults import *
-from SoloSNCBFLinearSat import *
-from FTEst import *
+from FTEst.SensorFaults import *
+from main_FTLinearSat import *
+from FTEst.FTEst import *
 from Controller import NCBFCtrl
-import linearKF
+import FTEst.linearKF
 from Cases.LinearSat import LinearSat
 # from ConflictResolution import Conflict_Resolution
 import itertools

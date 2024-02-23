@@ -5,10 +5,10 @@ from scipy.optimize import NonlinearConstraint
 from scipy.optimize import minimize
 from torch.autograd.functional import hessian
 
-from FTEst import FTEst
+from FTEst.FTEst import FTEst
 from SNCBF_Synth import *
 from Cases.ObsAvoid import ObsAvoid
-from SensorFaults import *
+from FTEst.SensorFaults import *
 
 class NCBFCtrl:
     def __init__(self, DIM, SNCBF_list, FTEst,
