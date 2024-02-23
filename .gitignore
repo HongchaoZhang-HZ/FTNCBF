@@ -7,3 +7,4 @@ CRNN.py
 GAN.py
 *.csv
 *.pt
+__pycache__/
