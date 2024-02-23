@@ -9,3 +9,4 @@ matplotlib~=3.6.3
 auto-LiRPA~=0.3
 torchvision~=0.13.1
 pandas~=1.4.1
+carla~=0.9.12
