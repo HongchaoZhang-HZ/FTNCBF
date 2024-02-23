@@ -9,7 +9,7 @@ import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 from Cases.Darboux import Darboux
 # import cma
-from cmaes import CMA
+# from cmaes import CMA
 # from Verifier import Verifier
 from collections import OrderedDict
 from Critic_Synth.NCritic import *

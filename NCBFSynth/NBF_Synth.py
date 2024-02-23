@@ -10,8 +10,8 @@ import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 from Cases.Darboux import Darboux
 # import cma
-from cmaes import CMA
-from Verifier import Verifier
+# from cmaes import CMA
+# from Verifier import Verifier
 from collections import OrderedDict
 from Critic_Synth.NCritic import *
 
@@ -21,7 +21,7 @@ class NCBF_Synth(NCBF):
         DOMAIN = self.case.DOMAIN
         super().__init__(arch, act_layer, DOMAIN)
         self.critic = NeuralCritic(case)
-        self.veri = Verifier(NCBF=self, case=case, grid_shape=[100, 100], verbose=verbose)
+        # self.veri = Verifier(NCBF=self, case=case, grid_shape=[100, 100], verbose=verbose)
 
     def numerical_gradient(self, X_batch, model_output, batch_length, epsilon=0.001):
         grad = []

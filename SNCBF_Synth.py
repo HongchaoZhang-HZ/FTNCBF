@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-from NCBF_Synth import NCBF_Synth
+from NCBFSynth.NCBF_Synth import NCBF_Synth
 from tqdm import tqdm
 # from progress.bar import Bar
 from Modules.NCBF import *

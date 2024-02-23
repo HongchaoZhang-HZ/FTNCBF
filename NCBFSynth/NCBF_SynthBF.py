@@ -12,7 +12,7 @@ import torchvision
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 from Cases.Darboux import Darboux
-from Verifier.Verifier import Verifier
+# from Verifier.Verifier import Verifier
 # from Critic_Synth.NCritic import *
 import time
 from Visualization.visualization import visualize
