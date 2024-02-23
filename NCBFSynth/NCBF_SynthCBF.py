@@ -1,3 +1,5 @@
+import sys, os
+sys.path.append(os.path.realpath(os.path.dirname(__file__)+"/.."))
 import torch
 from tqdm import tqdm
 from scipy.optimize import minimize
@@ -297,7 +299,7 @@ class NCBF_Synth(NCBF):
 ObsAvoid = ObsAvoid()
 
 newCBF = NCBF_Synth([32, 32], [True, True], ObsAvoid, verbose=True)
-newCBF.model.load_state_dict(torch.load('WarmModel2.pt'))
+# newCBF.model.load_state_dict(torch.load('WarmModel2.pt'))
 # newCBF.train(num_epoch=20, num_restart=2, warm_start=True)
 # layers_to_freeze = ['0.weight', '0.bias']
 # for name, param in newCBF.model.named_parameters():

@@ -8,3 +8,5 @@ GAN.py
 *.csv
 *.pt
 __pycache__/
+__pycache__
+NCBFSynth/runs/
