@@ -10,7 +10,7 @@ import torchvision
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 from Cases.ObsAvoid import ObsAvoid
-from Verifier.Verifier import Verifier
+# from Verifier.Verifier import Verifier
 # from Critic_Synth.NCritic import *
 import time
 from Visualization.visualization import visualize
@@ -35,7 +35,7 @@ class NCBF_Synth(NCBF):
         # Under construction: Critic is designed to tuning loss fcn automatically
         # self.critic = NeuralCritic(case)
         # Verifier proposed to verify feasibility
-        self.veri = Verifier(NCBF=self, case=case, grid_shape=[100, 100, 100], verbose=verbose)
+        # self.veri = Verifier(NCBF=self, case=case, grid_shape=[100, 100, 100], verbose=verbose)
         # lctime = time.ctime(time.time())
         lctime = time.strftime("%Y%m%d%H%M%S")
         # Tensorboard

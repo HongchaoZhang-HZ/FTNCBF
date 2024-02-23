@@ -15,7 +15,7 @@ import torchvision
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 from Cases.ObsAvoid import ObsAvoid
-from Verifier.SVerifier import Stochastic_Verifier
+# from Verifier.SVerifier import Stochastic_Verifier
 # from Critic_Synth.NCritic import *
 import time
 from EKF import *
@@ -63,10 +63,10 @@ class SNCBF_Synth(NCBF_Synth):
         self.gamma = gamma_list
         self.run = 0
         # Verifier proposed to verify feasibility
-        self.veri = Stochastic_Verifier(NCBF=self, case=case,
-                                        EKFGain=self.ekf_gain,
-                                        grid_shape=[100, 100, 100],
-                                        verbose=verbose)
+        # self.veri = Stochastic_Verifier(NCBF=self, case=case,
+        #                                 EKFGain=self.ekf_gain,
+        #                                 grid_shape=[100, 100, 100],
+        #                                 verbose=verbose)
 
         # Define sensors
         self.sensor_list = sensors
