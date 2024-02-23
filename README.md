@@ -115,14 +115,15 @@ Choose the system and corresponding NCBFs, e.g., train NCBF for vehicle obstacle
 If our work is useful for your research, please consider citing:
 
 <!-- insert bibtex format code block -->
-<!-- ```
-@inproceedings{zhang2023exact,
-  title={Exact Verification of Re{LU} Neural Control Barrier Functions},
-  author={Zhang, Hongchao and Junlin, Wu and Yevgeniy, Vorobeychik and Clark, Andrew},
-  booktitle={Advances in neural information processing systems},
-  year={2023}
-}
-``` -->
+```
+@INPROCEEDINGS{zhang2024fault,
+  author={Zhang, Hongchao and Niu, Luyao and Clark, Andrew and Poovendran, Radha},
+  booktitle={2024 IEEE International Conference on Robotics and Automation (ICRA)}, 
+  title={Fault Tolerant Neural Control Barrier Functions for Robotic Systems under Sensor Faults and Attacks}, 
+  year={2024},
+  volume={},
+  number={}}
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
