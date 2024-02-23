@@ -10,3 +10,4 @@ auto-LiRPA~=0.3
 torchvision~=0.13.1
 pandas~=1.4.1
 carla~=0.9.12
+filterpy~=1.4.5
