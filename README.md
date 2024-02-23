@@ -103,9 +103,9 @@ Install packages via pip
 
 ### Run the code
 
-Choose the system and corresponding NCBFs you want to verify and navigate to the folder, e.g., '/Darboux/darboux_2_64/' and run the code
+Choose the system and corresponding NCBFs, e.g., train NCBF for vehicle obstacle avoidance, to train by running the code
    ```sh
-   python main.py
+   python main_Obs.py
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
